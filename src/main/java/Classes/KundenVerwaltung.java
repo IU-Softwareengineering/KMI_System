@@ -1,5 +1,6 @@
-package classes;
+package Classes;
 
+import Classes.Kunde;
 import java.util.ArrayList;
 import java.util.List;
 

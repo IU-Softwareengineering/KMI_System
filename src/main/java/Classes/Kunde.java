@@ -1,4 +1,4 @@
-package classes;
+package Classes;
 
 /**
  * Die Klasse repräsentiert einen Kunden mit spezifischen Eigenschaften wie
