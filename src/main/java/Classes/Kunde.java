@@ -1,151 +1,111 @@
 package Classes;
 
-/**
- * Die Klasse repräsentiert einen Kunden mit spezifischen Eigenschaften wie
- * Kundennummer, Name, Vorname, E-Mail, Telefon und Adresse.
- */
+import Classes.Adresse;
+
 public class Kunde {
 
-    // Private Instanzvariablen zur Speicherung der Kundendaten
-    private int kundenNr;
-    private String name;
+    // Eindeutige Identifikationsnummer für den Kunden
+    private String kundennummer;
+
+    // Persönliche Informationen des Kunden
     private String vorname;
-    private String email;
-    private String telefon;
-    private String adresse;
+    private String nachname;
+    private String geburtsdatum;
 
-    /**
-     * Konstruktor zur Initialisierung eines Kundenobjekts mit den angegebenen
-     * Werten.
-     *
-     * @param kundenNr Die eindeutige Kundennummer
-     * @param name Der Nachname des Kunden
-     * @param vorname Der Vorname des Kunden
-     * @param email Die E-Mail-Adresse des Kunden
-     * @param telefon Die Telefonnummer des Kunden
-     * @param adresse Die Adresse des Kunden
-     */
-    public Kunde(int kundenNr, String name, String vorname, String email, String telefon, String adresse) {
-        this.kundenNr = kundenNr;
-        this.name = name;
+    // Kontaktdaten des Kunden
+    private String emailAdresse;
+    private String telefonnummer;
+    private Adresse adresse;
+
+    // Login-Daten des Kunden
+    private String benutzername;
+    private String passwort;
+
+    // Konstruktor
+    public Kunde(String kundennummer, String vorname, String nachname, String geburtsdatum,
+            String emailAdresse, String telefonnummer, Adresse adresse,
+            String benutzername, String passwort) {
+        this.kundennummer = kundennummer;
         this.vorname = vorname;
-        this.email = email;
-        this.telefon = telefon;
+        this.nachname = nachname;
+        this.geburtsdatum = geburtsdatum;
+        this.emailAdresse = emailAdresse;
+        this.telefonnummer = telefonnummer;
         this.adresse = adresse;
+        this.benutzername = benutzername;
+        this.passwort = passwort;
     }
 
-    // Getter-Methoden zum Abrufen der Werte der Instanzvariablen
-    /**
-     * @return Die Kundennummer
-     */
-    public int getKundenNr() {
-        return kundenNr;
+    // Getter und Setter Methoden
+    public String getKundennummer() {
+        return kundennummer;
     }
 
-    /**
-     * @return Der Nachname des Kunden
-     */
-    public String getName() {
-        return name;
+    public void setKundennummer(String kundennummer) {
+        this.kundennummer = kundennummer;
     }
 
-    /**
-     * @return Der Vorname des Kunden
-     */
     public String getVorname() {
         return vorname;
     }
 
-    /**
-     * @return Die E-Mail-Adresse des Kunden
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * @return Die Telefonnummer des Kunden
-     */
-    public String getTelefon() {
-        return telefon;
-    }
-
-    /**
-     * @return Die Adresse des Kunden
-     */
-    public String getAdresse() {
-        return adresse;
-    }
-
-    // Setter-Methoden zum Setzen der Werte der Instanzvariablen
-    /**
-     * Setzt die Kundennummer.
-     *
-     * @param kundenNr Die neue Kundennummer
-     */
-    public void setKundenNr(int kundenNr) {
-        this.kundenNr = kundenNr;
-    }
-
-    /**
-     * Setzt den Nachnamen des Kunden.
-     *
-     * @param name Der neue Nachname des Kunden
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Setzt den Vornamen des Kunden.
-     *
-     * @param vorname Der neue Vorname des Kunden
-     */
     public void setVorname(String vorname) {
         this.vorname = vorname;
     }
 
-    /**
-     * Setzt die E-Mail-Adresse des Kunden.
-     *
-     * @param email Die neue E-Mail-Adresse des Kunden
-     */
-    public void setEmail(String email) {
-        this.email = email;
+    public String getNachname() {
+        return nachname;
     }
 
-    /**
-     * Setzt die Telefonnummer des Kunden.
-     *
-     * @param telefon Die neue Telefonnummer des Kunden
-     */
-    public void setTelefon(String telefon) {
-        this.telefon = telefon;
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
     }
 
-    /**
-     * Setzt die Adresse des Kunden.
-     *
-     * @param adresse Die neue Adresse des Kunden
-     */
-    public void setAdresse(String adresse) {
+    public String getGeburtsdatum() {
+        return geburtsdatum;
+    }
+
+    public void setGeburtsdatum(String geburtsdatum) {
+        this.geburtsdatum = geburtsdatum;
+    }
+
+    public String getEmailAdresse() {
+        return emailAdresse;
+    }
+
+    public void setEmailAdresse(String emailAdresse) {
+        this.emailAdresse = emailAdresse;
+    }
+
+    public String getTelefonnummer() {
+        return telefonnummer;
+    }
+
+    public void setTelefonnummer(String telefonnummer) {
+        this.telefonnummer = telefonnummer;
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
     }
 
-    /**
-     * Gibt eine String-Darstellung des Kundenobjekts zurück.
-     *
-     * @return Eine String-Darstellung der Kundendaten
-     */
-    @Override
-    public String toString() {
-        return "Kunde{"
-                + "kundenNr=" + kundenNr
-                + ", name='" + name + '\''
-                + ", vorname='" + vorname + '\''
-                + ", email='" + email + '\''
-                + ", telefon='" + telefon + '\''
-                + ", adresse='" + adresse + '\''
-                + '}';
+    public String getBenutzername() {
+        return benutzername;
+    }
+
+    public void setBenutzername(String benutzername) {
+        this.benutzername = benutzername;
+    }
+
+    public String getPasswort() {
+        return passwort;
+    }
+
+    public void setPasswort(String passwort) {
+        this.passwort = passwort;
     }
 }
