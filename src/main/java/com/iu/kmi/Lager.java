@@ -1,3 +1,5 @@
+package com.iu.kmi;
+
 public class Lager {
 
     // Attribute
