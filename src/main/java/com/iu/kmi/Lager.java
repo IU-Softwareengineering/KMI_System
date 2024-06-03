@@ -33,14 +33,15 @@ public class Lager {
     public void setLagerNummer(int lagerNummer) {
         this.lagerNummer = lagerNummer;
     }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setAdresse(int adresse) {
         this.adresse = adresse;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     @Override
