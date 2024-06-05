@@ -3,12 +3,12 @@ package com.iu.kmi;
 public class Lager {
 
     // Attribute
-    private int lagerNummer;
+    private String lagerNummer;
     private String name;
     private int adresse;
 
     // Konstruktor
-    public Lager(int lagerNummer, String name, int adresse) {
+    public Lager(String lagerNummer, String name, int adresse) {
         this.lagerNummer = lagerNummer;
         this.name = name;
         this.adresse = adresse;
@@ -16,7 +16,7 @@ public class Lager {
 
 
     // Getter-Methoden
-    public int getLagerNummer() {
+    public String getLagerNummer() {
         return lagerNummer;
     }
 
@@ -30,17 +30,18 @@ public class Lager {
 
 
     // Setter-Methoden
-    public void setLagerNummer(int lagerNummer) {
+    public void setLagerNummer(String lagerNummer) {
         this.lagerNummer = lagerNummer;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAdresse(int adresse) {
         this.adresse = adresse;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     @Override
