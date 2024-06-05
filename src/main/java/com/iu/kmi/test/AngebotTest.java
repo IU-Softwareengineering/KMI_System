@@ -1,4 +1,4 @@
-package JUint_tests;
+package com.iu.kmi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -8,7 +8,7 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.iu.kmi.Angebot;
+import com.iu.kmi.entities.Angebot;
 
 public class AngebotTest {
 
