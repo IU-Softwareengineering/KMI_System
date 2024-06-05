@@ -1,4 +1,4 @@
-package Classes;
+package com.iu.kmi.entities;
 
 /**
  * Represents an address with street, city, postal code, and country. Provides
