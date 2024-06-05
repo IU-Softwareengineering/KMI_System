@@ -2,6 +2,7 @@ package com.iu.kmi.database.orm.query;
 
 import com.iu.kmi.database.DatabaseConnection;
 import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.CompositeKey;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.JoinColumn;
 import com.iu.kmi.database.orm.DataORM;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BaseQuery<T> {
     protected final Class<T> type;
@@ -122,6 +124,16 @@ public abstract class BaseQuery<T> {
         return null;
     }*/
 
+    protected Object getFieldValue(Field field, Object entity) throws IllegalAccessException {
+        field.setAccessible(true);
+        return field.get(entity);
+    }
+
+    protected void setFieldValue(Field field, Object entity, Object value) throws IllegalAccessException {
+        field.setAccessible(true);
+        field.set(entity, value);
+    }
+
     protected String getColumnName(Field field) {
         if (field.isAnnotationPresent(Column.class)) {
             Column column = field.getAnnotation(Column.class);
@@ -136,6 +148,27 @@ public abstract class BaseQuery<T> {
             return entity.tableName();
         }
         return type.getSimpleName();
+    }
+
+    protected boolean hasCompositeKey() {
+        return type.isAnnotationPresent(CompositeKey.class);
+    }
+
+    protected String[] getCompositeKeyColumns() {
+        if (hasCompositeKey()) {
+            CompositeKey compositeKey = type.getAnnotation(CompositeKey.class);
+            return compositeKey.keyColumns();
+        }
+        return new String[0];
+    }
+
+    protected Map<String, Object> getCompositeKeyValues(Object entity) throws IllegalAccessException, NoSuchFieldException {
+        Map<String, Object> keyValues = new HashMap<>();
+        for (String keyColumn : getCompositeKeyColumns()) {
+            Field field = type.getDeclaredField(keyColumn);
+            keyValues.put(keyColumn, getFieldValue(field, entity));
+        }
+        return keyValues;
     }
 
 }
