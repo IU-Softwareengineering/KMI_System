@@ -18,7 +18,7 @@ public class Kondition {
      * @param lieferbedingungen die Lieferbedingungen, die mit der Bedingung verbunden sind
      * @param rabatt der Rabatt, der mit der Bedingung verbunden ist
      */
-    public Konditionen(String name, String zahlungsmethode, String lieferbedingungen, double rabatt) {
+    public Kondition(String name, String zahlungsmethode, String lieferbedingungen, double rabatt) {
         this.name = name;
         this.zahlungsmethode = zahlungsmethode;
         this.lieferbedingungen = lieferbedingungen;
