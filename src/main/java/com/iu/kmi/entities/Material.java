@@ -1,4 +1,4 @@
-package com.iu.kmi;
+package com.iu.kmi.entities;
 public class Material {
     // Attribute
     private int artikelNummer;

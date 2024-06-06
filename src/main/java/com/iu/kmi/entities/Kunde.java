@@ -1,6 +1,4 @@
-package Classes;
-
-import Classes.Adresse;
+package com.iu.kmi.entities;
 
 /**
  * Represents a customer with personal information, contact details, and login

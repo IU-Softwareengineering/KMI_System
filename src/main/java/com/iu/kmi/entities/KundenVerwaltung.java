@@ -1,6 +1,5 @@
-package Classes;
+package com.iu.kmi.entities;
 
-import Classes.Kunde;
 import java.util.ArrayList;
 import java.util.List;
 
