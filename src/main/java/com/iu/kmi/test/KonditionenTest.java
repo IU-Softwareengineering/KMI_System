@@ -1,9 +1,9 @@
-package JUint_tests;
+package com.iu.kmi.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import com.iu.kmi.data.entity.Konditionen;
+import com.iu.kmi.entities.Konditionen;
 
 public class KonditionenTest {
 

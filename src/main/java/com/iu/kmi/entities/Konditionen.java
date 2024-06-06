@@ -1,4 +1,4 @@
-package com.iu.kmi.data.entity;
+package com.iu.kmi.entities;
 
 /**
  * Repräsentiert eine Menge von Bedingungen einschließlich Zahlungsmethode, Lieferbedingungen und Rabatt.
