@@ -1,7 +1,8 @@
 package com.iu.kmi.test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
+import static junit.framework.Assert.assertEquals;
+
+import org.junit.Test;
 
 import com.iu.kmi.entities.Kondition;
 
