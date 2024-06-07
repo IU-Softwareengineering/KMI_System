@@ -1,13 +1,29 @@
 package com.iu.kmi.entities;
 
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
 /**
- * Repräsentiert eine Menge von Konditionen einschließlich Zahlungsmethode, Lieferbedingungen und Rabatt.
+ * @author Julian Treichel
+ * @since 07.06.2024
  */
+
+/**
+ * Repräsentiert eine Kondition einschließlich Zahlungsmethode, Lieferbedingungen und Rabatt.
+ */
+@Entity(tableName = "kondition")
 public class Kondition {
-    private int id;
+    @Id
+    @Column(name = "kondition_nr")
+    private String konditionNr;
+    @Column(name = "name")
     private String name;
+    @Column(name = "zahlungsbedingungen")
     private String zahlungsmethode;
+    @Column(name = "lieferbedingungen")
     private String lieferbedingungen;
+    @Column(name = "rabatt")
     private double rabatt;
 
     /**
@@ -30,17 +46,17 @@ public class Kondition {
      *
      * @return die ID der Kondition
      */
-    public int getId() {
-        return id;
+    public String getKonditionNr() {
+        return konditionNr;
     }
 
     /**
      * Setzt die ID der Kondition.
      *
-     * @param id die neue ID der Kondition
+     * @param konditionNr die neue ID der Kondition
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setKonditionNr(String konditionNr) {
+        this.konditionNr = konditionNr;
     }
 
     /**
@@ -122,8 +138,8 @@ public class Kondition {
      */
     @Override
     public String toString() {
-        return "KonditionEntitaet{" +
-                "id=" + id +
+        return "Kondition{" +
+                "konditionenNr=" + konditionNr +
                 ", name='" + name + '\'' +
                 ", zahlungsmethode='" + zahlungsmethode + '\'' +
                 ", lieferbedingungen='" + lieferbedingungen + '\'' +
