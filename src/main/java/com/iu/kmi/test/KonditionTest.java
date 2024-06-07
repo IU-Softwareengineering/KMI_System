@@ -22,7 +22,7 @@ public class KonditionTest {
 
         // Überprüft, ob die Getter-Methoden die erwarteten Werte zurückgeben
         assertEquals("Standard", kondition.getName());
-        assertEquals("Kreditkarte", kondition.getZahlungsmethode());
+        assertEquals("Kreditkarte", kondition.getZahlungsbedingungen());
         assertEquals("Lieferung in 5 Tagen", kondition.getLieferbedingungen());
         assertEquals(10.0, kondition.getRabatt());
     }
@@ -38,14 +38,14 @@ public class KonditionTest {
         // Setzt neue Werte für die Eigenschaften der Kondition
         kondition.setKonditionNr("1");
         kondition.setName("Premium");
-        kondition.setZahlungsmethode("PayPal");
+        kondition.setZahlungsbedingungen("PayPal");
         kondition.setLieferbedingungen("Lieferung in 2 Tagen");
         kondition.setRabatt(15.0);
 
         // Überprüft, ob die Setter-Methoden die neuen Werte korrekt setzen
         assertEquals("1", kondition.getKonditionNr());
         assertEquals("Premium", kondition.getName());
-        assertEquals("PayPal", kondition.getZahlungsmethode());
+        assertEquals("PayPal", kondition.getZahlungsbedingungen());
         assertEquals("Lieferung in 2 Tagen", kondition.getLieferbedingungen());
         assertEquals(15.0, kondition.getRabatt());
     }

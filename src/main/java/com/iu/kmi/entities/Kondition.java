@@ -20,7 +20,7 @@ public class Kondition {
     @Column(name = "name")
     private String name;
     @Column(name = "zahlungsbedingungen")
-    private String zahlungsmethode;
+    private String zahlungsbedingungen;
     @Column(name = "lieferbedingungen")
     private String lieferbedingungen;
     @Column(name = "rabatt")
@@ -30,13 +30,13 @@ public class Kondition {
      * Konstruktor für eine neue Kondition mit dem angegebenen Namen, Zahlungsmethode, Lieferbedingungen und Rabatt.
      *
      * @param name der Name der Kondition
-     * @param zahlungsmethode die Zahlungsmethode, die mit der Kondition verbunden ist
+     * @param zahlungsbedingungen die Zahlungsmethode, die mit der Kondition verbunden ist
      * @param lieferbedingungen die Lieferbedingungen, die mit der Kondition verbunden sind
      * @param rabatt der Rabatt, der mit der Kondition verbunden ist
      */
-    public Kondition(String name, String zahlungsmethode, String lieferbedingungen, double rabatt) {
+    public Kondition(String name, String zahlungsbedingungen, String lieferbedingungen, double rabatt) {
         this.name = name;
-        this.zahlungsmethode = zahlungsmethode;
+        this.zahlungsbedingungen = zahlungsbedingungen;
         this.lieferbedingungen = lieferbedingungen;
         this.rabatt = rabatt;
     }
@@ -82,17 +82,17 @@ public class Kondition {
      *
      * @return die Zahlungsmethode, die mit der Kondition verbunden ist
      */
-    public String getZahlungsmethode() {
-        return zahlungsmethode;
+    public String getZahlungsbedingungen() {
+        return zahlungsbedingungen;
     }
 
     /**
      * Setzt die Zahlungsmethode, die mit der Kondition verbunden ist.
      *
-     * @param zahlungsmethode die neue Zahlungsmethode, die mit der Kondition verbunden ist
+     * @param zahlungsbedingungen die neue Zahlungsmethode, die mit der Kondition verbunden ist
      */
-    public void setZahlungsmethode(String zahlungsmethode) {
-        this.zahlungsmethode = zahlungsmethode;
+    public void setZahlungsbedingungen(String zahlungsbedingungen) {
+        this.zahlungsbedingungen = zahlungsbedingungen;
     }
 
     /**
@@ -141,7 +141,7 @@ public class Kondition {
         return "Kondition{" +
                 "konditionenNr=" + konditionNr +
                 ", name='" + name + '\'' +
-                ", zahlungsmethode='" + zahlungsmethode + '\'' +
+                ", zahlungsmethode='" + zahlungsbedingungen + '\'' +
                 ", lieferbedingungen='" + lieferbedingungen + '\'' +
                 ", rabatt=" + rabatt +
                 '}';
