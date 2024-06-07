@@ -16,7 +16,7 @@ public class AngebotTest {
 
     @Before
     public void setUp() {
-        angebot = new Angebot(123, new Date(), new Date(), "EUR", "aktiv", 10, 456);
+        angebot = new Angebot("123", new Date(), new Date(), "EUR", "aktiv", "10", 456);
     }
 
     @Test
@@ -26,11 +26,11 @@ public class AngebotTest {
 
     @Test
     public void testGetterUndSetter() {
-        assertEquals(123, angebot.getKunde());
+        assertEquals("123", angebot.getKundenNr());
         assertEquals("EUR", angebot.getWaehrung());
         assertEquals("aktiv", angebot.getStatus());
-        assertEquals(10, angebot.getKondition());
-        assertEquals(456, angebot.getAngebotsId());
+        assertEquals("10", angebot.getKonditionNr());
+        assertEquals(456, angebot.getAngebotNr());
 
         Date now = new Date();
         angebot.setAngebotsdatum(now);
@@ -40,8 +40,8 @@ public class AngebotTest {
         angebot.setGueltigBis(tomorrow);
         assertEquals(tomorrow, angebot.getGueltigBis());
 
-        angebot.setKunde(456);
-        assertEquals(456, angebot.getKunde());
+        angebot.setKundenNr("456");
+        assertEquals("456", angebot.getKundenNr());
 
         angebot.setWaehrung("USD");
         assertEquals("USD", angebot.getWaehrung());
@@ -49,11 +49,10 @@ public class AngebotTest {
         angebot.setStatus("abgelaufen");
         assertEquals("abgelaufen", angebot.getStatus());
 
-        angebot.setKondition(20);
-        assertEquals(20, angebot.getKondition());
+        angebot.setKonditionNr("20");
+        assertEquals("20", angebot.getKonditionNr());
 
-        angebot.setAngebotsId(789);
-        assertEquals(789, angebot.getAngebotsId());
+        angebot.setAngebotNr(789);
+        assertEquals(789, angebot.getAngebotNr());
     }
 }
-

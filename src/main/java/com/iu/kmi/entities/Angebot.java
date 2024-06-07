@@ -1,50 +1,72 @@
 package com.iu.kmi.entities;
 
 import java.util.Date;
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
-public class Angebot{
+@Entity(tableName = "angebot")
+public class Angebot {
 
-    private int    kunde;
-    private Date   angebotsdatum;
-    private Date   gueltigBis;
+    @Id
+    @Column(name = "angebot_nr")
+    private int angebotNr;
+
+    @Column(name = "angebotsdatum")
+    private Date angebotsdatum;
+
+    @JoinColumn(name = "kunden_nr", referencedColumnName = "kunde_nr")
+    private String kundenNr;
+
+    @Column(name = "gueltig_bis")
+    private Date gueltigBis;
+
+    @Column(name = "waehrung")
     private String waehrung;
-    private String status;
-    private int    kondition;
-    private int    angebotsId;
 
-    //Konstruktor
-    public Angebot(int kunde, Date angebotsdatum,Date gueltigBis, String waehrung, String status, int kondition, int angebotsId){
-        this.kunde = kunde;
+    @Column(name = "status")
+    private String status;
+
+    @JoinColumn(name = "kondition_nr", referencedColumnName = "kondition_nr")  // Ordnet die Spalte "kondition_nr" zu, die auf die Spalte "kondition_nr" in der Tabelle "kondition" verweist.
+    private String konditionNr;
+
+    // Konstruktor
+    public Angebot(String kundenNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, String konditionNr, int angebotNr) {
+        this.kundenNr = kundenNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
         this.waehrung = waehrung;
         this.status = status;
-        this.kondition = kondition;
-        this.angebotsId = angebotsId;
+        this.konditionNr = konditionNr;
+        this.angebotNr = angebotNr;
     }
 
-    //Getter & Setter
+    // Getter & Setter
 
     /**
-     * @return kunde
+     * @return kundenNr
+     * Getter für die Kunden-Nummer.
      */
-    public int getKunde(){
-        return this.kunde;
+    public String getKundenNr() {
+        return this.kundenNr;
     }
 
     /**
-     * Set kunde
+     * Set kundenNr
      *
-     * @param kunde new kunde
+     * @param kundenNr new kundenNr
+     * Setter für die Kunden-Nummer.
      */
-    public void setKunde(final int kunde){
-        this.kunde = kunde;
+    public void setKundenNr(final String kundenNr) {
+        this.kundenNr = kundenNr;
     }
 
     /**
      * @return angebotsdatum
+     * Getter für das Angebotsdatum.
      */
-    public Date getAngebotsdatum(){
+    public Date getAngebotsdatum() {
         return this.angebotsdatum;
     }
 
@@ -52,15 +74,17 @@ public class Angebot{
      * Set angebotsdatum
      *
      * @param angebotsdatum new angebotsdatum
+     * Setter für das Angebotsdatum.
      */
-    public void setAngebotsdatum(final Date angebotsdatum){
+    public void setAngebotsdatum(final Date angebotsdatum) {
         this.angebotsdatum = angebotsdatum;
     }
 
     /**
      * @return gueltigBis
+     * Getter für das Gültig-bis-Datum.
      */
-    public Date getGueltigBis(){
+    public Date getGueltigBis() {
         return this.gueltigBis;
     }
 
@@ -68,15 +92,17 @@ public class Angebot{
      * Set gueltigBis
      *
      * @param gueltigBis new gueltigBis
+     * Setter für das Gültig-bis-Datum.
      */
-    public void setGueltigBis(final Date gueltigBis){
+    public void setGueltigBis(final Date gueltigBis) {
         this.gueltigBis = gueltigBis;
     }
 
     /**
      * @return waehrung
+     * Getter für die Währung.
      */
-    public String getWaehrung(){
+    public String getWaehrung() {
         return this.waehrung;
     }
 
@@ -84,15 +110,17 @@ public class Angebot{
      * Set waehrung
      *
      * @param waehrung new waehrung
+     * Setter für die Währung.
      */
-    public void setWaehrung(final String waehrung){
+    public void setWaehrung(final String waehrung) {
         this.waehrung = waehrung;
     }
 
     /**
      * @return status
+     * Getter für den Status.
      */
-    public String getStatus(){
+    public String getStatus() {
         return this.status;
     }
 
@@ -100,40 +128,45 @@ public class Angebot{
      * Set status
      *
      * @param status new status
+     * Setter für den Status.
      */
-    public void setStatus(final String status){
+    public void setStatus(final String status) {
         this.status = status;
     }
 
     /**
-     * @return kondition
+     * @return konditionNr
+     * Getter für die Konditionsnummer.
      */
-    public int getKondition(){
-        return this.kondition;
+    public String getKonditionNr() {
+        return this.konditionNr;
     }
 
     /**
-     * Set kondition
+     * Set konditionNr
      *
-     * @param kondition new kondition
+     * @param konditionNr new konditionNr
+     * Setter für die Konditionsnummer.
      */
-    public void setKondition(final int kondition){
-        this.kondition = kondition;
+    public void setKonditionNr(final String konditionNr) {
+        this.konditionNr = konditionNr;
     }
 
     /**
-     * @return angebotsId
+     * @return angebotNr
+     * Getter für die Angebotsnummer.
      */
-    public int getAngebotsId(){
-        return this.angebotsId;
+    public int getAngebotNr() {
+        return this.angebotNr;
     }
 
     /**
-     * Set angebotsId
+     * Set angebotNr
      *
-     * @param angebotsId new angebotsId
+     * @param angebotNr new angebotNr
+     * Setter für die Angebotsnummer.
      */
-    public void setAngebotsId(final int angebotsId){
-        this.angebotsId = angebotsId;
+    public void setAngebotNr(final int angebotNr) {
+        this.angebotNr = angebotNr;
     }
 }
