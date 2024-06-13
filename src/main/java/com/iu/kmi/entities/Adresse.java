@@ -28,10 +28,7 @@ public class Adresse {
         this.land = land;
     }
 
-    Adresse(String musterstraße_1, String string, String musterstadt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
+ 
     // Getter and Setter methods
     /**
      * Gets the street name and number.
