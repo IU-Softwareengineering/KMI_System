@@ -27,7 +27,6 @@ public class Adresse {
         this.postleitzahl = postleitzahl;
         this.land = land;
     }
-
  
     // Getter and Setter methods
     /**
