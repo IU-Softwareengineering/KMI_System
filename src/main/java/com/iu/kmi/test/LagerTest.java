@@ -2,6 +2,7 @@ package com.iu.kmi.test;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.iu.kmi.entities.Lager;
 
 public class LagerTest {
 
