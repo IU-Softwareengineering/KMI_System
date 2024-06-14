@@ -2,138 +2,118 @@ package com.iu.kmi.entities;
 
 import java.util.Date;
 
-public class Angebot{
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
 
-    private int    kunde;
-    private Date   angebotsdatum;
-    private Date   gueltigBis;
+@Entity(tableName = "Angebot")
+public class Angebot {
+    @Id
+    @Column(name = "angebot_nr")
+    private int angebotNr;
+
+    @Column(name = "kunde_nr")
+    private String kundeNr;
+
+    @Column(name = "angebotsdatum")
+    private Date angebotsdatum;
+
+    @Column(name = "gueltig_bis")
+    private Date gueltigBis;
+
+    @Column(name = "waehrung")
     private String waehrung;
+
+    @Column(name = "status")
     private String status;
-    private int    kondition;
-    private int    angebotsId;
 
-    //Konstruktor
-    public Angebot(int kunde, Date angebotsdatum,Date gueltigBis, String waehrung, String status, int kondition, int angebotsId){
-        this.kunde = kunde;
+    @Column(name = "kondition_nr")
+    private String konditionNr;
+
+    @Column(name = "kundenanfrage_nr")
+    private String kundenanfrageNr;
+
+    // Constructor
+    public Angebot(String kundeNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, String konditionNr, String kundenanfrageNr) {
+        this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
         this.waehrung = waehrung;
         this.status = status;
-        this.kondition = kondition;
-        this.angebotsId = angebotsId;
+        this.konditionNr = konditionNr;
+        this.kundenanfrageNr = kundenanfrageNr;
     }
 
-    //Getter & Setter
-
+    // Getter & Setter
     /**
-     * @return kunde
+     * @return kundenanfrageNr
      */
-    public int getKunde(){
-        return this.kunde;
+    public String getKundenanfrageNr(){
+        return this.kundenanfrageNr;
     }
 
     /**
-     * Set kunde
+     * Set kundenanfrageNr
      *
-     * @param kunde new kunde
+     * @param kundenanfrageNr new kundenanfrageNr
      */
-    public void setKunde(final int kunde){
-        this.kunde = kunde;
+    public void setKundenanfrageNr(final String kundenanfrageNr){
+        this.kundenanfrageNr = kundenanfrageNr;
     }
 
-    /**
-     * @return angebotsdatum
-     */
-    public Date getAngebotsdatum(){
-        return this.angebotsdatum;
+    public int getAngebotNr() {
+        return angebotNr;
     }
 
-    /**
-     * Set angebotsdatum
-     *
-     * @param angebotsdatum new angebotsdatum
-     */
-    public void setAngebotsdatum(final Date angebotsdatum){
+    public void setAngebotNr(int angebotNr) {
+        this.angebotNr = angebotNr;
+    }
+
+    public String getKundeNr() {
+        return kundeNr;
+    }
+
+    public void setKundeNr(String kundeNr) {
+        this.kundeNr = kundeNr;
+    }
+
+    public Date getAngebotsdatum() {
+        return angebotsdatum;
+    }
+
+    public void setAngebotsdatum(Date angebotsdatum) {
         this.angebotsdatum = angebotsdatum;
     }
 
-    /**
-     * @return gueltigBis
-     */
-    public Date getGueltigBis(){
-        return this.gueltigBis;
+    public Date getGueltigBis() {
+        return gueltigBis;
     }
 
-    /**
-     * Set gueltigBis
-     *
-     * @param gueltigBis new gueltigBis
-     */
-    public void setGueltigBis(final Date gueltigBis){
+    public void setGueltigBis(Date gueltigBis) {
         this.gueltigBis = gueltigBis;
     }
 
-    /**
-     * @return waehrung
-     */
-    public String getWaehrung(){
-        return this.waehrung;
+    public String getWaehrung() {
+        return waehrung;
     }
 
-    /**
-     * Set waehrung
-     *
-     * @param waehrung new waehrung
-     */
-    public void setWaehrung(final String waehrung){
+    public void setWaehrung(String waehrung) {
         this.waehrung = waehrung;
     }
 
-    /**
-     * @return status
-     */
-    public String getStatus(){
-        return this.status;
+    public String getStatus() {
+        return status;
     }
 
-    /**
-     * Set status
-     *
-     * @param status new status
-     */
-    public void setStatus(final String status){
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    /**
-     * @return kondition
-     */
-    public int getKondition(){
-        return this.kondition;
+    public String getKonditionNr() {
+        return konditionNr;
     }
 
-    /**
-     * Set kondition
-     *
-     * @param kondition new kondition
-     */
-    public void setKondition(final int kondition){
-        this.kondition = kondition;
-    }
-
-    /**
-     * @return angebotsId
-     */
-    public int getAngebotsId(){
-        return this.angebotsId;
-    }
-
-    /**
-     * Set angebotsId
-     *
-     * @param angebotsId new angebotsId
-     */
-    public void setAngebotsId(final int angebotsId){
-        this.angebotsId = angebotsId;
+    public void setKonditionNr(String konditionNr) {
+        this.konditionNr = konditionNr;
     }
 }
