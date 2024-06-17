@@ -2,6 +2,7 @@ package com.iu.kmi.database.orm;
 
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
 import com.iu.kmi.database.orm.query.*;
 
 import java.lang.reflect.Field;
@@ -35,6 +36,14 @@ public class DataORM<T> {
         return field.getName();
     }
 
+    private String getIdColumnName(Field field){
+        if(field.isAnnotationPresent(Id.class)){
+            Id column = field.getAnnotation(Id.class);
+            return column.name();
+        }
+        return field.getName();
+    }
+
     //Generic method to find an object by a generic field
     //All "findBy..." methods defined in the Repository invoke this method with the field name after "findBy"
     public BaseQuery<T> findByField(String fieldName, Object value) {
@@ -47,7 +56,7 @@ public class DataORM<T> {
     }
 
     //Finds an object by id
-    public FindByIdQuery<T> findById(int id) {
+    public FindByIdQuery<T> findById(Object id) {
         return new FindByIdQuery<>(type, id);
     }
 
