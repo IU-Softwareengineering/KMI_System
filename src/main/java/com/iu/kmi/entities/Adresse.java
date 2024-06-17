@@ -14,7 +14,7 @@ import com.iu.kmi.database.annotations.Id;
 public class Adresse {
 
     @Id(name = "adresse_nr")
-    private Long id;
+    private String id;
 
     @Column(name = "strasse")
     private String strasse;    // Street name
@@ -53,11 +53,11 @@ public class Adresse {
     }
 
     // Getter and Setter methods
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
