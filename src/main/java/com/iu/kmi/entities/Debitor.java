@@ -28,6 +28,10 @@ public class Debitor {
     @Column(name = "adresse_nr")
     private Adresse adresseNr;
 
+    public Debitor(){
+
+    }
+
     /**
      * Konstruktor für einen neuen Debitor mit den angegebenen Attributen.
      *
