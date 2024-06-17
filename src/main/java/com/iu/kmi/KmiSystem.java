@@ -17,5 +17,9 @@ public class KmiSystem {
 
         DebitorRepository debitorRepository = RepositoryProxy.newInstance(DebitorRepository.class);
         Debitor debitor = debitorRepository.findById("1").findOne();
+
+        System.out.println(debitor.getAdresse().getLand());
+
+
     }
 }

@@ -45,21 +45,12 @@ public class FindByIdQuery<T> extends BaseQuery<T> {
                 throw new RuntimeException("Failed to get composite key values", e);
             }
         } else {
-            String idColumn = getPrimaryKeyColumn();
+            String idColumn = getPrimaryKeyColumn(fields);
             conditions.put(idColumn, idEntity);
             whereClause.append(idColumn).append(" = ?");
         }
 
         return "SELECT " + columns + " FROM " + tableName + " " + joinClause.toString() + whereClause.toString();
-    }
-
-    private String getPrimaryKeyColumn() {
-        for (Field field : type.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                return getColumnName(field);
-            }
-        }
-        throw new IllegalStateException("No primary key column found");
     }
 
     @Override

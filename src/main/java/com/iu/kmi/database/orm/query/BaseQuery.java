@@ -1,10 +1,7 @@
 package com.iu.kmi.database.orm.query;
 
 import com.iu.kmi.database.DatabaseConnection;
-import com.iu.kmi.database.annotations.Column;
-import com.iu.kmi.database.annotations.CompositeKey;
-import com.iu.kmi.database.annotations.Entity;
-import com.iu.kmi.database.annotations.JoinColumn;
+import com.iu.kmi.database.annotations.*;
 import com.iu.kmi.database.orm.DataORM;
 
 import java.lang.reflect.Field;
@@ -98,8 +95,17 @@ public abstract class BaseQuery<T> {
 
     private Object loadRelatedEntity(Class<?> joinType, JoinColumn joinColumn, Object joinValue) throws SQLException, ReflectiveOperationException {
         DataORM<?> relatedOrm = new DataORM<>(joinType);
-        BaseQuery<?> joinQuery = relatedOrm.findById((Integer) joinValue);
+        BaseQuery<?> joinQuery = relatedOrm.findById((String) joinValue);
         return joinQuery.findOne();
+    }
+
+    protected String getPrimaryKeyColumn(Field[] fields) {
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Id.class)) {
+                return getIdColumnName(field);
+            }
+        }
+        throw new IllegalStateException("No primary key column found");
     }
 
     /*private Object loadRelatedEntity(Class<?> relatedType, JoinTable joinTable, Object joinValue) throws SQLException, ReflectiveOperationException {
@@ -138,6 +144,18 @@ public abstract class BaseQuery<T> {
         if (field.isAnnotationPresent(Column.class)) {
             Column column = field.getAnnotation(Column.class);
             return column.name();
+        }
+        if(field.isAnnotationPresent(Id.class)){
+            Id id = field.getAnnotation(Id.class);
+            return id.name();
+        }
+        return field.getName();
+    }
+
+    protected String getIdColumnName(Field field){
+        if(field.isAnnotationPresent(Id.class)){
+            Id id = field.getAnnotation(Id.class);
+            return id.name();
         }
         return field.getName();
     }
