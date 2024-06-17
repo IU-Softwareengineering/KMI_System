@@ -16,7 +16,7 @@ public class AngebotTest {
 
     @Before
     public void setUp() {
-        angebot = new Angebot(123, new Date(), new Date(), "EUR", "aktiv", 10, 456);
+        angebot = new Angebot(123, new Date(), new Date(), "EUR", "aktiv", "10", 456);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class AngebotTest {
         assertEquals(123, angebot.getKunde());
         assertEquals("EUR", angebot.getWaehrung());
         assertEquals("aktiv", angebot.getStatus());
-        assertEquals(10, angebot.getKondition());
+        assertEquals("10", angebot.getKondition());
         assertEquals(456, angebot.getAngebotsId());
 
         Date now = new Date();
@@ -49,7 +49,7 @@ public class AngebotTest {
         angebot.setStatus("abgelaufen");
         assertEquals("abgelaufen", angebot.getStatus());
 
-        angebot.setKondition(20);
+        angebot.setKondition("20");
         assertEquals(20, angebot.getKondition());
 
         angebot.setAngebotsId(789);

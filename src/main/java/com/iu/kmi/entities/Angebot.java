@@ -9,11 +9,11 @@ public class Angebot{
     private Date   gueltigBis;
     private String waehrung;
     private String status;
-    private int    kondition;
+    private String    kondition;
     private int    angebotsId;
 
     //Konstruktor
-    public Angebot(int kunde, Date angebotsdatum,Date gueltigBis, String waehrung, String status, int kondition, int angebotsId){
+    public Angebot(int kunde, Date angebotsdatum,Date gueltigBis, String waehrung, String status, String kondition, int angebotsId){
         this.kunde = kunde;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
@@ -108,7 +108,7 @@ public class Angebot{
     /**
      * @return kondition
      */
-    public int getKondition(){
+    public String getKondition(){
         return this.kondition;
     }
 
@@ -117,7 +117,7 @@ public class Angebot{
      *
      * @param kondition new kondition
      */
-    public void setKondition(final int kondition){
+    public void setKondition(final String kondition){
         this.kondition = kondition;
     }
 
