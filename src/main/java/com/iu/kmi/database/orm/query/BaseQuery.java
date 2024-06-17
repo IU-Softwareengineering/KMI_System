@@ -149,6 +149,10 @@ public abstract class BaseQuery<T> {
             Id id = field.getAnnotation(Id.class);
             return id.name();
         }
+        if(field.isAnnotationPresent(JoinColumn.class)){
+            JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
+            return joinColumn.name();
+        }
         return field.getName();
     }
 
