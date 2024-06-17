@@ -3,10 +3,10 @@ import com.iu.kmi.database.annotations.*;
 
 import java.util.Date;
 
-@Entity(tableName = "auftrag")
+@Entity(tableName = "terminauftrag")
 public class Auftrag {
 
-    @Column(name = "auftrag_nr")
+    @Id(name = "terminauftrag_nr")
     private String auftragNr;
 
     @Column(name = "kunde_nr")
@@ -17,8 +17,8 @@ public class Auftrag {
 
     @Column(name = "lieferdatum")
     private Date lieferdatum;
-
-    @Column(name = "angebot_nr")
+  
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
     private String angebotNr;
 
     @Column(name = "status")
@@ -72,4 +72,9 @@ public class Auftrag {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public Auftrag() {
+        
+    }
+    
 }

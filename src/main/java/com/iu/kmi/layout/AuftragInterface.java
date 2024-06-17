@@ -4,6 +4,14 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.AuftragRepository;
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Auftrag;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author testg
@@ -48,6 +56,11 @@ public class AuftragInterface extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Speichern");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -270,6 +283,70 @@ public class AuftragInterface extends javax.swing.JFrame {
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    
+    /**
+     * Speichert den Auftrag in der Datenbank
+     * 
+     * @param args the command line arguments
+     */
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+
+        String auftragNr = jTextField1.getText();
+        String kundeNr = jTextField6.getText();
+        String auftragsdatumStr = jTextField2.getText();
+        String lieferdatumStr = jTextField3.getText();
+        String angebotNr = jTextField4.getText();
+        String status = (String) jComboBox2.getSelectedItem();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date auftragsdatum = null;
+        Date lieferdatum = null;
+
+        try {
+            if (!auftragsdatumStr.isEmpty()) {
+                auftragsdatum = dateFormat.parse(auftragsdatumStr);
+            }
+            if (!lieferdatumStr.isEmpty()) {
+                lieferdatum = dateFormat.parse(lieferdatumStr);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Auftrag auftrag = new Auftrag();
+
+        if (!auftragNr.isEmpty()) {
+            auftrag.setAuftragNr(auftragNr);
+        }
+        if (!kundeNr.isEmpty()) {
+            auftrag.setKundeNr(kundeNr);
+        }
+        if (auftragsdatum != null) {
+            auftrag.setAuftragsdatum(auftragsdatum);
+        }
+        if (lieferdatum != null) {
+            auftrag.setLieferdatum(lieferdatum);
+        }
+        if (!angebotNr.isEmpty()) {
+            auftrag.setAngebotNr(angebotNr);
+        }
+        if (status != null && !status.isEmpty()) {
+            auftrag.setStatus(status);
+        }
+
+        AuftragRepository auftragRepository = RepositoryProxy.newInstance(AuftragRepository.class);
+
+        try {
+            auftragRepository.insert(auftrag);
+            
+            JOptionPane.showMessageDialog(null, "Der Auftrag wurde erfolgreich angelegt", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            
+            JOptionPane.showMessageDialog(null, "Fehler beim Anlegen des Auftrags: " + e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments
