@@ -1,5 +1,6 @@
-package com.iu.kmi.entities;
+package com.iu.kmi.test;
 
+import com.iu.kmi.entities.Material;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
