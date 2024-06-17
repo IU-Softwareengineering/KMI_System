@@ -3,6 +3,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 /**
  * @author Julian Treichel
@@ -14,8 +15,7 @@ import com.iu.kmi.database.annotations.Id;
  */
 @Entity(tableName = "debitor")
 public class Debitor {
-    @Id
-    @Column(name = "debitor_nr")
+    @Id(name = "debitor_nr")
     private String debitorNr;
     @Column(name = "name")
     private String name;
@@ -25,7 +25,7 @@ public class Debitor {
     private String firma;
     @Column(name = "kontonr")
     private String kontoNr;
-    @Column(name = "adresse_nr")
+    @JoinColumn(name = "adresse_nr", referencedColumnName = "adresse_nr")
     private Adresse adresseNr;
 
     public Debitor(){
