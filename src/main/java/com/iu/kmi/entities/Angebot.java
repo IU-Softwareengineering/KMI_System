@@ -2,18 +2,19 @@ package com.iu.kmi.entities;
 
 import java.util.Date;
 
+
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 @Entity(tableName = "Angebot")
 public class Angebot {
-    @Id
-    @Column(name = "angebot_nr")
+    @Id(name = "angebot_nr")
     private int angebotNr;
 
-    @Column(name = "kunde_nr")
-    private String kundeNr;
+    @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
+    private Kunde kundeNr;
 
     @Column(name = "angebotsdatum")
     private Date angebotsdatum;
@@ -27,14 +28,14 @@ public class Angebot {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "kondition_nr")
-    private String konditionNr;
+    @JoinColumn(name = "kondition_nr", referencedColumnName = "kondition_nr")
+    private Kondition konditionNr;
 
-    @Column(name = "kundenanfrage_nr")
-    private String kundenanfrageNr;
+    @JoinColumn(name = "kundenanfrage_nr", referencedColumnName = "kundenanfrage_nr")
+    private Kundenanfrage kundenanfrageNr;
 
     // Constructor
-    public Angebot(String kundeNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, String konditionNr, String kundenanfrageNr) {
+    public Angebot(Kunde kundeNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
@@ -48,7 +49,7 @@ public class Angebot {
     /**
      * @return kundenanfrageNr
      */
-    public String getKundenanfrageNr(){
+    public Kundenanfrage getKundenanfrageNr(){
         return this.kundenanfrageNr;
     }
 
@@ -57,7 +58,7 @@ public class Angebot {
      *
      * @param kundenanfrageNr new kundenanfrageNr
      */
-    public void setKundenanfrageNr(final String kundenanfrageNr){
+    public void setKundenanfrageNr(final Kundenanfrage kundenanfrageNr){
         this.kundenanfrageNr = kundenanfrageNr;
     }
 
@@ -69,11 +70,11 @@ public class Angebot {
         this.angebotNr = angebotNr;
     }
 
-    public String getKundeNr() {
+    public Kunde getKundeNr() {
         return kundeNr;
     }
 
-    public void setKundeNr(String kundeNr) {
+    public void setKundeNr(Kunde kundeNr) {
         this.kundeNr = kundeNr;
     }
 
@@ -109,11 +110,11 @@ public class Angebot {
         this.status = status;
     }
 
-    public String getKonditionNr() {
+    public Kondition getKonditionNr() {
         return konditionNr;
     }
 
-    public void setKonditionNr(String konditionNr) {
+    public void setKonditionNr(Kondition konditionNr) {
         this.konditionNr = konditionNr;
     }
 }

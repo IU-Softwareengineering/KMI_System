@@ -5,52 +5,61 @@ import java.util.Date;
 import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 
+import com.iu.kmi.entities.Adresse;
 import com.iu.kmi.entities.Angebot;
+import com.iu.kmi.entities.Kondition;
+import com.iu.kmi.entities.Kunde;
+import com.iu.kmi.entities.Kundenanfrage;
 
 public class AngebotTest {
 
-    private Angebot angebot;
-    private String kundeNr;
-    private Date   angebotsdatum;
-    private Date   gueltigBis;
-    private String  waehrung;
-    private String  status;
-    private String  konditionNr;
-    private String  kundenanfrageNr;
+    private Angebot       angebot;
+    private Kunde         kunde;
+    private Date          angebotsdatum;
+    private Date          gueltigBis;
+    private String        waehrung;
+    private String        status;
+    private Kondition     kondition;
+    private Kundenanfrage kundenanfrage;
 
 
     public void setUp() {
-        kundeNr = "K12345";
+        kunde= new Kunde("K12345","Max","Mustermann","16.01.2004","max@gmail.com","0123456789",new Adresse("Strasse","Berlin","123456","Deutschland"),"nutzername","Passwort123");
         angebotsdatum = new Date();
         gueltigBis = new Date(angebotsdatum.getTime() + 100000000L); // some future date
         waehrung = "EUR";
         status = "Offen";
-        konditionNr = "K45678";
-        kundenanfrageNr = "KA98765";
+        kondition = new Kondition("KondiName","Bar","innerhalb Stadt",33.3);
+        kundenanfrage = new Kundenanfrage("KA123",kunde,"01.01.2001","Will haben!","Dringend","In Zustellung");
 
-        angebot = new Angebot(kundeNr, angebotsdatum, gueltigBis, waehrung, status, konditionNr, kundenanfrageNr);
+        angebot = new Angebot(kunde, angebotsdatum, gueltigBis, waehrung, status, kondition, kundenanfrage);
     }
 
     @Test
     public void testConstructorAndGetters() {
-        assertEquals(kundeNr, angebot.getKundeNr());
+        assertEquals(kunde, angebot.getKundeNr());
         assertEquals(angebotsdatum, angebot.getAngebotsdatum());
         assertEquals(gueltigBis, angebot.getGueltigBis());
         assertEquals(waehrung, angebot.getWaehrung());
         assertEquals(status, angebot.getStatus());
-        assertEquals(konditionNr, angebot.getKonditionNr());
-        assertEquals(kundenanfrageNr, angebot.getKundenanfrageNr());
+        assertEquals(kondition, angebot.getKonditionNr());
+        assertEquals(kundenanfrage, angebot.getKundenanfrageNr());
     }
 
     @Test
     public void testSetters() {
-        String newKundeNr = "K54321";
+        Kunde newKundeNr= kunde;
+        newKundeNr.setKundennummer("K54321");
+
         Date newAngebotsdatum = new Date();
         Date newGueltigBis = new Date(newAngebotsdatum.getTime() + 200000000L); // some future date
         String newWaehrung = "USD";
         String newStatus = "Geschlossen";
-        String newKonditionNr = "K87654";
-        String newKundenanfrageNr = "KA12345";
+        Kondition newKonditionNr = kondition;
+        newKonditionNr.setKonditionNr("K87654");
+
+        Kundenanfrage newKundenanfrageNr = kundenanfrage;
+        newKundenanfrageNr.setKundenanfrageNr("KA321");
 
         angebot.setKundeNr(newKundeNr);
         angebot.setAngebotsdatum(newAngebotsdatum);
