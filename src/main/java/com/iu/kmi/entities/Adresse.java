@@ -1,102 +1,102 @@
 package com.iu.kmi.entities;
 
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
 /**
- * Represents an address with street, city, postal code, and country. Provides
- * getter and setter methods for each field.
+ * Represents an address with street, house number, city, postal code, and
+ * country. Provides getter and setter methods for each field.
  *
- * @author OT
+ * @autor OT
  */
+@Entity(tableName = "adresse")
 public class Adresse {
 
-    private String strasse;    // Street name and number
-    private String stadt;      // City name
+    @Id(name = "adresse_nr")
+    private String id;
+
+    @Column(name = "strasse")
+    private String strasse;    // Street name
+
+    @Column(name = "hausnummer")
+    private String hausnummer; // House number
+
+    @Column(name = "postleitzahl")
     private String postleitzahl; // Postal code
+
+    @Column(name = "stadt")
+    private String stadt;      // City name
+
+    @Column(name = "land")
     private String land;       // Country
+
+    // No-Args Constructor
+    public Adresse() {
+    }
 
     /**
      * Constructor to initialize the address fields.
      *
-     * @param strasse the street name and number
-     * @param stadt the city name
+     * @param strasse the street name
+     * @param hausnummer the house number
      * @param postleitzahl the postal code
+     * @param stadt the city name
      * @param land the country
      */
-    public Adresse(String strasse, String stadt, String postleitzahl, String land) {
+    public Adresse(String strasse, String hausnummer, String postleitzahl, String stadt, String land) {
         this.strasse = strasse;
-        this.stadt = stadt;
+        this.hausnummer = hausnummer;
         this.postleitzahl = postleitzahl;
+        this.stadt = stadt;
         this.land = land;
     }
 
     // Getter and Setter methods
-    /**
-     * Gets the street name and number.
-     *
-     * @return the street name and number
-     */
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getStrasse() {
         return strasse;
     }
 
-    /**
-     * Sets the street name and number.
-     *
-     * @param strasse the street name and number
-     */
     public void setStrasse(String strasse) {
         this.strasse = strasse;
     }
 
-    /**
-     * Gets the city name.
-     *
-     * @return the city name
-     */
-    public String getStadt() {
-        return stadt;
+    public String getHausnummer() {
+        return hausnummer;
     }
 
-    /**
-     * Sets the city name.
-     *
-     * @param stadt the city name
-     */
-    public void setStadt(String stadt) {
-        this.stadt = stadt;
+    public void setHausnummer(String hausnummer) {
+        this.hausnummer = hausnummer;
     }
 
-    /**
-     * Gets the postal code.
-     *
-     * @return the postal code
-     */
     public String getPostleitzahl() {
         return postleitzahl;
     }
 
-    /**
-     * Sets the postal code.
-     *
-     * @param postleitzahl the postal code
-     */
     public void setPostleitzahl(String postleitzahl) {
         this.postleitzahl = postleitzahl;
     }
 
-    /**
-     * Gets the country.
-     *
-     * @return the country
-     */
+    public String getStadt() {
+        return stadt;
+    }
+
+    public void setStadt(String stadt) {
+        this.stadt = stadt;
+    }
+
     public String getLand() {
         return land;
     }
 
-    /**
-     * Sets the country.
-     *
-     * @param land the country
-     */
     public void setLand(String land) {
         this.land = land;
     }

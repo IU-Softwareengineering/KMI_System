@@ -1,5 +1,6 @@
 package com.iu.kmi.test;
 
+import com.iu.kmi.entities.Lagerbestand;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
