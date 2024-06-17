@@ -26,7 +26,7 @@ public class Debitor {
     @Column(name = "kontonr")
     private String kontoNr;
     @Column(name = "adresse_nr")
-    private String adresseNr;
+    private Adresse adresseNr;
 
     /**
      * Konstruktor für einen neuen Debitor mit den angegebenen Attributen.
@@ -38,7 +38,7 @@ public class Debitor {
      * @param kontoNr die Kontonummer des Debitors
      * @param adresseNr die Adressnummer des Debitors
      */
-    public Debitor(String debitorNr, String name, String vorname, String firma, String kontoNr, String adresseNr) {
+    public Debitor(String debitorNr, String name, String vorname, String firma, String kontoNr, Adresse adresseNr) {
         this.debitorNr = debitorNr;
         this.name = name;
         this.vorname = vorname;
@@ -142,17 +142,17 @@ public class Debitor {
      *
      * @return die Adressnummer des Debitors
      */
-    public String getAdresseNr() {
+    public Adresse getAdresseNr() {
         return adresseNr;
     }
 
     /**
      * Setzt die Adressnummer des Debitors.
      *
-     * @param adresseNr die neue Adressnummer des Debitors
+     * @param adresse die neue Adresse des Debitors
      */
-    public void setAdresseNr(String adresseNr) {
-        this.adresseNr = adresseNr;
+    public void setAdresse(Adresse adresse) {
+        this.adresseNr = adresse;
     }
 
     /**
