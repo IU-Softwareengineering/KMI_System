@@ -253,8 +253,11 @@ public class DebitorInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        AdresseRepository adresseRepository = RepositoryProxy.newInstance(AdresseRepository.class);
+        Adresse adresse = adresseRepository.findById(jTextField5.getText());
+
         // abspeichern eines Debitors
-        Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), new Adresse("Musterstraße", "Musterstadt", "12345", "Musterland"));
+        Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), adresse);
         DebitorRepository debitorRepository = RepositoryProxy.newInstance(DebitorRepository.class);
         debitorRepository.insert(debitor);
 
