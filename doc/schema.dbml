@@ -1,0 +1,141 @@
+Table "adresse" {
+  "adresse_nr" VARCHAR(20) [pk]
+  "strasse" VARCHAR(50)
+  "hausnummer" VARCHAR(5)
+  "postleitzahl" VARCHAR(10)
+  "stadt" VARCHAR(20)
+  "land" VARCHAR(20)
+}
+
+Table "kunde" {
+  "kunde_nr" VARCHAR(20) [pk]
+  "name" VARCHAR(20)
+  "vorname" VARCHAR(20)
+  "email" VARCHAR(50)
+  "telefon" VARCHAR(20)
+  "adresse_nr" VARCHAR(20)
+}
+
+Table "kundenanfrage" {
+  "kundenanfrage_nr" VARCHAR(20) [pk]
+  "kunde_nr" VARCHAR(20)
+  "anfragedatum" DATETIME
+  "anfragebeschreibung" VARCHAR(255)
+  "prioritaet" VARCHAR(20)
+  "status" VARCHAR(20)
+}
+
+Table "kondition" {
+  "kondition_nr" VARCHAR(20) [pk]
+  "name" VARCHAR(20)
+  "zahlungsbedingungen" VARCHAR(255)
+  "lieferbedingungen" VARCHAR(255)
+  "rabatt" DECIMAL
+}
+
+Table "angebot" {
+  "angebot_nr" VARCHAR(20) [pk]
+  "kunde_nr" VARCHAR(20)
+  "angebotsdatum" DATETIME
+  "gueltig_bis" DATETIME
+  "waehrung" VARCHAR(20)
+  "status" VARCHAR(20)
+  "kondition_nr" VARCHAR(20)
+}
+
+Table "auftrag" {
+  "auftrag_nr" VARCHAR(20) [pk]
+  "kunde_nr" VARCHAR(20)
+  "auftragsdatum" DATETIME
+  "lieferdatum" DATETIME
+  "angebot_nr" VARCHAR(20)
+  "status" VARCHAR(20)
+}
+
+Table "material" {
+  "artikel_nr" VARCHAR(20) [pk]
+  "name" VARCHAR(50)
+  "beschreibung" VARCHAR(255)
+  "lieferant" VARCHAR(50)
+  "einkaufspreis" DECIMAL
+  "verkaufspreis" DECIMAL
+}
+
+Table "debitor" {
+  "debitor_nr" VARCHAR(20) [pk]
+  "name" VARCHAR(20)
+  "vorname" VARCHAR(20)
+  "firma" VARCHAR(20)
+  "kontonr" VARCHAR(20)
+  "adresse_nr" VARCHAR(20)
+}
+
+Table "rechnung" {
+  "rechnung_nr" VARCHAR(20) [pk]
+  "debitor_nr" VARCHAR(20)
+}
+
+Table "lager" {
+  "lager_nr" VARCHAR(20) [pk]
+  "name" VARCHAR(20)
+  "adresse_nr" VARCHAR(20)
+}
+
+Table "lagerbestand" {
+  "artikel_nr" VARCHAR(20)
+  "lager_nr" VARCHAR(20)
+  "menge" INT
+
+  Indexes {
+    (artikel_nr, lager_nr) [pk]
+  }
+}
+
+Table "angebotsposition" {
+  "angebotsposition_nr" VARCHAR(20) [pk]
+  "artikel_nr" VARCHAR(20)
+  "einzelpreis" DECIMAL
+}
+
+Table "auftragsposition" {
+  "auftragsposition_nr" VARCHAR(20) [pk]
+  "artikel_nr" VARCHAR(20)
+  "einzelpreis" DECIMAL
+}
+
+Table "rechnungsposition" {
+  "rechnungsposition_nr" VARCHAR(20) [pk]
+  "artikel_nr" VARCHAR(20)
+  "einzelpreis" DECIMAL
+  "rechnung_nr" VARCHAR(20)
+}
+
+Ref:"adresse"."adresse_nr" < "kunde"."adresse_nr"
+
+Ref:"kunde"."kunde_nr" < "kundenanfrage"."kunde_nr"
+
+Ref:"kunde"."kunde_nr" < "angebot"."kunde_nr"
+
+Ref:"kondition"."kondition_nr" < "angebot"."kondition_nr"
+
+Ref:"kunde"."kunde_nr" < "auftrag"."kunde_nr"
+
+Ref:"angebot"."angebot_nr" < "auftrag"."angebot_nr"
+
+Ref:"adresse"."adresse_nr" < "debitor"."adresse_nr"
+
+Ref:"debitor"."debitor_nr" < "rechnung"."debitor_nr"
+
+Ref:"adresse"."adresse_nr" < "lager"."adresse_nr"
+
+Ref:"material"."artikel_nr" < "lagerbestand"."artikel_nr"
+
+Ref:"lager"."lager_nr" < "lagerbestand"."lager_nr"
+
+Ref:"material"."artikel_nr" < "angebotsposition"."artikel_nr"
+
+Ref:"material"."artikel_nr" < "auftragsposition"."artikel_nr"
+
+Ref:"material"."artikel_nr" < "rechnungsposition"."artikel_nr"
+
+Ref:"rechnung"."rechnung_nr" < "rechnungsposition"."rechnung_nr"
