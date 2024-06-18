@@ -4,7 +4,7 @@
  */
 package com.iu.kmi.layout;
 
-import com.iu.kmi.database.repository.AuftragRepository;
+import com.iu.kmi.repositories.AuftragRepository;
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Auftrag;
 import java.text.ParseException;
