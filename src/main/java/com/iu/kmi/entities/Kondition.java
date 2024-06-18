@@ -14,8 +14,7 @@ import com.iu.kmi.database.annotations.Id;
  */
 @Entity(tableName = "kondition")
 public class Kondition {
-    @Id
-    @Column(name = "kondition_nr")
+    @Id(name = "kondition_nr")
     private String konditionNr;
     @Column(name = "name")
     private String name;
@@ -25,6 +24,13 @@ public class Kondition {
     private String lieferbedingungen;
     @Column(name = "rabatt")
     private double rabatt;
+
+    /**
+     * Konstruktor für eine neue Kondition ohne Argumente
+     */
+    public Kondition(){
+
+    }
 
     /**
      * Konstruktor für eine neue Kondition mit dem angegebenen Namen, Zahlungsmethode, Lieferbedingungen und Rabatt.
