@@ -1,10 +1,11 @@
 package com.iu.kmi.test;
 
-import static junit.framework.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.iu.kmi.entities.Kondition;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Julian Treichel
