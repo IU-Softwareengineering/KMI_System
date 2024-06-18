@@ -53,7 +53,7 @@ public class Kunde {
         return name;
     }
 
-    public void setname(String nachname) {
+    public void setname(String name) {
         this.name = name;
     }
 
