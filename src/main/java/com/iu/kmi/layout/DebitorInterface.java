@@ -6,6 +6,7 @@ package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.Repository;
 import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Adresse;
 import com.iu.kmi.entities.Debitor;
 import com.iu.kmi.repositories.DebitorRepository;
 
@@ -253,7 +254,7 @@ public class DebitorInterface extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // abspeichern eines Debitors
-        Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), jTextField5.getText());
+        Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), new Adresse("Musterstraße", "Musterstadt", "12345", "Musterland"));
         DebitorRepository debitorRepository = RepositoryProxy.newInstance(DebitorRepository.class);
         debitorRepository.insert(debitor);
 
