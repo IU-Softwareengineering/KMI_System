@@ -21,7 +21,7 @@ public class Kunde {
 
     @Column(name = "telefon")
     private String telefon;
-
+    @Column(name = "adresse")
     private Adresse adresse;
 
     // No-Args-Konstruktor (wird von einigen JPA-Implementierungen benötigt)
