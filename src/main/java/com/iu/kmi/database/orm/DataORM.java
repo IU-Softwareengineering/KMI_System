@@ -1,12 +1,15 @@
 package com.iu.kmi.database.orm;
 
 import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.CompositeKey;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 import com.iu.kmi.database.orm.query.*;
 
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 //DataORM provides methods to interact with the Database.
 public class DataORM<T> {
@@ -57,20 +60,74 @@ public class DataORM<T> {
 
     //Finds an object by id
     public FindByIdQuery<T> findById(Object id) {
-        return new FindByIdQuery<>(type, id);
+        if (id instanceof String) {
+            return new FindByIdQuery<>(type, id);
+        } else if (id instanceof Map) {
+            return new FindByIdQuery<>(type, (Map<String, Object>) id);
+        } else {
+            throw new IllegalArgumentException("Unsupported ID type");
+        }
     }
 
     //Updates an object
     public void update(Object obj) throws SQLException, IllegalAccessException {
-        new UpdateQuery<>(type, obj).save();
+        if (hasCompositeKey()) {
+            Map<String, Object> compositeId = getCompositeKeyValues(obj);
+            new UpdateQuery<>(type, obj, compositeId).save();
+        } else {
+            new UpdateQuery<>(type, obj).save();
+        }
     }
 
     //Deletes an object
     public void delete(Object id) throws SQLException {
-        new DeleteQuery<>(type, id).save();
+        if (id instanceof Map) {
+            new DeleteQuery<>(type, (Map<String, Object>) id).save();
+        } else {
+            new DeleteQuery<>(type, id).save();
+        }
     }
 
     public FindAllQuery<T> findAll() {
         return new FindAllQuery<>(type);
+    }
+
+    private boolean hasCompositeKey() {
+        return type.isAnnotationPresent(CompositeKey.class);
+    }
+
+    private Map<String, Object> getCompositeKeyValues(Object entity) throws IllegalAccessException {
+        Map<String, Object> keyValues = new HashMap<>();
+        String[] keyColumns = getCompositeKeyColumns();
+        for (String keyColumn : keyColumns) {
+            Field field = getFieldByColumnName(keyColumn);
+            if (field == null) {
+                throw new RuntimeException("Failed to get composite key field: " + keyColumn);
+            }
+            field.setAccessible(true);
+            keyValues.put(keyColumn, field.get(entity));
+        }
+        return keyValues;
+    }
+
+    private Field getFieldByColumnName(String columnName) {
+        Field[] fields = type.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Id.class)) {
+                Id idAnnotation = field.getAnnotation(Id.class);
+                String idName = idAnnotation.name();
+                if (!idName.isEmpty() && idName.equals(columnName)) {
+                    return field;
+                } else if (field.getName().equals(columnName)) {
+                    return field;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String[] getCompositeKeyColumns() {
+        CompositeKey compositeKey = type.getAnnotation(CompositeKey.class);
+        return compositeKey.keyColumns();
     }
 }

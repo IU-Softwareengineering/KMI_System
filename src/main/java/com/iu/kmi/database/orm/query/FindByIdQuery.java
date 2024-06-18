@@ -9,10 +9,18 @@ import java.util.Map;
 
 public class FindByIdQuery<T> extends BaseQuery<T> {
     private final Object idEntity;
+    private final Map<String, Object> compositeId;
 
     public FindByIdQuery(Class<T> type, Object idEntity) {
         super(type);
         this.idEntity = idEntity;
+        this.compositeId = null;
+    }
+
+    public FindByIdQuery(Class<T> type, Map<String, Object> compositeId) {
+        super(type);
+        this.idEntity = null;
+        this.compositeId = compositeId;
     }
 
     @Override
@@ -35,7 +43,7 @@ public class FindByIdQuery<T> extends BaseQuery<T> {
         StringBuilder whereClause = new StringBuilder(" WHERE ");
         if (hasCompositeKey()) {
             try {
-                Map<String, Object> keyValues = getCompositeKeyValues(idEntity);
+                Map<String, Object> keyValues = compositeId != null ? compositeId : getCompositeKeyValues(idEntity);
                 for (Map.Entry<String, Object> entry : keyValues.entrySet()) {
                     whereClause.append(entry.getKey()).append(" = ? AND ");
                     conditions.put(entry.getKey(), entry.getValue());
