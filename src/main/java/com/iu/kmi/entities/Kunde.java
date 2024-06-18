@@ -3,6 +3,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 @Entity(tableName = "kunde")
 public class Kunde {
@@ -21,7 +22,8 @@ public class Kunde {
 
     @Column(name = "telefon")
     private String telefon;
-    @Column(name = "adresse")
+    
+    @JoinColumn(name = "adresse_nr", referencedColumnName = "adresse_nr")
     private Adresse adresse;
 
     // No-Args-Konstruktor (wird von einigen JPA-Implementierungen benötigt)
