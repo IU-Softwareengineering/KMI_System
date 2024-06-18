@@ -4,11 +4,19 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.KundeRepository;
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Kunde;
+
+import java.sql.SQLException;
+
 /**
  *
  * @author testg
  */
 public class KundeInterface extends javax.swing.JFrame {
+
+    KundeRepository kundeRepository = RepositoryProxy.newInstance(KundeRepository.class);
 
     /**
      * Creates new form KundeInterface
@@ -62,7 +70,13 @@ public class KundeInterface extends javax.swing.JFrame {
         jButton1.setText("Speichern");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try {
+                    jButton1ActionPerformed(evt);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -194,8 +208,13 @@ public class KundeInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        Kunde kunde = new Kunde();
+        kunde.setNachname(jTextField2.getText());
+        kundeRepository.insert(kunde);
+        kunde = kundeRepository.findAll().findOne();
+        System.out.println(kunde.getNachname());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed

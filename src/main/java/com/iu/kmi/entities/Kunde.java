@@ -1,25 +1,37 @@
 package com.iu.kmi.entities;
 
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
 /**
  * Represents a customer with personal information, contact details, and login
  * credentials. Provides getter and setter methods for each field.
  *
  * @author OT
  */
+@Entity(tableName="kunde")
 public class Kunde {
 
     // Unique identifier for the customer
+    @Id(name = "kundennr")
     private String kundennummer;
 
     // Personal information of the customer
+    @Column(name = "vorname")
     private String vorname;
+    @Column(name = "name")
     private String nachname;
     private String geburtsdatum;
 
     // Contact details of the customer
+    @Column(name = "email")
     private String emailAdresse;
+    @Column(name = "telefon")
     private String telefonnummer;
     private Adresse adresse;
+    @Column(name = "adresse_nr")
+    private String adresseNr;
 
     // Login details of the customer
     private String benutzername;
@@ -51,7 +63,9 @@ public class Kunde {
         this.benutzername = benutzername;
         this.passwort = passwort;
     }
+    public Kunde(){
 
+    }
     // Getter and Setter methods
     /**
      * Gets the unique identifier for the customer.
