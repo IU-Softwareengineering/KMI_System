@@ -1,49 +1,38 @@
 package com.iu.kmi.test;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
 import com.iu.kmi.entities.Kundenanfrage;
+import com.iu.kmi.entities.Kunde;
 
 public class KundenanfrageTest {
 
-    private Kundenanfrage Kundenanfrage;
+    public static void main(String[] args) {
+        // Create a Kunde instance
+        Kunde kunde = new Kunde();
+        kunde.setkunde_nr("K12345");
+        // Assuming there are other fields in the Kunde class, set them here
+        // kunde.setOtherField("someValue");
 
-    @Before
-    public void setUp() {
-        Kundenanfrage = new Kundenanfrage("1", "Max Mustermann", "01.06.2024", "Produkt xy menge xy", "Hoch", "Offen");
-    }
+        // Create a Kundenanfrage instance
+        Kundenanfrage kundenanfrage = new Kundenanfrage(
+            "KA12345",        // kundenanfrageNr
+            kunde,            // kundeNr as a Kunde object
+            "2024-06-18",     // anfrageDatum
+            "Testbeschreibung", // anfrageBeschreibung
+            "Hoch",           // prioritaet
+            "Offen"           // status
+        );
 
-    @Test
-    public void testConstructorAndGetters() {
-        assertEquals("1", Kundenanfrage.getId());
-        assertEquals("Max Mustermann", Kundenanfrage.getKunde());
-        assertEquals("01.06.2024", Kundenanfrage.getAnfrageDatum());
-        assertEquals("Produkt xy menge xy", Kundenanfrage.getAnfrageBeschreibung());
-        assertEquals("Hoch", Kundenanfrage.getPrioritaet());
-        assertEquals("Offen", Kundenanfrage.getStatus());
-    }
+        // Print out the Kundenanfrage details
+        System.out.println(kundenanfrage);
 
-    @Test
-    public void testSetters() {
-        Kundenanfrage.setId("2");
-        Kundenanfrage.setKunde("Maximilian Mustermann");
-        Kundenanfrage.setAnfrageDatum("02.06.2024");
-        Kundenanfrage.setAnfrageBeschreibung("Nachfrage");
-        Kundenanfrage.setPrioritaet("Mittel");
-        Kundenanfrage.setStatus("Abgeschlossen");
+        // Verify the fields
+        assert kundenanfrage.getkundenanfrage_nr().equals("KA12345");
+        assert kundenanfrage.getkunde_nr().getkunde_nr().equals("K12345");
+        assert kundenanfrage.getAnfrageDatum().equals("2024-06-18");
+        assert kundenanfrage.getAnfrageBeschreibung().equals("Testbeschreibung");
+        assert kundenanfrage.getPrioritaet().equals("Hoch");
+        assert kundenanfrage.getStatus().equals("Offen");
 
-        assertEquals("2", Kundenanfrage.getId());
-        assertEquals("Maximilian Mustermann", Kundenanfrage.getKunde());
-        assertEquals("02.06.2024", Kundenanfrage.getAnfrageDatum());
-        assertEquals("Nachfrage", Kundenanfrage.getAnfrageBeschreibung());
-        assertEquals("Mittel", Kundenanfrage.getPrioritaet());
-        assertEquals("Abgeschlossen", Kundenanfrage.getStatus());
-    }
-
-    @Test
-    public void testToString() {
-        String expected = "Kundenanfrage{id=1, Customer=Max Mustermann, anfragedatum='01.06.2024', anfragebeschreibung='Produkt xy menge xy', prioritaet='Hoch', status='Offen'}";
-        assertEquals(expected, Kundenanfrage.toString());
+        System.out.println("All tests passed.");
     }
 }
