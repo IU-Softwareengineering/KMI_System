@@ -1,50 +1,115 @@
 package com.iu.kmi.entities;
 
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
+/**
+ * Repräsentiert eine Lagerbestand-Entität.
+ * Diese Klasse wird auf die "lagerbestand" Tabelle in der Datenbank abgebildet.
+ */
+@Entity(tableName = "lagerbestand")
 public class Lagerbestand {
 
     // Attribute
-    private String artikelNummer;
-    private String lagerNummer;
+    /**
+     * Die eindeutige Kennung für den Artikel.
+     */
+    @Id(name = "artikel_nr")
+    private String artikel_nr;
+
+    /**
+     * Die eindeutige Kennung für das Lager.
+     */
+    @Id(name = "lager_nr")
+    private String lager_nr;
+
+    /**
+     * Die Menge des Artikels im Lager.
+     */
+    @Column(name = "menge")
     private int menge;
 
     // Konstruktor
-    public Lagerbestand(String artikelNummer, String lagerNummer, int menge) {
-        this.artikelNummer = artikelNummer;
-        this.lagerNummer = lagerNummer;
+    /**
+     * Erstellt eine neue Lagerbestand-Instanz mit den angegebenen Details.
+     *
+     * @param artikel_nr die eindeutige Kennung für den Artikel
+     * @param lager_nr die eindeutige Kennung für das Lager
+     * @param menge die Menge des Artikels im Lager
+     */
+    public Lagerbestand(String artikel_nr, String lager_nr, int menge) {
+        this.artikel_nr = artikel_nr;
+        this.lager_nr = lager_nr;
         this.menge = menge;
     }
 
     // Getter-Methoden
+    /**
+     * Gibt die eindeutige Kennung des Artikels zurück.
+     *
+     * @return die eindeutige Kennung des Artikels
+     */
     public String getArtikelNummer() {
-        return artikelNummer;
+        return artikel_nr;
     }
 
+    /**
+     * Gibt die eindeutige Kennung des Lagers zurück.
+     *
+     * @return die eindeutige Kennung des Lagers
+     */
     public String getLagerNummer() {
-        return lagerNummer;
+        return lager_nr;
     }
 
+    /**
+     * Gibt die Menge des Artikels im Lager zurück.
+     *
+     * @return die Menge des Artikels im Lager
+     */
     public int getMenge() {
         return menge;
     }
 
     // Setter-Methoden
-    public void setArtikelNummer(String artikelNummer) {
-        this.artikelNummer = artikelNummer;
+    /**
+     * Setzt die eindeutige Kennung für den Artikel.
+     *
+     * @param artikel_nr die eindeutige Kennung für den Artikel
+     */
+    public void setArtikelNummer(String artikel_nr) {
+        this.artikel_nr = artikel_nr;
     }
 
-    public void setLagerNummer(String lagerNummer) {
-        this.lagerNummer = lagerNummer;
+    /**
+     * Setzt die eindeutige Kennung für das Lager.
+     *
+     * @param lager_nr die eindeutige Kennung für das Lager
+     */
+    public void setLagerNummer(String lager_nr) {
+        this.lager_nr = lager_nr;
     }
 
+    /**
+     * Setzt die Menge des Artikels im Lager.
+     *
+     * @param menge die Menge des Artikels im Lager
+     */
     public void setMenge(int menge) {
         this.menge = menge;
     }
 
+    /**
+     * Gibt eine Zeichenkettendarstellung des Lagerbestands zurück.
+     *
+     * @return eine Zeichenkettendarstellung des Lagerbestands
+     */
     @Override
     public String toString() {
         return "Lagerbestand{" +
-                "artikelNummer='" + artikelNummer + '\'' +
-                ", lagerNummer='" + lagerNummer + '\'' +
+                "artikel_nr='" + artikel_nr + '\'' +
+                ", lager_nr='" + lager_nr + '\'' +
                 ", menge=" + menge +
                 '}';
     }
