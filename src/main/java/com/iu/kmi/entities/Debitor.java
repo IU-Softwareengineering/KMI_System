@@ -3,6 +3,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 /**
  * @author Julian Treichel
@@ -14,8 +15,7 @@ import com.iu.kmi.database.annotations.Id;
  */
 @Entity(tableName = "debitor")
 public class Debitor {
-    @Id
-    @Column(name = "debitor_nr")
+    @Id(name = "debitor_nr")
     private String debitorNr;
     @Column(name = "name")
     private String name;
@@ -25,8 +25,12 @@ public class Debitor {
     private String firma;
     @Column(name = "kontonr")
     private String kontoNr;
-    @Column(name = "adresse_nr")
-    private String adresseNr;
+    @JoinColumn(name = "adresse_nr", referencedColumnName = "adresse_nr")
+    private Adresse adresseNr;
+
+    public Debitor(){
+
+    }
 
     /**
      * Konstruktor für einen neuen Debitor mit den angegebenen Attributen.
@@ -38,7 +42,7 @@ public class Debitor {
      * @param kontoNr die Kontonummer des Debitors
      * @param adresseNr die Adressnummer des Debitors
      */
-    public Debitor(String debitorNr, String name, String vorname, String firma, String kontoNr, String adresseNr) {
+    public Debitor(String debitorNr, String name, String vorname, String firma, String kontoNr, Adresse adresseNr) {
         this.debitorNr = debitorNr;
         this.name = name;
         this.vorname = vorname;
@@ -142,17 +146,17 @@ public class Debitor {
      *
      * @return die Adressnummer des Debitors
      */
-    public String getAdresseNr() {
+    public Adresse getAdresseNr() {
         return adresseNr;
     }
 
     /**
      * Setzt die Adressnummer des Debitors.
      *
-     * @param adresseNr die neue Adressnummer des Debitors
+     * @param adresse die neue Adresse des Debitors
      */
-    public void setAdresseNr(String adresseNr) {
-        this.adresseNr = adresseNr;
+    public void setAdresse(Adresse adresse) {
+        this.adresseNr = adresse;
     }
 
     /**

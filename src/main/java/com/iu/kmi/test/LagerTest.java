@@ -1,5 +1,6 @@
 package com.iu.kmi.test;
 
+import com.iu.kmi.entities.Lager;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

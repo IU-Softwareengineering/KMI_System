@@ -38,14 +38,14 @@ public class RepositoryProxy<T> implements InvocationHandler {
                     orm.insert(args[0]);
                     return null;
                 case "findById":
-                    return orm.findById((Integer) args[0]);
+                    return orm.findById(args[0]);
                 case "findAll":
                     return orm.findAll();
                 case "update":
                     orm.update(args[0]);
                     return null;
                 case "delete":
-                    orm.delete((Integer) args[0]);
+                    orm.delete(args[0]);
                     return null;
             }
 
