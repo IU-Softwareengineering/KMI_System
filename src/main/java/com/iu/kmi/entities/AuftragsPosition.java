@@ -7,14 +7,17 @@ public class AuftragsPosition {
     @Column(name = "auftragsposition_nr")
     private String auftragspositionNr;
 
-    @Column(name = "auftrags_nr")
-    private String auftragsNr;
+    /*@Column(name = "auftrags_nr")
+    private String auftragsNr;*/
+    
+    @Column(name = "terminauftrag_nr")
+    private String terminauftragNr;
 
     @Column(name = "artikel_nr")
     private String artikelNr;
 
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
+    /*@Column(name = "einzelpreis")
+    private double einzelpreis;*/
 
     // Getter und Setter
     public String getAuftragspositionNr() {
@@ -25,14 +28,22 @@ public class AuftragsPosition {
         this.auftragspositionNr = auftragspositionNr;
     }
 
-    public String getAuftragsNr() {
+    /*public String getAuftragsNr() {
         return auftragsNr;
     }
 
     public void setAuftragsNr(String auftragsNr) {
         this.auftragsNr = auftragsNr;
+    }*/
+    
+    public void setTerminauftragNr(String terminauftragNr){
+        this.terminauftragNr = terminauftragNr;
     }
 
+    public String getTerminauftragNr(){
+        return this.terminauftragNr;
+    }
+    
     public String getArtikelNr() {
         return artikelNr;
     }
@@ -41,11 +52,11 @@ public class AuftragsPosition {
         this.artikelNr = artikelNr;
     }
 
-    public double getEinzelpreis() {
+    /*public double getEinzelpreis() {
         return einzelpreis;
     }
 
     public void setEinzelpreis(double einzelpreis) {
         this.einzelpreis = einzelpreis;
-    }
+    }*/
 }
