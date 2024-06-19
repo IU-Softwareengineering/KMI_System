@@ -15,8 +15,8 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Run Test
-      run: docker run -v "${{ github.workspace }}:/opt/project_source/:rw" mvn-test
-
+      # run: docker run -v "${{ github.workspace }}:/opt/project_source/:rw" mvn-test
+      run: docker run --user $(id -u):$(id -g) -v "${{ github.workspace }}:/opt/project_source/:rw" mvn-test
     # - name: Reset any changes and force checkout the branch
     #   run: |
     #     git fetch origin main
