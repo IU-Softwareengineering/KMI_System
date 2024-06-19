@@ -1,6 +1,7 @@
 package com.iu.kmi.entities;
 
 import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.CompositeKey;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 
@@ -9,6 +10,7 @@ import com.iu.kmi.database.annotations.Id;
  * Diese Klasse wird auf die "lagerbestand" Tabelle in der Datenbank abgebildet.
  */
 @Entity(tableName = "lagerbestand")
+@CompositeKey(keyColumns = {"lager_id", "artikel_nr"})
 public class Lagerbestand {
 
     // Attribute
@@ -29,6 +31,14 @@ public class Lagerbestand {
      */
     @Column(name = "menge")
     private int menge;
+
+    // No-Args Konstruktor
+    /**
+     * Erstellt eine neue Lagerbestand-Instanz ohne Details.
+     */
+    public Lagerbestand() {
+        // Leerer Konstruktor
+    }
 
     // Konstruktor
     /**
