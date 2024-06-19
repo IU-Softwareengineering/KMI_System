@@ -1,0 +1,35 @@
+name: Test Project
+
+on:
+  pull_request:
+    branches:
+      - action_test
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Run Test
+        run: docker run -v "${{ github.workspace }}:/opt/project_source/:rw" mvn-test
+
+    # - name: Reset any changes and force checkout the branch
+    #   run: |
+    #     git fetch origin main
+    #     git reset --hard origin/main
+    #     git clean -fdx
+    #     git checkout -B main origin/main
+    #
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v1
+    #
+    # - name: Build Docker image
+    #   run: docker build -t maven-project .
+    #
+    # - name: Run Maven in Docker
+    #   run: docker run maven-project mvn clean install
+    #
