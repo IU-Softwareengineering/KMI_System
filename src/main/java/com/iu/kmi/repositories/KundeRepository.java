@@ -1,6 +1,7 @@
-package com.iu.kmi.database.repository;
+package com.iu.kmi.repositories;
 
 import com.iu.kmi.entities.Kunde;
+import com.iu.kmi.database.repository.Repository;
 
 /**
  * Repository interface for the Kunde entity. Provides CRUD operations.
