@@ -4,7 +4,7 @@ import com.iu.kmi.database.annotations.*;
 @Entity(tableName = "angebotsposition")
 public class AngebotsPosition {
 
-    @Column(name = "angebotsposition_nr")
+    @Id(name = "angebotsposition_nr")
     private String angebotspositionNr;
 
     @Column(name = "angebot_nr")

@@ -2,6 +2,8 @@ package com.iu.kmi.test;
 
 import static org.junit.Assert.assertEquals;
 
+import com.iu.kmi.entities.Artikel;
+import com.iu.kmi.entities.Rechnung;
 import org.junit.Test;
 
 import com.iu.kmi.entities.RechnungsPosition;
@@ -10,29 +12,23 @@ public class RechnungsPositionTest {
 
     @Test
     public void testEntity() {
-
         RechnungsPosition rechnungsPosition = new RechnungsPosition();
         rechnungsPosition.setRechnungspositionNr("REC201");
-        rechnungsPosition.setRechnungNr("RECQ201");
-        rechnungsPosition.setArtikelNr("ART201");
-        rechnungsPosition.setEinzelpreis(149.90);
+        rechnungsPosition.setRechnung(new Rechnung("RECQ201", null, null, null, null));
+        rechnungsPosition.setArtikel(new Artikel());
 
         assertEquals("REC201", rechnungsPosition.getRechnungspositionNr());
-        assertEquals("RECQ201", rechnungsPosition.getRechnungNr());
-        assertEquals("ART201", rechnungsPosition.getArtikelNr());
-        assertEquals(149.90, rechnungsPosition.getEinzelpreis(), 0.001);
+        assertEquals("RECQ201", rechnungsPosition.getRechnung().getRechnungNr());
+        assertEquals("ART201", rechnungsPosition.getArtikel().getArtikelNr());
 
         rechnungsPosition.setRechnungspositionNr("REC202");
         assertEquals("REC202", rechnungsPosition.getRechnungspositionNr());
 
-        rechnungsPosition.setRechnungNr("RECQ202");
-        assertEquals("RECQ202", rechnungsPosition.getRechnungNr());
+        rechnungsPosition.getRechnung().setRechnungNr("RECQ202");
+        assertEquals("RECQ202", rechnungsPosition.getRechnung().getRechnungNr());
 
-        rechnungsPosition.setArtikelNr("ART202");
-        assertEquals("ART202", rechnungsPosition.getArtikelNr());
-
-        rechnungsPosition.setEinzelpreis(179.99);
-        assertEquals(179.99, rechnungsPosition.getEinzelpreis(), 0.001);
+        rechnungsPosition.setArtikel(new Artikel("ART202", null, null, null, 0, 0));
+        assertEquals("ART202", rechnungsPosition.getArtikel().getArtikelNr());
     }
 
 }

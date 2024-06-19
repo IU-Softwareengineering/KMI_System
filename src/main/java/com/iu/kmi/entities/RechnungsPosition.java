@@ -4,17 +4,24 @@ import com.iu.kmi.database.annotations.*;
 @Entity(tableName = "rechnungsposition")
 public class RechnungsPosition {
 
-    @Column(name = "rechnungsposition_nr")
+    @Id(name = "rechnungsposition_nr")
     private String rechnungspositionNr;
 
-    @Column(name = "rechnung_nr")
-    private String rechnungNr;
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Artikel artikel;
 
-    @Column(name = "artikel_nr")
-    private String artikelNr;
+    @JoinColumn(name = "rechnung_nr", referencedColumnName = "rechnung_nr")
+    private Rechnung rechnung;
 
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
+    public RechnungsPosition() {
+
+    }
+
+    public RechnungsPosition(String rechnungspositionNr, Artikel artikel, Rechnung rechnung) {
+        this.rechnungspositionNr = rechnungspositionNr;
+        this.rechnung = rechnung;
+        this.artikel = artikel;
+    }
 
     // Getter und Setter
     public String getRechnungspositionNr() {
@@ -25,27 +32,19 @@ public class RechnungsPosition {
         this.rechnungspositionNr = rechnungspositionNr;
     }
 
-    public String getRechnungNr() {
-        return rechnungNr;
+    public Rechnung getRechnung() {
+        return rechnung;
     }
 
-    public void setRechnungNr(String rechnungNr) {
-        this.rechnungNr = rechnungNr;
+    public void setRechnung(Rechnung rechnung) {
+        this.rechnung = rechnung;
     }
 
-    public String getArtikelNr() {
-        return artikelNr;
+    public Artikel getArtikel() {
+        return artikel;
     }
 
-    public void setArtikelNr(String artikelNr) {
-        this.artikelNr = artikelNr;
-    }
-
-    public double getEinzelpreis() {
-        return einzelpreis;
-    }
-
-    public void setEinzelpreis(double einzelpreis) {
-        this.einzelpreis = einzelpreis;
+    public void setArtikel(Artikel artikel) {
+        this.artikel = artikel;
     }
 }

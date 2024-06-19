@@ -1,17 +1,29 @@
 package com.iu.kmi.entities;
+import com.iu.kmi.database.annotations.*;
 
 public class Kundenanfrage {
-    private String Id;
-    private String Kunde;
+    @Id(name = "kundenanfrage_nr")
+    private String kundenanfrageNr;
+
+    @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
+    private Kunde kunde;
+
+    @Column(name = "anfragedatum")
     private String anfrageDatum;
+
+    @Column(name = "anfragebeschreibung")
     private String anfrageBeschreibung;
+
+    @Column(name = "prioritaet")
     private String prioritaet;
+
+    @Column(name = "status")
     private String status;
 
     // Konstruktor
-    public Kundenanfrage(String Id, String Kunde, String anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
-        this.Id = Id;
-        this.Kunde = Kunde;
+    public Kundenanfrage(String kundenanfrageNr, Kunde kunde, String anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
+        this.kundenanfrageNr = kundenanfrageNr;
+        this.kunde = kunde;
         this.anfrageDatum = anfrageDatum;
         this.anfrageBeschreibung = anfrageBeschreibung;
         this.prioritaet = prioritaet;
@@ -19,20 +31,20 @@ public class Kundenanfrage {
     }
 
     // Getter- und Setter-Methoden
-    public String getId() {
-        return Id;
+    public String getKundenanfrageNr() {
+        return kundenanfrageNr;
     }
 
-    public void setId(String Id) {
-        this.Id = Id;
+    public void setKundenanfrageNr(String kundenanfrageNr) {
+        this.kundenanfrageNr = kundenanfrageNr;
     }
 
-    public String getKunde() {
-        return Kunde;
+    public Kunde getKunde() {
+        return kunde;
     }
 
-    public void setKunde(String Kunde) {
-        this.Kunde = Kunde;
+    public void setKunde(Kunde kunde) {
+        this.kunde = kunde;
     }
 
     public String getAnfrageDatum() {
@@ -65,17 +77,5 @@ public class Kundenanfrage {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Kunderequest{" +
-                "Id=" + Id +
-                ", Kunde=" + Kunde +
-                ", anfrageDatum='" + anfrageDatum + '\'' +
-                ", anfrageBeschreibung='" + anfrageBeschreibung + '\'' +
-                ", prioritaet='" + prioritaet + '\'' +
-                ", status='" + status + '\'' +
-                '}';
     }
 }
