@@ -3,6 +3,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 /**
  * Repräsentiert eine Lager-Entität.
@@ -27,8 +28,16 @@ public class Lager {
     /**
      * Die Adresskennung für das Lager.
      */
-    @Column(name = "adresse_nr_nr")
+    @JoinColumn(name = "adresse_nr", referencedColumnName = "adresse_nr")
     private int adresse_nr;
+
+    // No-Args Konstruktor
+    /**
+     * Erstellt eine neue Lagerbestand-Instanz ohne Details.
+     */
+    public Lager() {
+        // Leerer Konstruktor
+    }
 
     // Konstruktor
     /**
