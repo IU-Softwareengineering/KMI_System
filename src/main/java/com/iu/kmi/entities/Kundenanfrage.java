@@ -4,7 +4,7 @@ import com.iu.kmi.database.annotations.*;
 @Entity(tableName = "kundenanfrage")
 public class Kundenanfrage {
 
-    @Column(name = "kundenanfrage_nr")
+    @Id(name = "kundenanfrage_nr")
     private String kundenanfrage_nr;
     @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
     private Kunde kunde_nr; 
@@ -25,6 +25,15 @@ public class Kundenanfrage {
         this.anfrageBeschreibung = anfrageBeschreibung;
         this.prioritaet = prioritaet;
         this.status = status;
+    }
+    // No-Args Konstruktor
+    public Kundenanfrage() {
+        this.kundenanfrage_nr = "";
+        this.kunde_nr = new Kunde();
+        this.anfrageDatum = "";
+        this.anfrageBeschreibung = "";
+        this.prioritaet = "";
+        this.status = "";
     }
 
     // Getter- und Setter-Methoden
