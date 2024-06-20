@@ -5,7 +5,7 @@ import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 
 /**
- * @author Bludwell, Anthony
+ * @author Bludwell, Anthony, Anastacia
  */
 @Entity(tableName = "material")
 public class Material {
@@ -22,6 +22,10 @@ public class Material {
     private float einkaufsPreis;
     @Column(name = "verkaufspreis")
     private float verkaufsPreis;
+
+    // No-Args Konstruktor
+    public Material() {
+    }
 
     // Konstruktor
     public Material(String artikelNr, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {

@@ -1,57 +1,80 @@
 package com.iu.kmi.test;
 
 import com.iu.kmi.entities.Lagerbestand;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.iu.kmi.entities.Material;
+import com.iu.kmi.entities.Lager;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class LagerbestandTest {
+
+    private Material material;
+    private Lager lager;
+
+    @Before
+    public void setUp() {
+        material = new Material(); // Angenommen, die Material-Klasse hat einen no-args Konstruktor
+        lager = new Lager(); // Angenommen, die Lager-Klasse hat einen no-args Konstruktor
+    }
 
     @Test
     public void testLagerbestandConstructorAndGetters() {
         // Arrange
-        String artikelNummer = "A123";
-        String lagerNummer = "L456";
         int menge = 100;
 
         // Act
-        Lagerbestand lagerbestand = new Lagerbestand(artikelNummer, lagerNummer, menge);
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, menge);
 
         // Assert
-        assertEquals(artikelNummer, lagerbestand.getArtikelNummer());
-        assertEquals(lagerNummer, lagerbestand.getLagerNummer());
+        assertEquals(material, lagerbestand.getArtikelNummer());
+        assertEquals(lager, lagerbestand.getLagerNummer());
         assertEquals(menge, lagerbestand.getMenge());
+    }
+
+    @Test
+    public void testNoArgsConstructor() {
+        // Act
+        Lagerbestand lagerbestand = new Lagerbestand();
+
+        // Assert
+        assertNull(lagerbestand.getArtikelNummer());
+        assertNull(lagerbestand.getLagerNummer());
+        assertEquals(0, lagerbestand.getMenge());
     }
 
     @Test
     public void testSetArtikelNummer() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String neuerArtikelNummer = "A789";
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, 100);
+        Material neuerMaterial = new Material();
 
         // Act
-        lagerbestand.setArtikelNummer(neuerArtikelNummer);
+        lagerbestand.setArtikelNummer(neuerMaterial);
 
         // Assert
-        assertEquals(neuerArtikelNummer, lagerbestand.getArtikelNummer());
+        assertEquals(neuerMaterial, lagerbestand.getArtikelNummer());
     }
 
     @Test
     public void testSetLagerNummer() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String neuerLagerNummer = "L789";
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, 100);
+        Lager neuerLager = new Lager();
 
         // Act
-        lagerbestand.setLagerNummer(neuerLagerNummer);
+        lagerbestand.setLagerNummer(neuerLager);
 
         // Assert
-        assertEquals(neuerLagerNummer, lagerbestand.getLagerNummer());
+        assertEquals(neuerLager, lagerbestand.getLagerNummer());
     }
 
     @Test
     public void testSetMenge() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, 100);
         int neueMenge = 200;
 
         // Act
@@ -64,8 +87,8 @@ public class LagerbestandTest {
     @Test
     public void testToString() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String expectedString = "Lagerbestand{artikelNummer='A123', lagerNummer='L456', menge=100}";
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, 100);
+        String expectedString = "Lagerbestand{artikel_nr='" + material + "', lager_nr='" + lager + "', menge=100}";
 
         // Act
         String actualString = lagerbestand.toString();
