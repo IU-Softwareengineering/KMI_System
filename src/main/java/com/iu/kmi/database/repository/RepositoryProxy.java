@@ -53,6 +53,13 @@ public class RepositoryProxy<T> implements InvocationHandler {
             if(methodName.startsWith("findBy")){
                 String fieldName = methodName.substring(6);
                 fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+                if(fieldName.contains("_")){
+                    if (method.getReturnType().equals(List.class)) {
+                        return orm.findByJoinField(fieldName, args[0]).execute();
+                    } else {
+                        return orm.findByJoinField(fieldName, args[0]).findOne();
+                    }
+                }
                 if (method.getReturnType().equals(List.class)) {
                     return orm.findByField(fieldName, args[0]).execute();
                 } else {

@@ -35,7 +35,7 @@ public abstract class BaseQuery<T> {
 
     protected abstract String buildSql();
 
-
+    int test = 0;
     public List<T> execute() throws SQLException, ReflectiveOperationException {
         List<T> list = new ArrayList<>();
         String sql = buildSql();
@@ -46,6 +46,7 @@ public abstract class BaseQuery<T> {
             for (int i = 0; i < values.size(); i++) {
                 pstmt.setObject(i + 1, values.get(i));
             }
+            System.out.println("SQL: " + sql + "PS: " + pstmt.toString() + '\n');
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -192,4 +193,38 @@ public abstract class BaseQuery<T> {
         return compositeKey.keyColumns();
     }
 
+    protected String buildCondition2(String fieldName, Object value) throws NoSuchFieldException {
+        String[] nestedFields = fieldName.split("_");
+        StringBuilder condition = new StringBuilder();
+        Class<?> currentType = type;
+        String currentTable = getTableName();
+
+        for (int i = 0; i < nestedFields.length; i++) {
+            Field field = currentType.getDeclaredField(nestedFields[i]);
+            if (i < nestedFields.length - 1) {
+                if (field.isAnnotationPresent(JoinColumn.class)) {
+                    JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
+                    String joinTable = field.getType().getSimpleName();
+                    joins.add("JOIN " + joinTable + " ON " + currentTable + "." + joinColumn.name() + " = " + joinTable + "." + getPrimaryKeyColumn(field.getType().getDeclaredFields()));
+                    currentType = field.getType();
+                    currentTable = joinTable;
+                } else {
+                    throw new NoSuchFieldException("Field " + nestedFields[i] + " is not a join column");
+                }
+            } else {
+                condition.append(currentTable).append(".").append(getColumnName(field)).append(" = ?");
+            }
+        }
+
+        return condition.toString();
+    }
+
+    protected Field getFieldByNameOrColumn(Class<?> type, String name) {
+        for (Field field : type.getDeclaredFields()) {
+            if (field.getName().equalsIgnoreCase(name) || getColumnName(field).equalsIgnoreCase(name)) {
+                return field;
+            }
+        }
+        return null;
+    }
 }

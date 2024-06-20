@@ -53,6 +53,10 @@ public class DataORM<T> {
         return new FindByFieldQuery<>(type, fieldName, value);
     }
 
+    public BaseQuery<T> findByJoinField(String fieldName, Object value) {
+        return new FindByJoinFieldQuery<>(type, fieldName, value);
+    }
+
     //Inserts a new object into the database
     public void insert(Object obj) throws SQLException, IllegalAccessException {
         new InsertQuery<>(type, obj).save();
