@@ -4,10 +4,19 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Kunde;
+import com.iu.kmi.entities.Kundenanfrage;
+import com.iu.kmi.repositories.AngebotRepository;
+import com.iu.kmi.repositories.KundeRepository;
+import com.iu.kmi.repositories.KundenanfrageRepository;
+
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 /**
  *
@@ -17,13 +26,36 @@ public class AngebotInterface extends javax.swing.JFrame {
 
     private static final String DATE_PATTERN = "\\d{2}\\.\\d{2}\\.\\d{4}";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private AngebotRepository angebotRepository;
+    private KundeRepository kundeRepository;
+    private KundenanfrageRepository kundenanfrageRepository;
     
     /**
      * Creates new form AngebotInterface
      */
-    public AngebotInterface() {
+    public AngebotInterface() throws ReflectiveOperationException, SQLException {
         initComponents();
+        this.initRepository();
+        this.fillKundenSelect();
+        this.fillDate();
     }
+
+    private void initRepository() {
+        this.angebotRepository = RepositoryProxy.newInstance(AngebotRepository.class);
+        this.kundeRepository = RepositoryProxy.newInstance(KundeRepository.class);
+        this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
+    }
+
+    private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
+        List<Kunde> kunden = kundeRepository.findAll().execute();
+        kunden.forEach(kunde -> select_kunde.addItem(kunde.getVorname() + " " + kunde.getname()));
+    }
+
+    private void fillDate(){
+        textbox_angebotsdatum.setText(LocalDate.now().format(DATE_FORMATTER));
+    }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -156,7 +188,22 @@ public class AngebotInterface extends javax.swing.JFrame {
             }
         });
 
-        select_kunde.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        select_kunde.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                try {
+                    select_kundeComponentShown(evt);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        select_kunde.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                select_kundeActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(51, 51, 51));
@@ -329,8 +376,28 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_textbox_angebotsdatumActionPerformed
 
     private void button_kundesuchenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_kundesuchenActionPerformed
-        // TODO add your handling code here:
+       this.kundenSuchen(textbox_anfrage.getText());
+
     }//GEN-LAST:event_button_kundesuchenActionPerformed
+
+    public void kundenSuchen(String name){
+        Kunde kunde = null;
+        try {
+            kunde = kundeRepository.findByName(name);
+
+        } catch (Exception e) {
+            return;
+        }
+        if (kunde == null) {
+            JOptionPane.showMessageDialog(this, "Kunde nicht gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        select_kunde.removeAllItems();
+
+        select_kunde.addItem(kunde.getVorname() + " " + kunde.getname());
+
+    }
 
     private void textbox_gueltigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_gueltigActionPerformed
         // Prozess - Datumsvalidierung mit aktueller Zeit
@@ -384,6 +451,16 @@ public class AngebotInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_button_abbrechenActionPerformed
 
+    private void select_kundeComponentShown(java.awt.event.ComponentEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_select_kundeComponentShown
+
+
+
+    }//GEN-LAST:event_select_kundeComponentShown
+
+    private void select_kundeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_select_kundeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_select_kundeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -415,7 +492,13 @@ public class AngebotInterface extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AngebotInterface().setVisible(true);
+                try {
+                    new AngebotInterface().setVisible(true);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
