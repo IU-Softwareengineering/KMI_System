@@ -23,66 +23,79 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel9" min="-2" pref="104" max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jLabel9" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="jLabel3" max="32767" attributes="0"/>
-                          <Component id="jLabel5" alignment="0" min="-2" pref="104" max="-2" attributes="0"/>
-                          <Component id="jLabel4" alignment="1" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton1" min="-2" pref="122" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" pref="122" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jButton3" min="-2" pref="122" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                              <Component id="jLabel5" alignment="0" min="-2" pref="104" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="23" pref="23" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jComboBox1" min="-2" pref="396" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="jTextField3" min="-2" pref="140" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel8" min="-2" pref="104" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jTextField4" min="-2" pref="122" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jLabel6" min="-2" pref="104" max="-2" attributes="0"/>
-                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                              <Component id="jComboBox2" max="32767" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="jTextField1" pref="140" max="32767" attributes="0"/>
-                                          <Component id="jTextField2" max="32767" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="jLabel7" min="-2" pref="104" max="-2" attributes="0"/>
+                          <Component id="jLabel3" alignment="0" min="-2" pref="112" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="textbox_gueltig" min="-2" pref="140" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel8" min="-2" pref="104" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jTextField6" min="-2" pref="122" max="-2" attributes="0"/>
+                                      <Component id="select_kondition" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jLabel6" min="-2" pref="104" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="select_status" min="-2" pref="122" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="textbox_angebotsdatum" max="32767" attributes="0"/>
+                                  <Component id="select_kunde" min="-2" pref="140" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="jLabel7" min="-2" pref="104" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="textbox_angebotsid" min="-2" pref="122" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="textbox_anfrage" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="button_kundesuchen" min="-2" pref="122" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="309" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="button_speichern" min="-2" pref="122" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="242" max="-2" attributes="0"/>
+              <Component id="button_abbrechen" min="-2" pref="122" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="400" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="338" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="243" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,59 +104,64 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" pref="37" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel3" min="-2" pref="37" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jLabel9" min="-2" pref="37" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel4" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jLabel4" min="-2" pref="37" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel5" min="-2" pref="37" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel5" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="textbox_anfrage" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="button_kundesuchen" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="select_kunde" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="textbox_angebotsdatum" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="textbox_gueltig" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel7" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                                  <Component id="textbox_angebotsid" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel8" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                                  <Component id="select_kondition" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel6" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                                  <Component id="select_status" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel7" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jTextField6" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel8" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel6" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                          <Component id="jComboBox2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel9" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                  <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="183" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton1" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
-                  <Component id="jButton3" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                  <Component id="jButton2" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                  <Component id="button_speichern" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="button_abbrechen" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="130" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JTextField" name="jTextField2">
+    <Component class="javax.swing.JTextField" name="textbox_angebotsdatum">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="16" style="0"/>
@@ -155,10 +173,10 @@
         <Property name="autoscrolls" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textbox_angebotsdatumActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="button_kundesuchen">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="36" green="43" red="f4" type="rgb"/>
@@ -169,7 +187,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Abbrechen"/>
+        <Property name="text" type="java.lang.String" value="Kunde Suchen"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
             <LineBorder>
@@ -179,7 +197,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_kundesuchenActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
@@ -193,7 +211,7 @@
         <Property name="text" type="java.lang.String" value="G&#xfc;ltig bis"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField3">
+    <Component class="javax.swing.JTextField" name="textbox_gueltig">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="16" style="0"/>
@@ -205,7 +223,7 @@
         <Property name="autoscrolls" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textbox_gueltigActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
@@ -216,23 +234,8 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="33" green="33" red="33" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Kunde"/>
+        <Property name="text" type="java.lang.String" value="Anfrage"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="jTextField4">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="16" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="33" red="33" type="rgb"/>
-        </Property>
-        <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="autoscrolls" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField4ActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -257,22 +260,7 @@
         <Property name="text" type="java.lang.String" value="Status"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="16" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="33" red="33" type="rgb"/>
-        </Property>
-        <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="autoscrolls" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="button_speichern">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="e9" green="84" red="3a" type="rgb"/>
@@ -286,7 +274,7 @@
         <Property name="text" type="java.lang.String" value="Speichern"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_speichernActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -311,7 +299,7 @@
         <Property name="text" type="java.lang.String" value="Angebotsdatum"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField6">
+    <Component class="javax.swing.JTextField" name="textbox_angebotsid">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="16" style="0"/>
@@ -323,7 +311,7 @@
         <Property name="autoscrolls" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField6ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textbox_angebotsidActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
@@ -337,208 +325,7 @@
         <Property name="text" type="java.lang.String" value="Kondition"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel9">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="16" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="33" red="33" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="W&#xe4;hrung"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="f2" green="f2" red="f2" type="rgb"/>
-        </Property>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="16" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="33" red="33" type="rgb"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Aktualisieren"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-            <LineBorder>
-              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-            </LineBorder>
-          </Border>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Arial" size="16" style="0"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="33" green="33" red="33" type="rgb"/>
-        </Property>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="139">
-            <StringItem index="0" value="Afghan Afghani (AFN)"/>
-            <StringItem index="1" value="Algerian Dinar (DZD)"/>
-            <StringItem index="2" value="Argentine Peso (ARS)"/>
-            <StringItem index="3" value="Armenian Dram (AMD)"/>
-            <StringItem index="4" value="Aruban Florin (AWG)"/>
-            <StringItem index="5" value="Australian Dollar (AUD)"/>
-            <StringItem index="6" value="Azerbaijani Manat (AZN)"/>
-            <StringItem index="7" value="Bahamian Dollar (BSD)"/>
-            <StringItem index="8" value="Bahraini Dinar (BHD)"/>
-            <StringItem index="9" value="Bangladeshi Taka (BDT)"/>
-            <StringItem index="10" value="Barbados Dollar (BBD)"/>
-            <StringItem index="11" value="Belarusian Ruble (BYN)"/>
-            <StringItem index="12" value="Belize Dollar (BZD)"/>
-            <StringItem index="13" value="Bermudian Dollar (BMD)"/>
-            <StringItem index="14" value="Bhutanese Ngultrum (BTN)"/>
-            <StringItem index="15" value="Bolivian Boliviano (BOB)"/>
-            <StringItem index="16" value="Bosnian Convertible Marka (BAM)"/>
-            <StringItem index="17" value="Botswana Pula (BWP)"/>
-            <StringItem index="18" value="Brazilian Real (BRL)"/>
-            <StringItem index="19" value="Brunei Dollar (BND)"/>
-            <StringItem index="20" value="Bulgarian Lev (BGN)"/>
-            <StringItem index="21" value="Burundi Franc (BIF)"/>
-            <StringItem index="22" value="Cabo Verde Escudo (CVE)"/>
-            <StringItem index="23" value="Cambodian Riel (KHR)"/>
-            <StringItem index="24" value="CFA Franc BEAC (XAF)"/>
-            <StringItem index="25" value="Canadian Dollar (CAD)"/>
-            <StringItem index="26" value="Cayman Islands Dollar (KYD)"/>
-            <StringItem index="27" value="Chilean Peso (CLP)"/>
-            <StringItem index="28" value="Chinese Yuan Renminbi (CNY)"/>
-            <StringItem index="29" value="Colombian Peso (COP)"/>
-            <StringItem index="30" value="Comorian Franc (KMF)"/>
-            <StringItem index="31" value="Congolese Franc (CDF)"/>
-            <StringItem index="32" value="Costa Rican Colon (CRC)"/>
-            <StringItem index="33" value="Croatian Kuna (HRK)"/>
-            <StringItem index="34" value="Cuban Peso (CUP)"/>
-            <StringItem index="35" value="Czech Koruna (CZK)"/>
-            <StringItem index="36" value="Danish Krone (DKK)"/>
-            <StringItem index="37" value="Dominican Peso (DOP)"/>
-            <StringItem index="38" value="Egyptian Pound (EGP)"/>
-            <StringItem index="39" value="Salvadoran Colon (SVC)"/>
-            <StringItem index="40" value="Eritrean Nakfa (ERN)"/>
-            <StringItem index="41" value="Ethiopian Birr (ETB)"/>
-            <StringItem index="42" value="Euro (EUR)"/>
-            <StringItem index="43" value="Fijian Dollar (FJD)"/>
-            <StringItem index="44" value="Gambian Dalasi (GMD)"/>
-            <StringItem index="45" value="Georgian Lari (GEL)"/>
-            <StringItem index="46" value="Ghanaian Cedi (GHS)"/>
-            <StringItem index="47" value="Gibraltar Pound (GIP)"/>
-            <StringItem index="48" value="Guatemalan Quetzal (GTQ)"/>
-            <StringItem index="49" value="Guinea Franc (GNF)"/>
-            <StringItem index="50" value="Guyanese Dollar (GYD)"/>
-            <StringItem index="51" value="Haitian Gourde (HTG)"/>
-            <StringItem index="52" value="Honduran Lempira (HNL)"/>
-            <StringItem index="53" value="Hong Kong Dollar (HKD)"/>
-            <StringItem index="54" value="Hungarian Forint (HUF)"/>
-            <StringItem index="55" value="Icelandic Krona (ISK)"/>
-            <StringItem index="56" value="Indian Rupee (INR)"/>
-            <StringItem index="57" value="Indonesian Rupiah (IDR)"/>
-            <StringItem index="58" value="Iranian Rial (IRR)"/>
-            <StringItem index="59" value="Iraqi Dinar (IQD)"/>
-            <StringItem index="60" value="Israeli New Shekel (ILS)"/>
-            <StringItem index="61" value="Jamaican Dollar (JMD)"/>
-            <StringItem index="62" value="Japanese Yen (JPY)"/>
-            <StringItem index="63" value="Jordanian Dinar (JOD)"/>
-            <StringItem index="64" value="Kazakhstani Tenge (KZT)"/>
-            <StringItem index="65" value="Kenyan Shilling (KES)"/>
-            <StringItem index="66" value="North Korean Won (KPW)"/>
-            <StringItem index="67" value="South Korean Won (KRW)"/>
-            <StringItem index="68" value="Kuwaiti Dinar (KWD)"/>
-            <StringItem index="69" value="Kyrgyzstani Som (KGS)"/>
-            <StringItem index="70" value="Lao Kip (LAK)"/>
-            <StringItem index="71" value="Lebanese Pound (LBP)"/>
-            <StringItem index="72" value="Lesotho Loti (LSL)"/>
-            <StringItem index="73" value="Liberian Dollar (LRD)"/>
-            <StringItem index="74" value="Libyan Dinar (LYD)"/>
-            <StringItem index="75" value="Macanese Pataca (MOP)"/>
-            <StringItem index="76" value="Malawian Kwacha (MWK)"/>
-            <StringItem index="77" value="Malaysian Ringgit (MYR)"/>
-            <StringItem index="78" value="Maldivian Rufiyaa (MVR)"/>
-            <StringItem index="79" value="Mauritanian Ouguiya (MRU)"/>
-            <StringItem index="80" value="Mauritian Rupee (MUR)"/>
-            <StringItem index="81" value="Mexican Peso (MXN)"/>
-            <StringItem index="82" value="Moldovan Leu (MDL)"/>
-            <StringItem index="83" value="Mongolian Tugrik (MNT)"/>
-            <StringItem index="84" value="Moroccan Dirham (MAD)"/>
-            <StringItem index="85" value="Mozambican Metical (MZN)"/>
-            <StringItem index="86" value="Myanmar Kyat (MMK)"/>
-            <StringItem index="87" value="Namibian Dollar (NAD)"/>
-            <StringItem index="88" value="Nepalese Rupee (NPR)"/>
-            <StringItem index="89" value="Nicaraguan Cordoba Oro (NIO)"/>
-            <StringItem index="90" value="Nigerian Naira (NGN)"/>
-            <StringItem index="91" value="Omani Rial (OMR)"/>
-            <StringItem index="92" value="Pakistani Rupee (PKR)"/>
-            <StringItem index="93" value="Panamanian Balboa (PAB)"/>
-            <StringItem index="94" value="Papua New Guinean Kina (PGK)"/>
-            <StringItem index="95" value="Paraguayan Guarani (PYG)"/>
-            <StringItem index="96" value="Peruvian Nuevo Sol (PEN)"/>
-            <StringItem index="97" value="Philippine Peso (PHP)"/>
-            <StringItem index="98" value="Polish Zloty (PLN)"/>
-            <StringItem index="99" value="Qatari Riyal (QAR)"/>
-            <StringItem index="100" value="Romanian Leu (RON)"/>
-            <StringItem index="101" value="Russian Ruble (RUB)"/>
-            <StringItem index="102" value="Rwandan Franc (RWF)"/>
-            <StringItem index="103" value="Saint Helena Pound (SHP)"/>
-            <StringItem index="104" value="Samoan Tala (WST)"/>
-            <StringItem index="105" value="Sao Tome and Principe Dobra (STN)"/>
-            <StringItem index="106" value="Saudi Riyal (SAR)"/>
-            <StringItem index="107" value="Serbian Dinar (RSD)"/>
-            <StringItem index="108" value="Seychellois Rupee (SCR)"/>
-            <StringItem index="109" value="Sierra Leonean Leone (SLL)"/>
-            <StringItem index="110" value="Singapore Dollar (SGD)"/>
-            <StringItem index="111" value="Solomon Islands Dollar (SBD)"/>
-            <StringItem index="112" value="Somali Shilling (SOS)"/>
-            <StringItem index="113" value="South African Rand (ZAR)"/>
-            <StringItem index="114" value="South Sudanese Pound (SSP)"/>
-            <StringItem index="115" value="Sri Lankan Rupee (LKR)"/>
-            <StringItem index="116" value="Sudanese Pound (SDG)"/>
-            <StringItem index="117" value="Surinamese Dollar (SRD)"/>
-            <StringItem index="118" value="Swedish Krona (SEK)"/>
-            <StringItem index="119" value="Swiss Franc (CHF)"/>
-            <StringItem index="120" value="Syrian Pound (SYP)"/>
-            <StringItem index="121" value="Tajikistani Somoni (TJS)"/>
-            <StringItem index="122" value="Thai Baht (THB)"/>
-            <StringItem index="123" value="Tongan Pa&apos;anga (TOP)"/>
-            <StringItem index="124" value="Trinidad and Tobago Dollar (TTD)"/>
-            <StringItem index="125" value="Tunisian Dinar (TND)"/>
-            <StringItem index="126" value="Turkish Lira (TRY)"/>
-            <StringItem index="127" value="Turkmenistan Manat (TMT)"/>
-            <StringItem index="128" value="Ugandan Shilling (UGX)"/>
-            <StringItem index="129" value="Ukrainian Hryvnia (UAH)"/>
-            <StringItem index="130" value="UAE Dirham (AED)"/>
-            <StringItem index="131" value="Uruguayan Peso (UYU)"/>
-            <StringItem index="132" value="Uzbekistani Som (UZS)"/>
-            <StringItem index="133" value="Vanuatu Vatu (VUV)"/>
-            <StringItem index="134" value="Venezuelan Bolivar (VES)"/>
-            <StringItem index="135" value="Vietnamese Dong (VND)"/>
-            <StringItem index="136" value="Yemeni Rial (YER)"/>
-            <StringItem index="137" value="Zambian Kwacha (ZMW)"/>
-            <StringItem index="138" value="Zimbabwean Dollar (ZWL)"/>
-          </StringArray>
-        </Property>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-            <LineBorder>
-              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-            </LineBorder>
-          </Border>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-      </AuxValues>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox2">
+    <Component class="javax.swing.JComboBox" name="select_status">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Arial" size="16" style="0"/>
@@ -563,11 +350,122 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="select_statusActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
+    <Component class="javax.swing.JComboBox" name="select_kondition">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="16" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="33" red="33" type="rgb"/>
+        </Property>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Item 1"/>
+            <StringItem index="1" value="Item 2"/>
+            <StringItem index="2" value="Item 3"/>
+            <StringItem index="3" value="Item 4"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="select_konditionActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="select_kunde">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Item 1"/>
+            <StringItem index="1" value="Item 2"/>
+            <StringItem index="2" value="Item 3"/>
+            <StringItem index="3" value="Item 4"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="16" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="33" red="33" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Kunde"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textbox_anfrage">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="16" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="33" red="33" type="rgb"/>
+        </Property>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="autoscrolls" type="boolean" value="false"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textbox_anfrageActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="button_abbrechen">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="36" green="43" red="f4" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Arial" size="16" style="0"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Abbrechen"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder>
+              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
+            </LineBorder>
+          </Border>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_abbrechenActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="table_positionen">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="5" rowCount="4">
+                <Column editable="true" title="Nummer" type="java.lang.Object"/>
+                <Column editable="true" title="Name" type="java.lang.Object"/>
+                <Column editable="true" title="Einzelpreis" type="java.lang.Object"/>
+                <Column editable="true" title="Menge" type="java.lang.Object"/>
+                <Column editable="true" title="Gesamtpreis" type="java.lang.Object"/>
+              </Table>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>
