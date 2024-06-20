@@ -8,6 +8,10 @@ import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 import com.iu.kmi.database.annotations.JoinColumn;
 
+/**
+ * @author Anthony
+ */
+
 @Entity(tableName = "Angebot")
 public class Angebot {
     @Id(name = "angebot_nr")

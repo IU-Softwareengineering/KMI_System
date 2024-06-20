@@ -13,6 +13,9 @@ import com.iu.kmi.entities.Kondition;
 import com.iu.kmi.entities.Kunde;
 import com.iu.kmi.entities.Kundenanfrage;
 
+/**
+ * @author Anthony
+ */
 public class AngebotTest {
 
     private Angebot       angebot;
