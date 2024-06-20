@@ -5,18 +5,25 @@
 package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Kondition;
 import com.iu.kmi.entities.Kunde;
 import com.iu.kmi.entities.Kundenanfrage;
+import com.iu.kmi.layout.models.PositionTableModel;
 import com.iu.kmi.repositories.AngebotRepository;
+import com.iu.kmi.repositories.KonditionRepository;
 import com.iu.kmi.repositories.KundeRepository;
 import com.iu.kmi.repositories.KundenanfrageRepository;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -29,7 +36,9 @@ public class AngebotInterface extends javax.swing.JFrame {
     private AngebotRepository angebotRepository;
     private KundeRepository kundeRepository;
     private KundenanfrageRepository kundenanfrageRepository;
-    
+    private KonditionRepository konditionRepository;
+    private PositionTableModel[] positionTableData;
+
     /**
      * Creates new form AngebotInterface
      */
@@ -37,13 +46,16 @@ public class AngebotInterface extends javax.swing.JFrame {
         initComponents();
         this.initRepository();
         this.fillKundenSelect();
+        this.fillKonditionenSelect();
         this.fillDate();
+        this.fillAngebotspositionen();
     }
 
     private void initRepository() {
         this.angebotRepository = RepositoryProxy.newInstance(AngebotRepository.class);
         this.kundeRepository = RepositoryProxy.newInstance(KundeRepository.class);
         this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
+        this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
     }
 
     private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
@@ -51,8 +63,28 @@ public class AngebotInterface extends javax.swing.JFrame {
         kunden.forEach(kunde -> select_kunde.addItem(kunde.getVorname() + " " + kunde.getname()));
     }
 
+    private void fillKonditionenSelect() throws ReflectiveOperationException, SQLException {
+        select_kondition.removeAllItems();
+        select_kondition.addItem("");
+        List<Kondition> konditionen = konditionRepository.findAll().execute();
+        konditionen.forEach(kondition -> select_kondition.addItem(kondition.getName()));
+    }
+
     private void fillDate(){
         textbox_angebotsdatum.setText(LocalDate.now().format(DATE_FORMATTER));
+    }
+    
+    private void fillAngebotspositionen() {
+        table_positionen.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"1", "Name1", "Einzelpr", "Menge", "Gesamtpr"},
+                {"2", "Name2", "Einzelpr", "Menge", "Gesamtpr"},
+                {"3", "Name3", "Einzelpr", "Menge", "Gesamtpr"},
+            },
+            new String [] {
+                "Nummer", "Name", "Einzelpreis", "Menge", "Gesamtpreis"
+            }
+        ));
     }
 
 
@@ -86,6 +118,8 @@ public class AngebotInterface extends javax.swing.JFrame {
         button_abbrechen = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_positionen = new javax.swing.JTable();
+        angebotsposition_erstellen_button = new javax.swing.JButton();
+        angebotsposition_loeschen_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -243,6 +277,20 @@ public class AngebotInterface extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(table_positionen);
 
+        angebotsposition_erstellen_button.setText("Erstellen");
+        angebotsposition_erstellen_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                angebotsposition_erstellen_buttonActionPerformed(evt);
+            }
+        });
+
+        angebotsposition_loeschen_button.setText("Löschen");
+        angebotsposition_loeschen_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                angebotsposition_loeschen_buttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -298,6 +346,10 @@ public class AngebotInterface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(134, 134, 134)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(angebotsposition_loeschen_button)
+                    .addComponent(angebotsposition_erstellen_button))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(338, 338, 338)
@@ -343,9 +395,17 @@ public class AngebotInterface extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(select_status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(angebotsposition_erstellen_button)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(angebotsposition_loeschen_button)
+                        .addGap(92, 92, 92)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(button_speichern, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_abbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -440,7 +500,9 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_select_statusActionPerformed
 
     private void select_konditionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_select_konditionActionPerformed
-        // TODO add your handling code here:
+        if (select_kondition.getSelectedItem() != "") {
+            
+        }
     }//GEN-LAST:event_select_konditionActionPerformed
 
     private void textbox_anfrageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_anfrageActionPerformed
@@ -454,12 +516,27 @@ public class AngebotInterface extends javax.swing.JFrame {
     private void select_kundeComponentShown(java.awt.event.ComponentEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_select_kundeComponentShown
 
 
-
     }//GEN-LAST:event_select_kundeComponentShown
 
     private void select_kundeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_select_kundeActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_select_kundeActionPerformed
+
+    private void angebotsposition_erstellen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_angebotsposition_erstellen_buttonActionPerformed
+        DefaultTableModel model = ((DefaultTableModel)table_positionen.getModel());
+        PositionTableModel testModel = new PositionTableModel();
+        Object[] t = PositionTableModel.toArray(testModel);
+        model.addRow(t);
+    }//GEN-LAST:event_angebotsposition_erstellen_buttonActionPerformed
+
+    private void angebotsposition_loeschen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_angebotsposition_loeschen_buttonActionPerformed
+        // TODO add your handling code here:
+        int selectedPosition = this.table_positionen.getSelectedRow();
+        if (selectedPosition == -1) {
+            return;
+        }
+        DefaultTableModel model = ((DefaultTableModel)table_positionen.getModel());
+        model.removeRow(selectedPosition);
+    }//GEN-LAST:event_angebotsposition_loeschen_buttonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -488,7 +565,6 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -504,6 +580,8 @@ public class AngebotInterface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton angebotsposition_erstellen_button;
+    private javax.swing.JButton angebotsposition_loeschen_button;
     private javax.swing.JButton button_abbrechen;
     private javax.swing.JButton button_kundesuchen;
     private javax.swing.JButton button_speichern;
