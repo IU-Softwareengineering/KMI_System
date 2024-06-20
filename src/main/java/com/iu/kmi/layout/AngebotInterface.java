@@ -5,6 +5,7 @@
 package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Angebot;
 import com.iu.kmi.entities.Kondition;
 import com.iu.kmi.entities.Kunde;
 import com.iu.kmi.entities.Kundenanfrage;
@@ -38,6 +39,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private KundenanfrageRepository kundenanfrageRepository;
     private KonditionRepository konditionRepository;
     private PositionTableModel[] positionTableData;
+    private Kundenanfrage kundenAnfrage;
 
     /**
      * Creates new form AngebotInterface
@@ -441,9 +443,8 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_button_kundesuchenActionPerformed
 
     public void kundenSuchen(String name){
-        Kundenanfrage kundenAnfrage;
         try {
-            kundenAnfrage = kundenanfrageRepository.findByKunde_name(name);
+            this.kundenAnfrage = kundenanfrageRepository.findByKunde_name(name);
 
         } catch (Exception e) {
             return;
@@ -454,6 +455,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         select_kunde.removeAllItems();
         Kunde anfrageKunde = kundenAnfrage.getKunde();
+
 
         select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getname());
 
@@ -488,7 +490,31 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_textbox_gueltigActionPerformed
 
     private void button_speichernActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_speichernActionPerformed
-        // TODO add your handling code here:
+        Angebot angebot = new Angebot();
+
+        String angebotID = textbox_angebotsid.getText();
+        angebot.setAngebotNr(angebotID);
+
+        if (this.kundenAnfrage == null) {
+            // TODO: handle missin
+            return;
+        }
+        angebot.setKundeNr(kundenAnfrage.getKunde());
+
+        LocalDate gueltigBis = LocalDate.parse(textbox_gueltig.getText());
+        angebot.setGueltigBis(gueltigBis);
+
+        LocalDate angebotsDatum = LocalDate.parse(textbox_angebotsdatum.getText());
+        angebot.setAngebotsdatum(angebotsDatum);
+
+        // kondition -> TODO: Model hinterlegen
+
+        // status
+
+        // angebotspositionen fetchen, handlen & in db schreiben
+
+        // this.angebotRepository.insert(angebot);
+
     }//GEN-LAST:event_button_speichernActionPerformed
 
     private void textbox_angebotsidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_angebotsidActionPerformed
