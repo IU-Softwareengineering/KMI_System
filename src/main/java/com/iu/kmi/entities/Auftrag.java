@@ -3,10 +3,10 @@ import com.iu.kmi.database.annotations.*;
 
 import java.util.Date;
 
-@Entity(tableName = "auftrag")
+@Entity(tableName = "terminauftrag")
 public class Auftrag {
 
-    @Id(name = "auftrag_nr")
+    @Id(name = "terminauftrag_nr")
     private String auftragNr;
 
     @JoinColumn(name = "kunde_nr", referencedColumnName ="kunde_nr")
