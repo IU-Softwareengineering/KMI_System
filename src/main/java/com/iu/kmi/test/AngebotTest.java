@@ -2,8 +2,10 @@ package com.iu.kmi.test;
 
 import java.util.Date;
 
-import org.junit.Test;
-import static junit.framework.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.iu.kmi.entities.Adresse;
 import com.iu.kmi.entities.Angebot;
@@ -22,7 +24,7 @@ public class AngebotTest {
     private Kondition     kondition;
     private Kundenanfrage kundenanfrage;
 
-
+    @BeforeEach
     public void setUp() {
         kunde= new Kunde("K12345","Max","Mustermann","16.01.2004","max@gmail.com","0123456789",new Adresse("Strasse","Berlin","123456","Deutschland"),"nutzername","Passwort123");
         angebotsdatum = new Date();
@@ -48,7 +50,7 @@ public class AngebotTest {
 
     @Test
     public void testSetters() {
-        Kunde newKundeNr= kunde;
+        Kunde newKundeNr = kunde;
         newKundeNr.setKundennummer("K54321");
 
         Date newAngebotsdatum = new Date();
