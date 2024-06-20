@@ -6,11 +6,11 @@ import java.util.Date;
 @Entity(tableName = "auftrag")
 public class Auftrag {
 
-    @Column(name = "auftrag_nr")
+    @Id(name = "auftrag_nr")
     private String auftragNr;
 
-    @Column(name = "kunde_nr")
-    private String kundeNr;
+    @JoinColumn(name = "kunde_nr", referencedColumnName ="kunde_nr")
+    private Kunde kundeNr;
 
     @Column(name = "auftragsdatum")
     private Date auftragsdatum;
@@ -18,8 +18,8 @@ public class Auftrag {
     @Column(name = "lieferdatum")
     private Date lieferdatum;
 
-    @Column(name = "angebot_nr")
-    private String angebotNr;
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
+    private Angebot angebotNr;
 
     @Column(name = "status")
     private String status;
@@ -33,11 +33,11 @@ public class Auftrag {
         this.auftragNr = auftragNr;
     }
 
-    public String getKundeNr() {
+    public Kunde getKundeNr() {
         return kundeNr;
     }
 
-    public void setKundeNr(String kundeNr) {
+    public void setKundeNr(Kunde kundeNr) {
         this.kundeNr = kundeNr;
     }
 
@@ -57,11 +57,11 @@ public class Auftrag {
         this.lieferdatum = lieferdatum;
     }
 
-    public String getAngebotNr() {
+    public Angebot getAngebotNr() {
         return angebotNr;
     }
 
-    public void setAngebotNr(String angebotNr) {
+    public void setAngebotNr(Angebot angebotNr) {
         this.angebotNr = angebotNr;
     }
 
