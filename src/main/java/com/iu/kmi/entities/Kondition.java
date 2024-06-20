@@ -3,6 +3,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 /**
  * @author Julian Treichel
@@ -14,8 +15,7 @@ import com.iu.kmi.database.annotations.Id;
  */
 @Entity(tableName = "kondition")
 public class Kondition {
-    @Id
-    @Column(name = "kondition_nr")
+    @Id(name = "kondition_nr")
     private String konditionNr;
     @Column(name = "name")
     private String name;
@@ -25,6 +25,15 @@ public class Kondition {
     private String lieferbedingungen;
     @Column(name = "rabatt")
     private double rabatt;
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
+    private Angebot angebot;
+
+    /**
+     * Konstruktor für eine neue Kondition ohne Argumente
+     */
+    public Kondition(){
+
+    }
 
     /**
      * Konstruktor für eine neue Kondition mit dem angegebenen Namen, Zahlungsmethode, Lieferbedingungen und Rabatt.
@@ -34,11 +43,12 @@ public class Kondition {
      * @param lieferbedingungen die Lieferbedingungen, die mit der Kondition verbunden sind
      * @param rabatt der Rabatt, der mit der Kondition verbunden ist
      */
-    public Kondition(String name, String zahlungsbedingungen, String lieferbedingungen, double rabatt) {
+    public Kondition(String name, String zahlungsbedingungen, String lieferbedingungen, double rabatt, Angebot angebot) {
         this.name = name;
         this.zahlungsbedingungen = zahlungsbedingungen;
         this.lieferbedingungen = lieferbedingungen;
         this.rabatt = rabatt;
+        this.angebot = angebot;
     }
 
     /**
@@ -129,6 +139,22 @@ public class Kondition {
      */
     public void setRabatt(double rabatt) {
         this.rabatt = rabatt;
+    }
+
+    /**
+     * @return the angebot
+     */
+    public Angebot getAngebot(){
+        return angebot;
+    }
+
+    /**
+     * Setzt das Angebot, das mit der Kondition verbunden ist.
+     *
+     * @param angebot das neue Angebot, das mit der Kondition verbunden ist
+     */
+    public void setAngebot(final Angebot angebot){
+        this.angebot = angebot;
     }
 
     /**
