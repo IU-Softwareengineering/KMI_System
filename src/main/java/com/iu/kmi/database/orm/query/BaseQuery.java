@@ -46,7 +46,6 @@ public abstract class BaseQuery<T> {
             for (int i = 0; i < values.size(); i++) {
                 pstmt.setObject(i + 1, values.get(i));
             }
-            System.out.println("SQL: " + sql + "PS: " + pstmt.toString() + '\n');
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {

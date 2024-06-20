@@ -381,21 +381,21 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_button_kundesuchenActionPerformed
 
     public void kundenSuchen(String name){
-        Kunde kunde = null;
+        Kundenanfrage kundenAnfrage;
         try {
-            kunde = kundeRepository.findByName(name);
+            kundenAnfrage = kundenanfrageRepository.findByKunde_name(name);
 
         } catch (Exception e) {
             return;
         }
-        if (kunde == null) {
+        if (kundenAnfrage == null) {
             JOptionPane.showMessageDialog(this, "Kunde nicht gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         select_kunde.removeAllItems();
+        Kunde anfrageKunde = kundenAnfrage.getKunde();
 
-        select_kunde.addItem(kunde.getVorname() + " " + kunde.getname());
+        select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getname());
 
     }
 
