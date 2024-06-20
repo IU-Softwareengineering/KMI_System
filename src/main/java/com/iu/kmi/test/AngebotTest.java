@@ -1,6 +1,6 @@
 package com.iu.kmi.test;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
@@ -15,8 +15,8 @@ public class AngebotTest {
 
     private Angebot       angebot;
     private Kunde         kunde;
-    private Date          angebotsdatum;
-    private Date          gueltigBis;
+    private LocalDate          angebotsdatum;
+    private LocalDate          gueltigBis;
     private String        waehrung;
     private String        status;
     private Kondition     kondition;
@@ -24,9 +24,9 @@ public class AngebotTest {
 
 
     public void setUp() {
-        kunde= new Kunde("K12345","Max","Mustermann","16.01.2004","max@gmail.com","0123456789",new Adresse("Strasse","Berlin","123456","Deutschland"),"nutzername","Passwort123");
-        angebotsdatum = new Date();
-        gueltigBis = new Date(angebotsdatum.getTime() + 100000000L); // some future date
+        kunde = new Kunde("K12345","Mustermann","Max","max@gmail.com","0123456789",new Adresse("Strasse","1","123456","Berlin","Deutschland"));
+        angebotsdatum = LocalDate.now();
+        gueltigBis = LocalDate.now().plusDays(7); // some future date
         waehrung = "EUR";
         status = "Offen";
         kondition = new Kondition("KondiName","Bar","innerhalb Stadt",33.3);
@@ -51,8 +51,8 @@ public class AngebotTest {
         Kunde newKundeNr= kunde;
         newKundeNr.setKundennummer("K54321");
 
-        Date newAngebotsdatum = new Date();
-        Date newGueltigBis = new Date(newAngebotsdatum.getTime() + 200000000L); // some future date
+        LocalDate newAngebotsdatum = LocalDate.now().minusDays(1);
+        LocalDate newGueltigBis = LocalDate.now().plusDays(14); // some future date
         String newWaehrung = "USD";
         String newStatus = "Geschlossen";
         Kondition newKonditionNr = kondition;

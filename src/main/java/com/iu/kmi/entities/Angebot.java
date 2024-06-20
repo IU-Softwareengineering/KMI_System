@@ -1,6 +1,6 @@
 package com.iu.kmi.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 
 import com.iu.kmi.database.annotations.Column;
@@ -17,10 +17,10 @@ public class Angebot {
     private Kunde kundeNr;
 
     @Column(name = "angebotsdatum")
-    private Date angebotsdatum;
+    private LocalDate angebotsdatum;
 
     @Column(name = "gueltig_bis")
-    private Date gueltigBis;
+    private LocalDate gueltigBis;
 
     @Column(name = "waehrung")
     private String waehrung;
@@ -35,7 +35,7 @@ public class Angebot {
     private Kundenanfrage kundenanfrageNr;
 
     // Constructor
-    public Angebot(Kunde kundeNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
+    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
@@ -78,19 +78,19 @@ public class Angebot {
         this.kundeNr = kundeNr;
     }
 
-    public Date getAngebotsdatum() {
+    public LocalDate getAngebotsdatum() {
         return angebotsdatum;
     }
 
-    public void setAngebotsdatum(Date angebotsdatum) {
+    public void setAngebotsdatum(LocalDate angebotsdatum) {
         this.angebotsdatum = angebotsdatum;
     }
 
-    public Date getGueltigBis() {
+    public LocalDate getGueltigBis() {
         return gueltigBis;
     }
 
-    public void setGueltigBis(Date gueltigBis) {
+    public void setGueltigBis(LocalDate gueltigBis) {
         this.gueltigBis = gueltigBis;
     }
 
