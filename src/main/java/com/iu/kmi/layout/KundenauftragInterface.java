@@ -186,7 +186,7 @@ public class KundenauftragInterface extends javax.swing.JFrame {
             }
         });
         jDesktopPane1.add(jButtonBearbeiten);
-        jButtonBearbeiten.setBounds(270, 730, 86, 23);
+        jButtonBearbeiten.setBounds(270, 730, 110, 23);
 
         jButtonAbbrechen.setText("Abbrechen");
         jButtonAbbrechen.addActionListener(new java.awt.event.ActionListener() {
@@ -268,7 +268,6 @@ public class KundenauftragInterface extends javax.swing.JFrame {
         gultigkeitAngebotTextField.setText("");
         nrTextField.setText("");
         zahlungsBedingungTextField.setText("");
-        
         auftragsTypComboBox.setSelectedIndex(0);
     }//GEN-LAST:event_jButtonAbbrechenActionPerformed
 
