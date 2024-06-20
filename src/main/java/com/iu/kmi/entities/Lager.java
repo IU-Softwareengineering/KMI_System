@@ -29,7 +29,7 @@ public class Lager {
      * Die Adresskennung für das Lager.
      */
     @JoinColumn(name = "adresse_nr", referencedColumnName = "adresse_nr")
-    private int adresse_nr;
+    private Adresse adresse_nr;
 
     // No-Args Konstruktor
     /**
@@ -47,7 +47,7 @@ public class Lager {
      * @param name der Name des Lagers
      * @param adresse_nr die Adresskennung für das Lager
      */
-    public Lager(String lager_nr, String name, int adresse_nr) {
+    public Lager(String lager_nr, String name, Adresse adresse_nr) {
         this.lager_nr = lager_nr;
         this.name = name;
         this.adresse_nr = adresse_nr;
@@ -77,7 +77,7 @@ public class Lager {
      *
      * @return die Adresskennung des Lagers
      */
-    public int getAdresse() {
+    public Adresse getAdresse() {
         return adresse_nr;
     }
 
@@ -105,7 +105,7 @@ public class Lager {
      *
      * @param adresse_nr die Adresskennung für das Lager
      */
-    public void setAdresse(int adresse_nr) {
+    public void setAdresse(Adresse adresse_nr) {
         this.adresse_nr = adresse_nr;
     }
 
