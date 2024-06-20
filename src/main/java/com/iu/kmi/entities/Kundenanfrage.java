@@ -1,38 +1,56 @@
 package com.iu.kmi.entities;
+import com.iu.kmi.database.annotations.*;
 
+@Entity(tableName = "kundenanfrage")
 public class Kundenanfrage {
-    private String Id;
-    private String Kunde;
+
+    @Id(name = "kundenanfrage_nr")
+    private String kundenanfrage_nr;
+    @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
+    private Kunde kunde_nr; 
+    @Column(name = "anfrageDatum")
     private String anfrageDatum;
+    @Column(name = "anfragebeschreibung")
     private String anfrageBeschreibung;
+    @Column(name = "prioritaet")
     private String prioritaet;
+    @Column(name = "status")
     private String status;
 
     // Konstruktor
-    public Kundenanfrage(String Id, String Kunde, String anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
-        this.Id = Id;
-        this.Kunde = Kunde;
+    public Kundenanfrage(String kundenanfrage_nr, Kunde kunde_nr, String anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
+        this.kundenanfrage_nr = kundenanfrage_nr;
+        this.kunde_nr = kunde_nr;
         this.anfrageDatum = anfrageDatum;
         this.anfrageBeschreibung = anfrageBeschreibung;
         this.prioritaet = prioritaet;
         this.status = status;
     }
+    // No-Args Konstruktor
+    public Kundenanfrage() {
+        this.kundenanfrage_nr = "";
+        this.kunde_nr = new Kunde();
+        this.anfrageDatum = "";
+        this.anfrageBeschreibung = "";
+        this.prioritaet = "";
+        this.status = "";
+    }
 
     // Getter- und Setter-Methoden
-    public String getId() {
-        return Id;
+    public String getkundenanfrage_nr() {
+        return kundenanfrage_nr;
     }
 
-    public void setId(String Id) {
-        this.Id = Id;
+    public void setkundenanfrage_nr(String kundenanfrage_nr) {
+        this.kundenanfrage_nr = kundenanfrage_nr;
     }
 
-    public String getKunde() {
-        return Kunde;
+    public Kunde getkunde_nr() {
+        return kunde_nr;
     }
 
-    public void setKunde(String Kunde) {
-        this.Kunde = Kunde;
+    public void setKundeNr(Kunde kunde_nr) {
+        this.kunde_nr = kunde_nr;
     }
 
     public String getAnfrageDatum() {
@@ -70,8 +88,8 @@ public class Kundenanfrage {
     @Override
     public String toString() {
         return "Kunderequest{" +
-                "Id=" + Id +
-                ", Kunde=" + Kunde +
+                "kundenanfrage_nr=" + kundenanfrage_nr +
+                ", kunde_nr=" + kunde_nr +
                 ", anfrageDatum='" + anfrageDatum + '\'' +
                 ", anfrageBeschreibung='" + anfrageBeschreibung + '\'' +
                 ", prioritaet='" + prioritaet + '\'' +
