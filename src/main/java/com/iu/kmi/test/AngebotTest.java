@@ -24,13 +24,13 @@ public class AngebotTest {
 
 
     public void setUp() {
-        kunde= new Kunde("K12345","Max","Mustermann","16.01.2004","max@gmail.com","0123456789",new Adresse("Strasse","Berlin","123456","Deutschland"),"nutzername","Passwort123");
+        kunde= new Kunde("K12345","Max","Mustermann","16.01.2004","max@gmail.com","0123456789",new Adresse("Strasse","10","Berlin","123456","Deutschland"),"nutzername","Passwort123");
         angebotsdatum = new Date();
         gueltigBis = new Date(angebotsdatum.getTime() + 100000000L); // some future date
         waehrung = "EUR";
         status = "Offen";
         kondition = new Kondition("KondiName","Bar","innerhalb Stadt",33.3);
-        kundenanfrage = new Kundenanfrage("KA123",kunde,"01.01.2001","Will haben!","Dringend","In Zustellung");
+        kundenanfrage = new Kundenanfrage("KA123",kunde.getKundennummer(),"01.01.2001","Will haben!","Dringend","In Zustellung");
 
         angebot = new Angebot(kunde, angebotsdatum, gueltigBis, waehrung, status, kondition, kundenanfrage);
     }
@@ -59,7 +59,7 @@ public class AngebotTest {
         newKonditionNr.setKonditionNr("K87654");
 
         Kundenanfrage newKundenanfrageNr = kundenanfrage;
-        newKundenanfrageNr.setKundenanfrageNr("KA321");
+        newKundenanfrageNr.setId("KA321");
 
         angebot.setKundeNr(newKundeNr);
         angebot.setAngebotsdatum(newAngebotsdatum);
