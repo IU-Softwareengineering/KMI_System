@@ -1,7 +1,11 @@
 package com.iu.kmi.entities;
+
+/**
+ * @author Bludwell, Anthony
+ */
 public class Material {
     // Attribute
-    private int artikelNummer;
+    private String artikelNr;
     private String name;
     private String beschreibung;
     private String lieferant;
@@ -9,8 +13,8 @@ public class Material {
     private float verkaufsPreis;
 
     // Konstruktor
-    public Material(int artikelNummer, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
-        this.artikelNummer = artikelNummer;
+    public Material(String artikelNr, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
+        this.artikelNr = artikelNr;
         this.name = name;
         this.beschreibung = beschreibung;
         this.lieferant = lieferant;
@@ -19,8 +23,8 @@ public class Material {
     }
 
     // Getter-Methoden
-    public int getArtikelNummer() {
-        return artikelNummer;
+    public String getArtikelNr() {
+        return artikelNr;
     }
 
     public String getName() {
@@ -44,8 +48,8 @@ public class Material {
     }
 
     // Setter-Methoden
-    public void setArtikelNummer(int artikelNummer) {
-        this.artikelNummer = artikelNummer;
+    public void setArtikelNr(String artikelNr) {
+        this.artikelNr = artikelNr;
     }
 
     public void setName(String name) {
@@ -72,7 +76,7 @@ public class Material {
     @Override
     public String toString() { //
         return "Material{" +
-                "artikelNummer=" + artikelNummer +
+                "artikelNummer=" + artikelNr +
                 ", name='" + name + '\'' +
                 ", beschreibung='" + beschreibung + '\'' +
                 ", lieferant='" + lieferant + '\'' +
