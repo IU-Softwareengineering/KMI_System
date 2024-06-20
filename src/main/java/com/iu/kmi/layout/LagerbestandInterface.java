@@ -4,6 +4,15 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.*;
+import com.iu.kmi.repositories.DebitorRepository;
+import com.iu.kmi.repositories.LagerRepository;
+import com.iu.kmi.repositories.LagerbestandRepository;
+import com.iu.kmi.repositories.MaterialRepository;
+
+import java.sql.SQLException;
+
 /**
  *
  * @author testg
@@ -91,7 +100,13 @@ public class LagerbestandInterface extends javax.swing.JFrame {
         jButton1.setText("Speichern");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try {
+                    jButton1ActionPerformed(evt);
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -191,8 +206,17 @@ public class LagerbestandInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_jButton1ActionPerformed
+        MaterialRepository materialRepository = RepositoryProxy.newInstance(MaterialRepository.class);
+        Material material = (Material) materialRepository.findById(jTextField1.getText()).findOne();
+
+        LagerRepository lagerRepository = RepositoryProxy.newInstance(LagerRepository.class);
+        Lager lager = (Lager) lagerRepository.findById(jTextField2.getText()).findOne();
+
+        //Speichern Lagerbestand
+        Lagerbestand lagerbestand = new Lagerbestand(material, lager, Integer.parseInt(jTextField3.getText()));
+        LagerbestandRepository lagerbestandRepository = RepositoryProxy.newInstance(LagerbestandRepository.class);
+        lagerbestandRepository.insert(lagerbestand);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

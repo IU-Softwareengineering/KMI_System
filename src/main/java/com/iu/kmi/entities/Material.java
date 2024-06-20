@@ -23,6 +23,10 @@ public class Material {
     @Column(name = "verkaufspreis")
     private float verkaufsPreis;
 
+    // No-Args Konstruktor
+    public Material() {
+    }
+
     // Konstruktor
     public Material(String artikelNr, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
         this.artikelNr = artikelNr;
