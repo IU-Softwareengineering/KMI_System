@@ -3,6 +3,17 @@ import com.iu.kmi.database.annotations.*;
 
 @Entity(tableName = "angebotsposition")
 public class AngebotsPosition {
+    @Id(name = "angebotsposition_nr")
+    private String angebotspositionNr;
+
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
+    private Angebot angebotNr;
+
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
+
+    @Column(name = "einzelpreis")
+    private double einzelpreis;
 
     public String getAngebotspositionNr() {
         return angebotspositionNr;
@@ -35,17 +46,5 @@ public class AngebotsPosition {
     public void setEinzelpreis(double einzelpreis) {
         this.einzelpreis = einzelpreis;
     }
-
-    @Id(name = "angebotsposition_nr")
-    private String angebotspositionNr;
-
-    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
-    private Angebot angebotNr;
-
-    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
-    private Material artikelNr;
-
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
 
 }
