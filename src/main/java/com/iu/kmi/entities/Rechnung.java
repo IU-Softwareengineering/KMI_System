@@ -1,5 +1,6 @@
 package com.iu.kmi.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.iu.kmi.database.annotations.Column;
@@ -23,10 +24,10 @@ public class Rechnung {
     private Debitor debitor;
 
     @Column(name = "rechnungstag")
-    private Date rechnungstag;
+    private LocalDate rechnungstag;
 
     @Column(name = "faelligkeitsdatum")
-    private Date faelligkeitsdatum;
+    private LocalDate faelligkeitsdatum;
 
     @Column(name = "status")
     private String status;
@@ -46,7 +47,7 @@ public class Rechnung {
      * @param faelligkeitsdatum das Fälligkeitsdatum der Rechnung
      * @param status der Status der Rechnung
      */
-    public Rechnung(String rechnungNr, Debitor debitor, Date rechnungstag, Date faelligkeitsdatum, String status) {
+    public Rechnung(String rechnungNr, Debitor debitor, LocalDate rechnungstag, LocalDate faelligkeitsdatum, String status) {
         this.rechnungNr = rechnungNr;
         this.debitor = debitor;
         this.rechnungstag = rechnungstag;
@@ -95,7 +96,7 @@ public class Rechnung {
      *
      * @return das Datum der Rechnung
      */
-    public Date getRechnungstag() {
+    public LocalDate getRechnungstag() {
         return rechnungstag;
     }
 
@@ -104,7 +105,7 @@ public class Rechnung {
      *
      * @param rechnungstag das neue Datum der Rechnung
      */
-    public void setRechnungstag(Date rechnungstag) {
+    public void setRechnungstag(LocalDate rechnungstag) {
         this.rechnungstag = rechnungstag;
     }
 
@@ -113,7 +114,7 @@ public class Rechnung {
      *
      * @return das Fälligkeitsdatum der Rechnung
      */
-    public Date getFaelligkeitsdatum() {
+    public LocalDate getFaelligkeitsdatum() {
         return faelligkeitsdatum;
     }
 
@@ -122,7 +123,7 @@ public class Rechnung {
      *
      * @param faelligkeitsdatum das neue Fälligkeitsdatum der Rechnung
      */
-    public void setFaelligkeitsdatum(Date faelligkeitsdatum) {
+    public void setFaelligkeitsdatum(LocalDate faelligkeitsdatum) {
         this.faelligkeitsdatum = faelligkeitsdatum;
     }
 
