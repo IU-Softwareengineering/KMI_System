@@ -1,15 +1,26 @@
 package com.iu.kmi.entities;
 
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
 /**
  * @author Bludwell, Anthony
  */
+@Entity(tableName = "material")
 public class Material {
     // Attribute
+    @Id(name = "artikel_nr")
     private String artikelNr;
+    @Column(name = "name")
     private String name;
+    @Column(name = "beschreibung")
     private String beschreibung;
+    @Column(name = "lieferant")
     private String lieferant;
+    @Column(name = "einkaufspreis")
     private float einkaufsPreis;
+    @Column(name = "verkaufspreis")
     private float verkaufsPreis;
 
     // Konstruktor
