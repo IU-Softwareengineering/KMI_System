@@ -4,6 +4,11 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.Repository;
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Kundenauftrag;
+import com.iu.kmi.repositories.KundenauftragRepository;
+
 /**
  *
  * @author Julian
@@ -258,7 +263,7 @@ public class KundenauftragInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonBearbeitenActionPerformed
 
-    private void jButtonAbbrechenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbbrechenActionPerformed
+    private void emptyAllJTextFields(){
         angebotsDatumTextField.setText("");
         anschriftTextField.setText("");
         kundenNameTextField.setText("");
@@ -269,10 +274,18 @@ public class KundenauftragInterface extends javax.swing.JFrame {
         nrTextField.setText("");
         zahlungsBedingungTextField.setText("");
         auftragsTypComboBox.setSelectedIndex(0);
+    }
+    
+    private void jButtonAbbrechenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbbrechenActionPerformed
+        emptyAllJTextFields();
     }//GEN-LAST:event_jButtonAbbrechenActionPerformed
 
     private void jButtonSpeichernActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSpeichernActionPerformed
-        // TODO add your handling code here:
+        // abspeichern eines Debitors
+        Kundenauftrag auftrag = new Kundenauftrag(kundenNummerTextField.getText(), kundenNummerTextField.getText(), lieferTerminTextField.getText(), lieferbedingungTextField.getText(), "", "");
+        KundenauftragRepository kundenRepo = RepositoryProxy.newInstance(KundenauftragRepository.class);
+        kundenRepo.insert(auftrag);
+        emptyAllJTextFields();
     }//GEN-LAST:event_jButtonSpeichernActionPerformed
 
     /**
