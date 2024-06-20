@@ -9,7 +9,7 @@ import com.iu.kmi.repositories.KonditionRepository;
 
 /**
  *
- * @author testg
+ * @author Anthony, Laura
  */
 public class KonditionInterface extends javax.swing.JFrame {
 

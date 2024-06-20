@@ -1,6 +1,9 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+/**
+ * @author Anthony, Florian
+ */
 @Entity(tableName = "auftragsposition")
 public class AuftragsPosition {
 

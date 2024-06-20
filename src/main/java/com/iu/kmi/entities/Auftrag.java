@@ -3,6 +3,9 @@ import com.iu.kmi.database.annotations.*;
 
 import java.util.Date;
 
+/**
+ * @author Anthony, Florian
+ */
 @Entity(tableName = "terminauftrag")
 public class Auftrag {
 
