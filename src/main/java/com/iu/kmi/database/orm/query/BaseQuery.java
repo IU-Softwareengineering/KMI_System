@@ -176,21 +176,20 @@ public abstract class BaseQuery<T> {
         return type.isAnnotationPresent(CompositeKey.class);
     }
 
-    protected String[] getCompositeKeyColumns() {
-        if (hasCompositeKey()) {
-            CompositeKey compositeKey = type.getAnnotation(CompositeKey.class);
-            return compositeKey.keyColumns();
-        }
-        return new String[0];
-    }
-
     protected Map<String, Object> getCompositeKeyValues(Object entity) throws IllegalAccessException, NoSuchFieldException {
         Map<String, Object> keyValues = new HashMap<>();
-        for (String keyColumn : getCompositeKeyColumns()) {
+        String[] keyColumns = getCompositeKeyColumns();
+        for (String keyColumn : keyColumns) {
             Field field = type.getDeclaredField(keyColumn);
-            keyValues.put(keyColumn, getFieldValue(field, entity));
+            field.setAccessible(true);
+            keyValues.put(keyColumn, field.get(entity));
         }
         return keyValues;
+    }
+
+    private String[] getCompositeKeyColumns() {
+        CompositeKey compositeKey = type.getAnnotation(CompositeKey.class);
+        return compositeKey.keyColumns();
     }
 
 }

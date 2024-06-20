@@ -4,9 +4,16 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.Repository;
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Adresse;
+import com.iu.kmi.entities.Debitor;
+import com.iu.kmi.repositories.DebitorRepository;
+
 /**
  *
- * @author testg
+ * @author testg, Julian Treichel
+ * @since 14.06.2024
  */
 public class DebitorInterface extends javax.swing.JFrame {
 
@@ -246,7 +253,14 @@ public class DebitorInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        AdresseRepository adresseRepository = RepositoryProxy.newInstance(AdresseRepository.class);
+        Adresse adresse = adresseRepository.findById(jTextField5.getText());
+
+        // abspeichern eines Debitors
+        Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), adresse);
+        DebitorRepository debitorRepository = RepositoryProxy.newInstance(DebitorRepository.class);
+        debitorRepository.insert(debitor);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
