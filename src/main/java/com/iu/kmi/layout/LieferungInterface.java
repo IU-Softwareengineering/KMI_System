@@ -253,12 +253,6 @@ public class LieferungInterface extends javax.swing.JFrame {
         return auftrag;
     }
 
-    private Rechnung fetchRechnung(String rechnungNr) {
-        Rechnung rechnung = new Rechnung();
-
-
-        return rechnung;
-    }
     /**
      * @param args the command line arguments
      */
