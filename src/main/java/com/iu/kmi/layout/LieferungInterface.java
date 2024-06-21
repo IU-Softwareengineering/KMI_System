@@ -9,12 +9,14 @@ import com.iu.kmi.entities.Auftrag;
 import com.iu.kmi.entities.AuftragsPosition;
 import com.iu.kmi.entities.Lager;
 import com.iu.kmi.entities.Lagerbestand;
+import com.iu.kmi.entities.Lieferung;
 import com.iu.kmi.entities.Material;
 import com.iu.kmi.entities.Rechnung;
 import com.iu.kmi.repositories.AuftragRespository;
 import com.iu.kmi.repositories.AuftragspositionRepository;
 import com.iu.kmi.repositories.LagerRepository;
 import com.iu.kmi.repositories.LagerbestandRepository;
+import com.iu.kmi.repositories.LieferungRepository;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -194,8 +196,17 @@ public class LieferungInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)
+            throws ReflectiveOperationException, SQLException{//GEN-FIRST:event_jButton1ActionPerformed
         // speichern
+        LieferungRepository lieferungRepository = RepositoryProxy.newInstance(LieferungRepository.class);
+        String lieferungsnummer = lieferungRepository.findAll().execute().get(-1).getLieferungNr() + 1;
+        Lieferung lieferung = new Lieferung();
+        lieferung.setLieferungNr(lieferungsnummer);
+        lieferung.setAuftrag(fetchAuftrag( jTextField1.getText()));
+        // Rechnung fehlt, woher bekommen? oder neu erstellen?
+
+        lieferungRepository.insert(lieferung);
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
