@@ -4,10 +4,13 @@
  */
 package com.iu.kmi.layout;
 
+import java.sql.SQLException;
+
 import com.iu.kmi.database.repository.Repository;
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Adresse;
 import com.iu.kmi.entities.Debitor;
+import com.iu.kmi.repositories.AdresseRepository;
 import com.iu.kmi.repositories.DebitorRepository;
 
 /**
@@ -72,7 +75,15 @@ public class DebitorInterface extends javax.swing.JFrame {
         jButton1.setText("Speichern");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try{
+                    jButton1ActionPerformed(evt);
+                }
+                catch(ReflectiveOperationException e){
+                    throw new RuntimeException(e);
+                }
+                catch(SQLException e){
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -252,9 +263,10 @@ public class DebitorInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)
+            throws ReflectiveOperationException, SQLException{//GEN-FIRST:event_jButton1ActionPerformed
         AdresseRepository adresseRepository = RepositoryProxy.newInstance(AdresseRepository.class);
-        Adresse adresse = adresseRepository.findById(jTextField5.getText());
+        Adresse adresse = adresseRepository.findById(jTextField5.getText()).findOne();
 
         // abspeichern eines Debitors
         Debitor debitor = new Debitor(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField6.getText(), jTextField4.getText(), adresse);
