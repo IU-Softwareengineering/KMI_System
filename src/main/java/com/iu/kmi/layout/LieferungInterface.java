@@ -119,7 +119,15 @@ public class LieferungInterface extends javax.swing.JFrame {
         jButton1.setText("Speichern");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try{
+                    jButton1ActionPerformed(evt);
+                }
+                catch(ReflectiveOperationException e){
+                    throw new RuntimeException(e);
+                }
+                catch(SQLException e){
+                    throw new RuntimeException(e);
+                }
             }
         });
 
