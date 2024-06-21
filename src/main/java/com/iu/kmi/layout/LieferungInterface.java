@@ -7,21 +7,24 @@ package com.iu.kmi.layout;
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Auftrag;
 import com.iu.kmi.entities.AuftragsPosition;
-import com.iu.kmi.entities.Lieferung;
+import com.iu.kmi.entities.Lager;
+import com.iu.kmi.entities.Lagerbestand;
+import com.iu.kmi.entities.Material;
 import com.iu.kmi.entities.Rechnung;
 import com.iu.kmi.repositories.AuftragRespository;
 import com.iu.kmi.repositories.AuftragspositionRepository;
+import com.iu.kmi.repositories.LagerRepository;
+import com.iu.kmi.repositories.LagerbestandRepository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -34,7 +37,6 @@ public class LieferungInterface extends javax.swing.JFrame {
      */
     public LieferungInterface() {
         initComponents();
-        loadAllData();  // Daten beim Start laden
     }
 
     /**
@@ -66,7 +68,15 @@ public class LieferungInterface extends javax.swing.JFrame {
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                try{
+                    jTextField1ActionPerformed(evt);
+                }
+                catch(ReflectiveOperationException e){
+                    throw new RuntimeException(e);
+                }
+                catch(SQLException e){
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -82,7 +92,7 @@ public class LieferungInterface extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -173,8 +183,10 @@ public class LieferungInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt)
+            throws ReflectiveOperationException, SQLException{//GEN-FIRST:event_jTextField1ActionPerformed
+        // Input Auftragsnummer
+        loadAllData(jTextField1.getText());
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -186,29 +198,50 @@ public class LieferungInterface extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void loadAllData() {
-        List<Lieferung> lieferungen = fetchAllLieferungen();
+    private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException{
+        List<AuftragsPosition> auftragsPositions = fetchAllAuftragsposition(auftragsNr);
 
-        if (!lieferungen.isEmpty()) {
-            // Nur die erste Lieferung in die Felder laden (können angepasst werden, um mehr Daten zu laden)
-            Lieferung lieferung = lieferungen.get(0);
-            jTextField1.setText(lieferung.getLieferungNr());
-            jTextField2.setText(lieferung.getStatus());
-            jTextField3.setText(lieferung.getLieferDatum());
+        // Gruppierung nach artikelNr
+        Map<Material, List<AuftragsPosition>> groupedByArtikelNr = auftragsPositions.stream()
+                .collect(Collectors.groupingBy(AuftragsPosition::getArtikelNr));
 
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            model.setRowCount(0);
+        LagerRepository lagerRepository = RepositoryProxy.newInstance(LagerRepository.class);
+        Lager lager = lagerRepository.findAll().execute().get(0);
 
-            model.addRow(new Object[]{
-                lieferung.getLieferungNr(),
-                lieferung.getAuftrag().getAuftragNr(),
-                lieferung.getAuftrag().getArtikelName(),
-                lieferung.getAuftrag().getMenge(),
-                lieferung.getAuftrag().isVerfugbarkeit()
-            });
+        LagerbestandRepository lagerbestandRepository = RepositoryProxy.newInstance(LagerbestandRepository.class);
+        List<Lagerbestand> lagerbestandList = lagerbestandRepository.findAll().execute();
+
+        DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
+        for(Map.Entry<Material, List<AuftragsPosition>> entry : groupedByArtikelNr.entrySet()){
+            // überprüfung Lagerstand
+            String availibility = null;
+            for(Lagerbestand lagerbestand : lagerbestandList){
+                if(Objects.equals(lagerbestand.getArtikelNummer().getArtikelNr(), entry.getKey().getArtikelNr())){
+                    availibility = getAvailibilty(entry.getValue().size(), lagerbestand.getMenge());
+                }
+            }
+
+            Object[] newRow = {entry.getValue().get(0).getAuftragspositionNr(), entry.getKey().getArtikelNr(), entry.getKey().getName(), entry.getValue().size(), availibility};
+            defaultTableModel.addRow(newRow);
+
         }
+
     }
-private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException{
+
+    private String getAvailibilty(int angefordert, int lagerbestand){
+        String result = "";
+        if(angefordert <= lagerbestand){
+            result = "verfügbar";
+        }else if(lagerbestand == 0){
+            result = "nicht verfügbar";
+        }else{
+            result = lagerbestand + " von " + angefordert + " verfügbar";
+        }
+
+        return result;
+    }
+
+    private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException{
         List<AuftragsPosition> finalAuftragspositionen = new ArrayList<>();
         AuftragspositionRepository auftragspositionRepository = RepositoryProxy.newInstance(AuftragspositionRepository.class);
         List<AuftragsPosition> auftragsPositions = auftragspositionRepository.findAll().execute();

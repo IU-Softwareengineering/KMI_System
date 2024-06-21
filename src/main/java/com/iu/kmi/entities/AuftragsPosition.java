@@ -10,11 +10,11 @@ public class AuftragsPosition {
     @Id(name = "auftragsposition_nr")
     private String auftragspositionNr;
 
-    @Column(name = "auftrags_nr")
-    private String auftragsNr;
+    @JoinColumn(name = "auftrags_nr", referencedColumnName = "autrags_nr")
+    private Auftrag auftragsNr;
 
-    @Column(name = "artikel_nr")
-    private String artikelNr;
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
 
     @Column(name = "einzelpreis")
     private double einzelpreis;
