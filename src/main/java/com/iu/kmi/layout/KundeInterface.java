@@ -8,6 +8,8 @@ import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Kunde;
 import com.iu.kmi.repositories.KundeRepository;
 
+import java.sql.SQLException;
+
 /**
  *
  * @author testg
@@ -70,6 +72,8 @@ public class KundeInterface extends javax.swing.JFrame {
                 try {
                     jButton1ActionPerformed(evt);
                 } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }
