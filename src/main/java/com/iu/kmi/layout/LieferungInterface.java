@@ -4,6 +4,18 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.entities.Auftrag;
+import com.iu.kmi.entities.Lieferung;
+import com.iu.kmi.entities.Rechnung;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author joschkoa
@@ -15,6 +27,7 @@ public class LieferungInterface extends javax.swing.JFrame {
      */
     public LieferungInterface() {
         initComponents();
+        loadAllData();  // Daten beim Start laden
     }
 
     /**
@@ -33,6 +46,10 @@ public class LieferungInterface extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,6 +96,17 @@ public class LieferungInterface extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Speichern");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Abbruch");
+
+        jLabel4.setText("Lieferdatum:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -88,19 +116,30 @@ public class LieferungInterface extends javax.swing.JFrame {
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(87, 87, 87)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(79, 79, 79))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(161, 161, 161)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(202, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(320, 320, 320))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(320, 320, 320))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(38, 38, 38))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(162, 162, 162)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,10 +151,16 @@ public class LieferungInterface extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(71, 71, 71)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addContainerGap(165, Short.MAX_VALUE))
         );
 
         pack();
@@ -129,6 +174,108 @@ public class LieferungInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void loadAllData() {
+        List<Lieferung> lieferungen = fetchAllLieferungen();
+
+        if (!lieferungen.isEmpty()) {
+            // Nur die erste Lieferung in die Felder laden (können angepasst werden, um mehr Daten zu laden)
+            Lieferung lieferung = lieferungen.get(0);
+            jTextField1.setText(lieferung.getLieferungNr());
+            jTextField2.setText(lieferung.getStatus());
+            jTextField3.setText(lieferung.getLieferDatum());
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+
+            model.addRow(new Object[]{
+                lieferung.getLieferungNr(),
+                lieferung.getAuftrag().getAuftragNr(),
+                lieferung.getAuftrag().getArtikelName(),
+                lieferung.getAuftrag().getMenge(),
+                lieferung.getAuftrag().isVerfugbarkeit()
+            });
+        }
+    }
+private List<Lieferung> fetchAllLieferungen() {
+        List<Lieferung> lieferungen = new ArrayList<>();
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
+            String query = "SELECT * FROM lieferung";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Lieferung lieferung = new Lieferung();
+                lieferung.setLieferungNr(resultSet.getString("lieferung_nr"));
+                lieferung.setStatus(resultSet.getString("status"));
+                lieferung.setLieferDatum(resultSet.getString("lieferdatum"));
+
+                String auftragNr = resultSet.getString("auftrag_nr");
+                Auftrag auftrag = fetchAuftrag(auftragNr);
+                lieferung.setAuftrag(auftrag);
+
+                String rechnungNr = resultSet.getString("rechnung_nr");
+                Rechnung rechnung = fetchRechnung(rechnungNr);
+                lieferung.setRechnung(rechnung);
+
+                lieferungen.add(lieferung);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lieferungen;
+    }
+    private Auftrag fetchAuftrag(String auftragNr) {
+        Auftrag auftrag = new Auftrag();
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
+            String query = "SELECT * FROM auftrag WHERE auftrag_nr = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, auftragNr);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                auftrag.setAuftragNr(resultSet.getString("auftrag_nr"));
+                auftrag.setArtikelName(resultSet.getString("artikelname"));
+                auftrag.setMenge(resultSet.getInt("menge"));
+                auftrag.setVerfugbarkeit(resultSet.getBoolean("verfugbarkeit"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return auftrag;
+    }
+
+    private Rechnung fetchRechnung(String rechnungNr) {
+        Rechnung rechnung = new Rechnung();
+
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
+            String query = "SELECT * FROM rechnung WHERE rechnung_nr = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, rechnungNr);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                rechnung.setRechnungNr(resultSet.getString("rechnung_nr"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rechnung;
+    }
     /**
      * @param args the command line arguments
      */
@@ -155,6 +302,23 @@ public class LieferungInterface extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(LieferungInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(LieferungInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(LieferungInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(LieferungInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(LieferungInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -165,12 +329,16 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
