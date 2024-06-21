@@ -199,10 +199,10 @@ public class LieferungInterface extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException{
+    private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException {
         List<AuftragsPosition> auftragsPositions = fetchAllAuftragsposition(auftragsNr);
 
-        // Gruppierung nach artikelNr
+        // Gruppierung nach ArtikelNr
         Map<Material, List<AuftragsPosition>> groupedByArtikelNr = auftragsPositions.stream()
                 .collect(Collectors.groupingBy(AuftragsPosition::getArtikelNr));
 
@@ -213,46 +213,38 @@ public class LieferungInterface extends javax.swing.JFrame {
         List<Lagerbestand> lagerbestandList = lagerbestandRepository.findAll().execute();
 
         DefaultTableModel defaultTableModel = (DefaultTableModel) jTable1.getModel();
-        for(Map.Entry<Material, List<AuftragsPosition>> entry : groupedByArtikelNr.entrySet()){
-            // überprüfung Lagerstand
-            String availibility = null;
-            for(Lagerbestand lagerbestand : lagerbestandList){
-                if(Objects.equals(lagerbestand.getArtikelNummer().getArtikelNr(), entry.getKey().getArtikelNr())){
-                    availibility = getAvailibilty(entry.getValue().size(), lagerbestand.getMenge());
-                }
-            }
 
-            Object[] newRow = {entry.getValue().get(0).getAuftragspositionNr(), entry.getKey().getArtikelNr(), entry.getKey().getName(), entry.getValue().size(), availibility};
+        Map<String, Integer> lagerbestandMap = lagerbestandList.stream()
+                .collect(Collectors.toMap(lb -> lb.getArtikelNummer().getArtikelNr(), Lagerbestand::getMenge));
+
+        groupedByArtikelNr.forEach((material, auftragsPositionen) -> {
+            // Verfügbarkeit prüfen
+            int auftragsAnzahl = auftragsPositionen.size();
+            int lagerbestand = lagerbestandMap.getOrDefault(material.getArtikelNr(), 0);
+            String availability = getAvailability(auftragsAnzahl, lagerbestand);
+
+            Object[] newRow = { auftragsPositionen.get(0).getAuftragspositionNr(), material.getArtikelNr(),
+                    material.getName(), auftragsAnzahl, availability };
             defaultTableModel.addRow(newRow);
-
-        }
-
+        });
     }
 
-    private String getAvailibilty(int angefordert, int lagerbestand){
-        String result = "";
-        if(angefordert <= lagerbestand){
-            result = "verfügbar";
-        }else if(lagerbestand == 0){
-            result = "nicht verfügbar";
-        }else{
-            result = lagerbestand + " von " + angefordert + " verfügbar";
+    private String getAvailability(int angefordert, int lagerbestand) {
+        if (angefordert <= lagerbestand) {
+            return "verfügbar";
+        } else if (lagerbestand == 0) {
+            return "nicht verfügbar";
+        } else {
+            return lagerbestand + " von " + angefordert + " verfügbar";
         }
-
-        return result;
     }
 
-    private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException{
-        List<AuftragsPosition> finalAuftragspositionen = new ArrayList<>();
+    private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException {
         AuftragspositionRepository auftragspositionRepository = RepositoryProxy.newInstance(AuftragspositionRepository.class);
         List<AuftragsPosition> auftragsPositions = auftragspositionRepository.findAll().execute();
-        for (AuftragsPosition a : auftragsPositions){
-            if(Objects.equals(a.getAuftragsNr().getAuftragNr(), auftragsNr)){
-                finalAuftragspositionen.add(a);
-            }
-        }
-
-        return auftragsPositions;
+        return auftragsPositions.stream()
+                .filter(a -> Objects.equals(a.getAuftragsNr().getAuftragNr(), auftragsNr))
+                .collect(Collectors.toList());
     }
     private Auftrag fetchAuftrag(String auftragNr) throws ReflectiveOperationException, SQLException{
         AuftragRespository auftragRespository = RepositoryProxy.newInstance(AuftragRespository.class);
