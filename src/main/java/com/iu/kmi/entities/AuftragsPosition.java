@@ -1,20 +1,22 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+/**
+ * @author Anthony, Florian
+ */
 @Entity(tableName = "auftragsposition")
 public class AuftragsPosition {
 
-    @Column(name = "auftragsposition_nr")
+    @Id(name = "auftragsposition_nr")
     private String auftragspositionNr;
 
-    @Column(name = "auftrags_nr")
-    private String auftragsNr;
+    @JoinColumn(name = "terminauftrag_nr", referencedColumnName = "terminauftrag_nr")
+    private Auftrag auftragsNr;
 
-    @Column(name = "artikel_nr")
-    private String artikelNr;
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
 
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
+    public AuftragsPosition() {}
 
     // Getter und Setter
     public String getAuftragspositionNr() {
@@ -25,27 +27,20 @@ public class AuftragsPosition {
         this.auftragspositionNr = auftragspositionNr;
     }
 
-    public String getAuftragsNr() {
+    public Auftrag getAuftragsNr() {
         return auftragsNr;
     }
 
-    public void setAuftragsNr(String auftragsNr) {
+    public void setAuftragsNr(Auftrag auftragsNr) {
         this.auftragsNr = auftragsNr;
     }
 
-    public String getArtikelNr() {
+    public Material getArtikelNr() {
         return artikelNr;
     }
 
-    public void setArtikelNr(String artikelNr) {
+    public void setArtikelNr(Material artikelNr) {
         this.artikelNr = artikelNr;
     }
 
-    public double getEinzelpreis() {
-        return einzelpreis;
-    }
-
-    public void setEinzelpreis(double einzelpreis) {
-        this.einzelpreis = einzelpreis;
-    }
 }
