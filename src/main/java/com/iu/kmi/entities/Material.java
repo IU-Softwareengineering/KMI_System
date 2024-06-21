@@ -1,16 +1,37 @@
 package com.iu.kmi.entities;
+
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
+import java.math.BigDecimal;
+
+/**
+ * @author Bludwell, Anthony, Anastacia
+ */
+@Entity(tableName = "material")
 public class Material {
     // Attribute
-    private int artikelNummer;
+    @Id(name = "artikel_nr")
+    private String artikelNr;
+    @Column(name = "name")
     private String name;
+    @Column(name = "beschreibung")
     private String beschreibung;
+    @Column(name = "lieferant")
     private String lieferant;
-    private float einkaufsPreis;
-    private float verkaufsPreis;
+    @Column(name = "einkaufspreis")
+    private BigDecimal einkaufsPreis;
+    @Column(name = "verkaufspreis")
+    private BigDecimal verkaufsPreis;
+
+    // No-Args Konstruktor
+    public Material() {
+    }
 
     // Konstruktor
-    public Material(int artikelNummer, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
-        this.artikelNummer = artikelNummer;
+    public Material(String artikelNr, String name, String beschreibung, String lieferant, BigDecimal einkaufsPreis, BigDecimal verkaufsPreis) {
+        this.artikelNr = artikelNr;
         this.name = name;
         this.beschreibung = beschreibung;
         this.lieferant = lieferant;
@@ -19,8 +40,8 @@ public class Material {
     }
 
     // Getter-Methoden
-    public int getArtikelNummer() {
-        return artikelNummer;
+    public String getArtikelNr() {
+        return artikelNr;
     }
 
     public String getName() {
@@ -35,17 +56,17 @@ public class Material {
         return lieferant;
     }
 
-    public float getEinkaufsPreis() {
+    public BigDecimal getEinkaufsPreis() {
         return einkaufsPreis;
     }
 
-    public float getVerkaufsPreis() {
+    public BigDecimal getVerkaufsPreis() {
         return verkaufsPreis;
     }
 
     // Setter-Methoden
-    public void setArtikelNummer(int artikelNummer) {
-        this.artikelNummer = artikelNummer;
+    public void setArtikelNr(String artikelNr) {
+        this.artikelNr = artikelNr;
     }
 
     public void setName(String name) {
@@ -60,11 +81,11 @@ public class Material {
         this.lieferant = lieferant;
     }
 
-    public void setEinkaufsPreis(float einkaufsPreis) {
+    public void setEinkaufsPreis(BigDecimal einkaufsPreis) {
         this.einkaufsPreis = einkaufsPreis;
     }
 
-    public void setVerkaufsPreis(float verkaufsPreis) {
+    public void setVerkaufsPreis(BigDecimal verkaufsPreis) {
         this.verkaufsPreis = verkaufsPreis;
     }
 
@@ -72,7 +93,7 @@ public class Material {
     @Override
     public String toString() { //
         return "Material{" +
-                "artikelNummer=" + artikelNummer +
+                "artikelNummer=" + artikelNr +
                 ", name='" + name + '\'' +
                 ", beschreibung='" + beschreibung + '\'' +
                 ", lieferant='" + lieferant + '\'' +
@@ -81,6 +102,3 @@ public class Material {
                 '}';
     }
 }
-
-
-

@@ -9,9 +9,12 @@ import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 import com.iu.kmi.database.annotations.JoinColumn;
 
+/**
+ * @author Anthony
+ */
+
 @Entity(tableName = "Angebot")
 public class Angebot {
-
     @Id(name = "angebot_nr")
     private String angebotNr;
 
@@ -34,8 +37,7 @@ public class Angebot {
     private Kondition konditionNr;
 
     // Constructor
-    public Angebot(String angebotNr, Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
-        this.angebotNr = angebotNr;
+    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
@@ -44,16 +46,15 @@ public class Angebot {
         this.konditionNr = konditionNr;
     }
 
-    public Angebot() {}
+    public Angebot() {
+    }
 
     // Getter & Setter
-    /**
-     * @return kundenanfrageNr
-     */
 
     public String getAngebotNr() {
         return angebotNr;
     }
+
     public void setAngebotNr(String angebotNr) {
         this.angebotNr = angebotNr;
     }

@@ -1,28 +1,34 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
-@Entity(tableName = "auftrag")
+/**
+ * @author Anthony, Florian
+ */
+@Entity(tableName = "terminauftrag")
 public class Auftrag {
 
-    @Column(name = "auftrag_nr")
+    @Id(name = "terminauftrag_nr")
     private String auftragNr;
 
-    @Column(name = "kunde_nr")
-    private String kundeNr;
+    @JoinColumn(name = "kunde_nr", referencedColumnName ="kunde_nr")
+    private Kunde kundeNr;
 
     @Column(name = "auftragsdatum")
-    private Date auftragsdatum;
+    private LocalDate auftragsdatum;
 
     @Column(name = "lieferdatum")
-    private Date lieferdatum;
+    private LocalDate lieferdatum;
 
-    @Column(name = "angebot_nr")
-    private String angebotNr;
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
+    private Angebot angebotNr;
 
     @Column(name = "status")
     private String status;
+
+    public Auftrag() {}
 
     // Getter und Setter
     public String getAuftragNr() {
@@ -33,35 +39,35 @@ public class Auftrag {
         this.auftragNr = auftragNr;
     }
 
-    public String getKundeNr() {
+    public Kunde getKundeNr() {
         return kundeNr;
     }
 
-    public void setKundeNr(String kundeNr) {
+    public void setKundeNr(Kunde kundeNr) {
         this.kundeNr = kundeNr;
     }
 
-    public Date getAuftragsdatum() {
+    public LocalDate getAuftragsdatum() {
         return auftragsdatum;
     }
 
-    public void setAuftragsdatum(Date auftragsdatum) {
+    public void setAuftragsdatum(LocalDate auftragsdatum) {
         this.auftragsdatum = auftragsdatum;
     }
 
-    public Date getLieferdatum() {
+    public LocalDate getLieferdatum() {
         return lieferdatum;
     }
 
-    public void setLieferdatum(Date lieferdatum) {
+    public void setLieferdatum(LocalDate lieferdatum) {
         this.lieferdatum = lieferdatum;
     }
 
-    public String getAngebotNr() {
+    public Angebot getAngebotNr() {
         return angebotNr;
     }
 
-    public void setAngebotNr(String angebotNr) {
+    public void setAngebotNr(Angebot angebotNr) {
         this.angebotNr = angebotNr;
     }
 
