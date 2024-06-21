@@ -3,20 +3,21 @@ import com.iu.kmi.database.annotations.*;
 
 @Entity(tableName = "angebotsposition")
 public class AngebotsPosition {
-
     @Id(name = "angebotsposition_nr")
     private String angebotspositionNr;
 
-    @Column(name = "angebot_nr")
-    private String angebotNr;
+    @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
+    private Angebot angebotNr;
 
-    @Column(name = "artikel_nr")
-    private String artikelNr;
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
 
     @Column(name = "einzelpreis")
     private double einzelpreis;
 
-    // Getter und Setter
+    public AngebotsPosition() {
+    }
+
     public String getAngebotspositionNr() {
         return angebotspositionNr;
     }
@@ -25,19 +26,19 @@ public class AngebotsPosition {
         this.angebotspositionNr = angebotspositionNr;
     }
 
-    public String getAngebotNr() {
+    public Angebot getAngebotNr() {
         return angebotNr;
     }
 
-    public void setAngebotNr(String angebotNr) {
+    public void setAngebotNr(Angebot angebotNr) {
         this.angebotNr = angebotNr;
     }
 
-    public String getArtikelNr() {
+    public Material getArtikelNr() {
         return artikelNr;
     }
 
-    public void setArtikelNr(String artikelNr) {
+    public void setArtikelNr(Material artikelNr) {
         this.artikelNr = artikelNr;
     }
 
@@ -48,4 +49,5 @@ public class AngebotsPosition {
     public void setEinzelpreis(double einzelpreis) {
         this.einzelpreis = einzelpreis;
     }
+
 }
