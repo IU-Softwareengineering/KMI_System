@@ -9,11 +9,14 @@ import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 import com.iu.kmi.database.annotations.JoinColumn;
 
+/**
+ * @author Anthony
+ */
+
 @Entity(tableName = "Angebot")
 public class Angebot {
-
     @Id(name = "angebot_nr")
-    private String angebotNr;
+    private int angebotNr;
 
     @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
     private Kunde kundeNr;
@@ -33,28 +36,42 @@ public class Angebot {
     @JoinColumn(name = "kondition_nr", referencedColumnName = "kondition_nr")
     private Kondition konditionNr;
 
+    @JoinColumn(name = "kundenanfrage_nr", referencedColumnName = "kundenanfrage_nr")
+    private Kundenanfrage kundenanfrageNr;
+
     // Constructor
-    public Angebot(String angebotNr, Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
-        this.angebotNr = angebotNr;
+    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
         this.waehrung = waehrung;
         this.status = status;
         this.konditionNr = konditionNr;
+        this.kundenanfrageNr = kundenanfrageNr;
     }
-
-    public Angebot() {}
 
     // Getter & Setter
     /**
      * @return kundenanfrageNr
      */
+    public Kundenanfrage getKundenanfrageNr(){
+        return this.kundenanfrageNr;
+    }
 
-    public String getAngebotNr() {
+    /**
+     * Set kundenanfrageNr
+     *
+     * @param kundenanfrageNr new kundenanfrageNr
+     */
+    public void setKundenanfrageNr(final Kundenanfrage kundenanfrageNr){
+        this.kundenanfrageNr = kundenanfrageNr;
+    }
+
+    public int getAngebotNr() {
         return angebotNr;
     }
-    public void setAngebotNr(String angebotNr) {
+
+    public void setAngebotNr(int angebotNr) {
         this.angebotNr = angebotNr;
     }
 
