@@ -5,15 +5,9 @@
 package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
-import com.iu.kmi.entities.Angebot;
-import com.iu.kmi.entities.Kondition;
-import com.iu.kmi.entities.Kunde;
-import com.iu.kmi.entities.Kundenanfrage;
+import com.iu.kmi.entities.*;
 import com.iu.kmi.layout.models.PositionTableModel;
-import com.iu.kmi.repositories.AngebotRepository;
-import com.iu.kmi.repositories.KonditionRepository;
-import com.iu.kmi.repositories.KundeRepository;
-import com.iu.kmi.repositories.KundenanfrageRepository;
+import com.iu.kmi.repositories.*;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -40,6 +34,8 @@ public class AngebotInterface extends javax.swing.JFrame {
     private KonditionRepository konditionRepository;
     private PositionTableModel[] positionTableData;
     private Kundenanfrage kundenAnfrage;
+    private AngebotsPositionRepository angebotsPositionRepository;
+    private AnfragePositionRepository anfragePositionRepository;
 
     /**
      * Creates new form AngebotInterface
@@ -58,6 +54,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         this.kundeRepository = RepositoryProxy.newInstance(KundeRepository.class);
         this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
         this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
+        this.anfragePositionRepository = RepositoryProxy.newInstance(AnfragePositionRepository.class);
     }
 
     private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
@@ -70,6 +67,13 @@ public class AngebotInterface extends javax.swing.JFrame {
         select_kondition.addItem("");
         List<Kondition> konditionen = konditionRepository.findAll().execute();
         konditionen.forEach(kondition -> select_kondition.addItem(kondition.getName()));
+    }
+
+    private void loadAngebotsPositionen(){
+        String sql = "SELECT ap.anfrageposition_nr,ap.artikel_nr,ap.kundenanfrage_nr FROM anfrageposition ap JOIN kundenanfrage ka ON ap.kundenanfrage_nr = ka.kundenanfrage_nr WHERE ka.kundenanfrage_nr = ?;";
+        List<AnfragePosition> anfragePositions = anfragePositionRepository.executeCustomQueryList(sql, this.kundenAnfrage.getKundenanfrageNr());
+
+
     }
 
     private void fillDate(){
@@ -455,6 +459,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         select_kunde.removeAllItems();
         Kunde anfrageKunde = kundenAnfrage.getKunde();
+        this.loadAngebotsPositionen();
 
 
         select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getname());

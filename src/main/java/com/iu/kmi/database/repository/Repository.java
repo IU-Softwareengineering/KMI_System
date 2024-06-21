@@ -11,4 +11,7 @@ public interface Repository <T, ID>{
     void update(T entity);
     void delete(ID id);
     <R> R executeCustomQuery(String sql, Object... params);
+
+    <R> R executeCustomQueryList(String sql, Object... params);
+
 }

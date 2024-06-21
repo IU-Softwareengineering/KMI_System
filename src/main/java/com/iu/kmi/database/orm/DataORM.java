@@ -100,6 +100,10 @@ public class DataORM<T> {
         return returnType.cast(executeUpdateQuery(sql, params));
     }
 
+    public <R> R executeCustomSelectQueryList(Class<R> returnType, String sql, Object... params) throws SQLException, ReflectiveOperationException {
+        return returnType.cast(executeCustomQueryList(sql, params));
+    }
+
     public <R> R executeCustomSelectQuery(Class<R> returnType, String sql, Object... params) throws SQLException, ReflectiveOperationException {
         if (returnType.equals(List.class)) {
             return returnType.cast(executeCustomQueryList(sql, params));

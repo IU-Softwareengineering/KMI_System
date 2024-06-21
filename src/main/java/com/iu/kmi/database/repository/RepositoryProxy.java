@@ -65,7 +65,16 @@ public class RepositoryProxy<T> implements InvocationHandler {
                 } else {
                     return orm.findByField(fieldName, args[0]).findOne();
                 }
-            }  else if (methodName.startsWith("executeCustomQuery")) {
+            } else if (methodName.startsWith("executeCustomQueryList")){
+                String sql = (String) args[0];
+                Object[] params = (Object[]) args[1];
+                Class<?> returnType = method.getReturnType();
+                if(returnType.equals(Integer.class) || returnType.equals(int.class) || returnType.equals(void.class)) {
+                    return orm.executeCustomUpdateQuery(returnType, sql, params);
+                }
+                return orm.executeCustomSelectQueryList(returnType, sql, params);
+
+            } else if (methodName.startsWith("executeCustomQuery")) {
                 String sql = (String) args[0];
                 Object[] params = (Object[]) args[1];
                 Class<?> returnType = method.getReturnType();
