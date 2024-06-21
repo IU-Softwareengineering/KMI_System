@@ -75,15 +75,7 @@ public class DebitorInterface extends javax.swing.JFrame {
         jButton1.setText("Speichern");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try{
-                    jButton1ActionPerformed(evt);
-                }
-                catch(ReflectiveOperationException e){
-                    throw new RuntimeException(e);
-                }
-                catch(SQLException e){
-                    throw new RuntimeException(e);
-                }
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -263,8 +255,7 @@ public class DebitorInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)
-            throws ReflectiveOperationException, SQLException{//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         AdresseRepository adresseRepository = RepositoryProxy.newInstance(AdresseRepository.class);
         Adresse adresse = adresseRepository.findById(jTextField5.getText()).findOne();
 

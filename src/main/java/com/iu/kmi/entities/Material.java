@@ -1,16 +1,35 @@
 package com.iu.kmi.entities;
+
+import com.iu.kmi.database.annotations.Column;
+import com.iu.kmi.database.annotations.Entity;
+import com.iu.kmi.database.annotations.Id;
+
+/**
+ * @author Bludwell, Anthony, Anastacia
+ */
+@Entity(tableName = "material")
 public class Material {
     // Attribute
-    private int artikelNummer;
+    @Id(name = "artikel_nr")
+    private String artikelNr;
+    @Column(name = "name")
     private String name;
+    @Column(name = "beschreibung")
     private String beschreibung;
+    @Column(name = "lieferant")
     private String lieferant;
+    @Column(name = "einkaufspreis")
     private float einkaufsPreis;
+    @Column(name = "verkaufspreis")
     private float verkaufsPreis;
 
+    // No-Args Konstruktor
+    public Material() {
+    }
+
     // Konstruktor
-    public Material(int artikelNummer, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
-        this.artikelNummer = artikelNummer;
+    public Material(String artikelNr, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
+        this.artikelNr = artikelNr;
         this.name = name;
         this.beschreibung = beschreibung;
         this.lieferant = lieferant;
@@ -19,8 +38,8 @@ public class Material {
     }
 
     // Getter-Methoden
-    public int getArtikelNummer() {
-        return artikelNummer;
+    public String getArtikelNr() {
+        return artikelNr;
     }
 
     public String getName() {
@@ -44,8 +63,8 @@ public class Material {
     }
 
     // Setter-Methoden
-    public void setArtikelNummer(int artikelNummer) {
-        this.artikelNummer = artikelNummer;
+    public void setArtikelNr(String artikelNr) {
+        this.artikelNr = artikelNr;
     }
 
     public void setName(String name) {
@@ -72,7 +91,7 @@ public class Material {
     @Override
     public String toString() { //
         return "Material{" +
-                "artikelNummer=" + artikelNummer +
+                "artikelNummer=" + artikelNr +
                 ", name='" + name + '\'' +
                 ", beschreibung='" + beschreibung + '\'' +
                 ", lieferant='" + lieferant + '\'' +
