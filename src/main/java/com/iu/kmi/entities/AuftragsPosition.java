@@ -10,11 +10,13 @@ public class AuftragsPosition {
     @Id(name = "auftragsposition_nr")
     private String auftragspositionNr;
 
-    @JoinColumn(name = "auftrags_nr", referencedColumnName = "auftrags_nr")
+    @JoinColumn(name = "terminauftrag_nr", referencedColumnName = "terminauftrag_nr")
     private Auftrag auftragsNr;
 
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
+
+    public AuftragsPosition() {}
 
     // Getter und Setter
     public String getAuftragspositionNr() {

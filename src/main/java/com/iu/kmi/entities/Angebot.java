@@ -16,7 +16,7 @@ import com.iu.kmi.database.annotations.JoinColumn;
 @Entity(tableName = "Angebot")
 public class Angebot {
     @Id(name = "angebot_nr")
-    private int angebotNr;
+    private String angebotNr;
 
     @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
     private Kunde kundeNr;
@@ -36,42 +36,26 @@ public class Angebot {
     @JoinColumn(name = "kondition_nr", referencedColumnName = "kondition_nr")
     private Kondition konditionNr;
 
-    @JoinColumn(name = "kundenanfrage_nr", referencedColumnName = "kundenanfrage_nr")
-    private Kundenanfrage kundenanfrageNr;
-
     // Constructor
-    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
+    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
         this.waehrung = waehrung;
         this.status = status;
         this.konditionNr = konditionNr;
-        this.kundenanfrageNr = kundenanfrageNr;
+    }
+
+    public Angebot() {
     }
 
     // Getter & Setter
-    /**
-     * @return kundenanfrageNr
-     */
-    public Kundenanfrage getKundenanfrageNr(){
-        return this.kundenanfrageNr;
-    }
 
-    /**
-     * Set kundenanfrageNr
-     *
-     * @param kundenanfrageNr new kundenanfrageNr
-     */
-    public void setKundenanfrageNr(final Kundenanfrage kundenanfrageNr){
-        this.kundenanfrageNr = kundenanfrageNr;
-    }
-
-    public int getAngebotNr() {
+    public String getAngebotNr() {
         return angebotNr;
     }
 
-    public void setAngebotNr(int angebotNr) {
+    public void setAngebotNr(String angebotNr) {
         this.angebotNr = angebotNr;
     }
 

@@ -28,6 +28,8 @@ public class Auftrag {
     @Column(name = "status")
     private String status;
 
+    public Auftrag() {}
+
     // Getter und Setter
     public String getAuftragNr() {
         return auftragNr;

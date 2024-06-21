@@ -16,8 +16,7 @@ import java.math.BigDecimal;
  */
 @Entity(tableName = "kondition")
 public class Kondition {
-    @Id
-    @Column(name = "kondition_nr")
+    @Id(name = "kondition_nr")
     private String konditionNr;
     @Column(name = "name")
     private String name;

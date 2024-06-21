@@ -16,7 +16,7 @@ public class Lieferung {
     @Id(name = "lieferung_nr")
     private String lieferungNr;
 
-    @JoinColumn(name = "auftrag_nr", referencedColumnName = "auftrag_nr")
+    @JoinColumn(name = "terminauftrag_nr", referencedColumnName = "terminauftrag_nr")
     private Auftrag auftrag;
 
     @JoinColumn(name = "rechnung_nr", referencedColumnName = "rechnung_nr")

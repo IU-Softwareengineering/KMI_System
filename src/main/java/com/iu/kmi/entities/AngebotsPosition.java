@@ -15,6 +15,9 @@ public class AngebotsPosition {
     @Column(name = "einzelpreis")
     private double einzelpreis;
 
+    public AngebotsPosition() {
+    }
+
     public String getAngebotspositionNr() {
         return angebotspositionNr;
     }
