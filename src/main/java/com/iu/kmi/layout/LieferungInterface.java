@@ -4,9 +4,14 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Auftrag;
+import com.iu.kmi.entities.AuftragsPosition;
 import com.iu.kmi.entities.Lieferung;
 import com.iu.kmi.entities.Rechnung;
+import com.iu.kmi.repositories.AuftragRespository;
+import com.iu.kmi.repositories.AuftragspositionRepository;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -55,7 +62,7 @@ public class LieferungInterface extends javax.swing.JFrame {
 
         jLabel1.setText("Lieferung anlegen");
 
-        jLabel2.setText("Lieferungsnummer:");
+        jLabel2.setText("Auftragsnummer:");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -175,7 +182,8 @@ public class LieferungInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // speichern
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadAllData() {
@@ -200,58 +208,21 @@ public class LieferungInterface extends javax.swing.JFrame {
             });
         }
     }
-private List<Lieferung> fetchAllLieferungen() {
-        List<Lieferung> lieferungen = new ArrayList<>();
-
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
-            String query = "SELECT * FROM lieferung";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Lieferung lieferung = new Lieferung();
-                lieferung.setLieferungNr(resultSet.getString("lieferung_nr"));
-                lieferung.setStatus(resultSet.getString("status"));
-                lieferung.setLieferDatum(resultSet.getString("lieferdatum"));
-
-                String auftragNr = resultSet.getString("auftrag_nr");
-                Auftrag auftrag = fetchAuftrag(auftragNr);
-                lieferung.setAuftrag(auftrag);
-
-                String rechnungNr = resultSet.getString("rechnung_nr");
-                Rechnung rechnung = fetchRechnung(rechnungNr);
-                lieferung.setRechnung(rechnung);
-
-                lieferungen.add(lieferung);
+private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException{
+        List<AuftragsPosition> finalAuftragspositionen = new ArrayList<>();
+        AuftragspositionRepository auftragspositionRepository = RepositoryProxy.newInstance(AuftragspositionRepository.class);
+        List<AuftragsPosition> auftragsPositions = auftragspositionRepository.findAll().execute();
+        for (AuftragsPosition a : auftragsPositions){
+            if(Objects.equals(a.getAuftragsNr().getAuftragNr(), auftragsNr)){
+                finalAuftragspositionen.add(a);
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return lieferungen;
+        return auftragsPositions;
     }
-    private Auftrag fetchAuftrag(String auftragNr) {
-        Auftrag auftrag = new Auftrag();
-
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
-            String query = "SELECT * FROM auftrag WHERE auftrag_nr = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, auftragNr);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                auftrag.setAuftragNr(resultSet.getString("auftrag_nr"));
-                auftrag.setArtikelName(resultSet.getString("artikelname"));
-                auftrag.setMenge(resultSet.getInt("menge"));
-                auftrag.setVerfugbarkeit(resultSet.getBoolean("verfugbarkeit"));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private Auftrag fetchAuftrag(String auftragNr) throws ReflectiveOperationException, SQLException{
+        AuftragRespository auftragRespository = RepositoryProxy.newInstance(AuftragRespository.class);
+        Auftrag auftrag = auftragRespository.findById(auftragNr).findOne();
 
         return auftrag;
     }
@@ -259,20 +230,6 @@ private List<Lieferung> fetchAllLieferungen() {
     private Rechnung fetchRechnung(String rechnungNr) {
         Rechnung rechnung = new Rechnung();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/deine_datenbank", "benutzername", "passwort")) {
-            String query = "SELECT * FROM rechnung WHERE rechnung_nr = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, rechnungNr);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                rechnung.setRechnungNr(resultSet.getString("rechnung_nr"));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         return rechnung;
     }
