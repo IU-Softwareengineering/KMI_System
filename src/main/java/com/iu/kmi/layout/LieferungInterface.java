@@ -28,7 +28,8 @@ import javax.swing.table.TableColumnModel;
 
 /**
  *
- * @author joschkoa
+ * @author joschkoa, Julian Treichl, Anastacia
+ * @since 21.06.2024
  */
 public class LieferungInterface extends javax.swing.JFrame {
 
