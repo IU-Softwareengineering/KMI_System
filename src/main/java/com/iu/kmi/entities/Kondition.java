@@ -4,6 +4,8 @@ import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 
+import java.math.BigDecimal;
+
 /**
  * @author Julian Treichel
  * @since 07.06.2024
@@ -14,8 +16,7 @@ import com.iu.kmi.database.annotations.Id;
  */
 @Entity(tableName = "kondition")
 public class Kondition {
-    @Id
-    @Column(name = "kondition_nr")
+    @Id(name = "kondition_nr")
     private String konditionNr;
     @Column(name = "name")
     private String name;
@@ -24,7 +25,7 @@ public class Kondition {
     @Column(name = "lieferbedingungen")
     private String lieferbedingungen;
     @Column(name = "rabatt")
-    private double rabatt;
+    private BigDecimal rabatt;
 
     /**
      * Konstruktor für eine neue Kondition mit dem angegebenen Namen, Zahlungsmethode, Lieferbedingungen und Rabatt.
@@ -34,12 +35,14 @@ public class Kondition {
      * @param lieferbedingungen die Lieferbedingungen, die mit der Kondition verbunden sind
      * @param rabatt der Rabatt, der mit der Kondition verbunden ist
      */
-    public Kondition(String name, String zahlungsbedingungen, String lieferbedingungen, double rabatt) {
+    public Kondition(String name, String zahlungsbedingungen, String lieferbedingungen, BigDecimal rabatt) {
         this.name = name;
         this.zahlungsbedingungen = zahlungsbedingungen;
         this.lieferbedingungen = lieferbedingungen;
         this.rabatt = rabatt;
     }
+
+    public Kondition() {}
 
     /**
      * Gibt die ID der Kondition zurück.
@@ -118,7 +121,7 @@ public class Kondition {
      *
      * @return der Rabatt, der mit der Kondition verbunden ist
      */
-    public double getRabatt() {
+    public BigDecimal getRabatt() {
         return rabatt;
     }
 
@@ -127,7 +130,7 @@ public class Kondition {
      *
      * @param rabatt der neue Rabatt, der mit der Kondition verbunden ist
      */
-    public void setRabatt(double rabatt) {
+    public void setRabatt(BigDecimal rabatt) {
         this.rabatt = rabatt;
     }
 

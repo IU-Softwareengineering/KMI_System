@@ -7,5 +7,5 @@ import com.iu.kmi.entities.Rechnung;
  * @author Julian Treichel
  * @since 20.06.2024
  */
-public interface RechnungRepository extends Repository<Rechnung,Integer>{
+public interface RechnungRepository extends Repository<Rechnung,String>{
 }

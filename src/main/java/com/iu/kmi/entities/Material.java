@@ -4,6 +4,8 @@ import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
 
+import java.math.BigDecimal;
+
 /**
  * @author Bludwell, Anthony, Anastacia
  */
@@ -19,16 +21,16 @@ public class Material {
     @Column(name = "lieferant")
     private String lieferant;
     @Column(name = "einkaufspreis")
-    private float einkaufsPreis;
+    private BigDecimal einkaufsPreis;
     @Column(name = "verkaufspreis")
-    private float verkaufsPreis;
+    private BigDecimal verkaufsPreis;
 
     // No-Args Konstruktor
     public Material() {
     }
 
     // Konstruktor
-    public Material(String artikelNr, String name, String beschreibung, String lieferant, float einkaufsPreis, float verkaufsPreis) {
+    public Material(String artikelNr, String name, String beschreibung, String lieferant, BigDecimal einkaufsPreis, BigDecimal verkaufsPreis) {
         this.artikelNr = artikelNr;
         this.name = name;
         this.beschreibung = beschreibung;
@@ -54,11 +56,11 @@ public class Material {
         return lieferant;
     }
 
-    public float getEinkaufsPreis() {
+    public BigDecimal getEinkaufsPreis() {
         return einkaufsPreis;
     }
 
-    public float getVerkaufsPreis() {
+    public BigDecimal getVerkaufsPreis() {
         return verkaufsPreis;
     }
 
@@ -79,11 +81,11 @@ public class Material {
         this.lieferant = lieferant;
     }
 
-    public void setEinkaufsPreis(float einkaufsPreis) {
+    public void setEinkaufsPreis(BigDecimal einkaufsPreis) {
         this.einkaufsPreis = einkaufsPreis;
     }
 
-    public void setVerkaufsPreis(float verkaufsPreis) {
+    public void setVerkaufsPreis(BigDecimal verkaufsPreis) {
         this.verkaufsPreis = verkaufsPreis;
     }
 
@@ -100,6 +102,3 @@ public class Material {
                 '}';
     }
 }
-
-
-

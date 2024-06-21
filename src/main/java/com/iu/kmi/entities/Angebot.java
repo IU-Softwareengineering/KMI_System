@@ -1,5 +1,6 @@
 package com.iu.kmi.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -15,16 +16,16 @@ import com.iu.kmi.database.annotations.JoinColumn;
 @Entity(tableName = "Angebot")
 public class Angebot {
     @Id(name = "angebot_nr")
-    private int angebotNr;
+    private String angebotNr;
 
     @JoinColumn(name = "kunde_nr", referencedColumnName = "kunde_nr")
     private Kunde kundeNr;
 
     @Column(name = "angebotsdatum")
-    private Date angebotsdatum;
+    private LocalDate angebotsdatum;
 
     @Column(name = "gueltig_bis")
-    private Date gueltigBis;
+    private LocalDate gueltigBis;
 
     @Column(name = "waehrung")
     private String waehrung;
@@ -35,42 +36,26 @@ public class Angebot {
     @JoinColumn(name = "kondition_nr", referencedColumnName = "kondition_nr")
     private Kondition konditionNr;
 
-    @JoinColumn(name = "kundenanfrage_nr", referencedColumnName = "kundenanfrage_nr")
-    private Kundenanfrage kundenanfrageNr;
-
     // Constructor
-    public Angebot(Kunde kundeNr, Date angebotsdatum, Date gueltigBis, String waehrung, String status, Kondition konditionNr, Kundenanfrage kundenanfrageNr) {
+    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
         this.waehrung = waehrung;
         this.status = status;
         this.konditionNr = konditionNr;
-        this.kundenanfrageNr = kundenanfrageNr;
+    }
+
+    public Angebot() {
     }
 
     // Getter & Setter
-    /**
-     * @return kundenanfrageNr
-     */
-    public Kundenanfrage getKundenanfrageNr(){
-        return this.kundenanfrageNr;
-    }
 
-    /**
-     * Set kundenanfrageNr
-     *
-     * @param kundenanfrageNr new kundenanfrageNr
-     */
-    public void setKundenanfrageNr(final Kundenanfrage kundenanfrageNr){
-        this.kundenanfrageNr = kundenanfrageNr;
-    }
-
-    public int getAngebotNr() {
+    public String getAngebotNr() {
         return angebotNr;
     }
 
-    public void setAngebotNr(int angebotNr) {
+    public void setAngebotNr(String angebotNr) {
         this.angebotNr = angebotNr;
     }
 
@@ -82,19 +67,19 @@ public class Angebot {
         this.kundeNr = kundeNr;
     }
 
-    public Date getAngebotsdatum() {
+    public LocalDate getAngebotsdatum() {
         return angebotsdatum;
     }
 
-    public void setAngebotsdatum(Date angebotsdatum) {
+    public void setAngebotsdatum(LocalDate angebotsdatum) {
         this.angebotsdatum = angebotsdatum;
     }
 
-    public Date getGueltigBis() {
+    public LocalDate getGueltigBis() {
         return gueltigBis;
     }
 
-    public void setGueltigBis(Date gueltigBis) {
+    public void setGueltigBis(LocalDate gueltigBis) {
         this.gueltigBis = gueltigBis;
     }
 

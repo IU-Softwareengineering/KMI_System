@@ -17,7 +17,6 @@ import com.iu.kmi.database.annotations.JoinColumn;
 @Entity(tableName = "rechnung")
 public class Rechnung {
     @Id(name = "rechnung_nr")
-    @Column(name = "rechnung_nr")
     private String rechnungNr;
 
     @JoinColumn(name = "debitor_nr", referencedColumnName = "debitor_nr")
