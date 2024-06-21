@@ -8,6 +8,7 @@ import com.iu.kmi.database.annotations.*;
  *
  * @author OT
  */
+@Entity(tableName = "kunde")
 public class Kunde {
 
     // Unique identifier for the customer

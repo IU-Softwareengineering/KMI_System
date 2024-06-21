@@ -16,8 +16,6 @@ public class AnfragePosition {
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
 
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
 
     public String getAnfragepositionNr() {
         return anfragepositionNr;
@@ -41,14 +39,6 @@ public class AnfragePosition {
 
     public void setArtikelNr(Material artikelNr) {
         this.artikelNr = artikelNr;
-    }
-
-    public double getEinzelpreis() {
-        return einzelpreis;
-    }
-
-    public void setEinzelpreis(double einzelpreis) {
-        this.einzelpreis = einzelpreis;
     }
 
 }
