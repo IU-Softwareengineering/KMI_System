@@ -1,8 +1,9 @@
 package com.iu.kmi;
 
-public class KmiSystem {
+import java.sql.SQLException;
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+public class KmiSystem {
+    public static void main(String[] args) throws SQLException, ReflectiveOperationException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
     }
 }

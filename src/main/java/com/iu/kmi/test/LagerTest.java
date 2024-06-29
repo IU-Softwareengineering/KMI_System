@@ -1,7 +1,11 @@
 package com.iu.kmi.test;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import com.iu.kmi.entities.Adresse;
+import com.iu.kmi.entities.Lager;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+//import org.junit.jupiter.api.Test;
+//import static org.junit.jupiter.api.Assertions.*;
 
 public class LagerTest {
 
@@ -10,7 +14,7 @@ public class LagerTest {
         // Arrange
         String lagerNummer = "L001";
         String name = "Hauptlager";
-        int adresse = 12345;
+        Adresse adresse = new Adresse("abc","hnr","1234","stadt","land");
 
         // Act
         Lager lager = new Lager(lagerNummer, name, adresse);
@@ -24,7 +28,8 @@ public class LagerTest {
     @Test
     public void testSetLagerNummer() {
         // Arrange
-        Lager lager = new Lager("L001", "Hauptlager", 12345);
+        Adresse adresse = new Adresse("abc", "hnr", "1234", "stadt", "land");
+        Lager lager = new Lager("L001", "Hauptlager", adresse);
         String newLagerNummer = "L002";
 
         // Act
@@ -37,7 +42,8 @@ public class LagerTest {
     @Test
     public void testSetName() {
         // Arrange
-        Lager lager = new Lager("L001", "Hauptlager", 12345);
+        Adresse adresse = new Adresse("abc", "hnr", "1234", "stadt", "land");
+        Lager lager = new Lager("L001", "Hauptlager", adresse);
         String newName = "Nebenlager";
 
         // Act
@@ -50,8 +56,9 @@ public class LagerTest {
     @Test
     public void testSetAdresse() {
         // Arrange
-        Lager lager = new Lager("L001", "Hauptlager", 12345);
-        int newAdresse = 54321;
+        Adresse adresse = new Adresse("abc", "hnr", "1234", "stadt", "land");
+        Lager lager = new Lager("L001", "Hauptlager", adresse);
+        Adresse newAdresse = new Adresse("def", "hnr2", "5678", "stadt2", "land2");
 
         // Act
         lager.setAdresse(newAdresse);
@@ -65,7 +72,7 @@ public class LagerTest {
         // Arrange
         String lagerNummer = "L001";
         String name = "Hauptlager";
-        int adresse = 12345;
+        Adresse adresse = new Adresse("abc", "hnr", "1234", "stadt", "land");
         Lager lager = new Lager(lagerNummer, name, adresse);
         String expected = "Lager{lagerNummer=" + lagerNummer + ", name='" + name + "', adresse=" + adresse + "}";
 
