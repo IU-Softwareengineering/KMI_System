@@ -18,13 +18,13 @@ public class Lagerbestand {
      * Die eindeutige Kennung für den Artikel.
      */
     @Id(name = "artikel_nr")
-    private String artikel_nr;
+    private Material artikel_nr;
 
     /**
      * Die eindeutige Kennung für das Lager.
      */
     @Id(name = "lager_nr")
-    private String lager_nr;
+    private Lager lager_nr;
 
     /**
      * Die Menge des Artikels im Lager.
@@ -48,7 +48,7 @@ public class Lagerbestand {
      * @param lager_nr die eindeutige Kennung für das Lager
      * @param menge die Menge des Artikels im Lager
      */
-    public Lagerbestand(String artikel_nr, String lager_nr, int menge) {
+    public Lagerbestand(Material artikel_nr, Lager lager_nr, int menge) {
         this.artikel_nr = artikel_nr;
         this.lager_nr = lager_nr;
         this.menge = menge;
@@ -60,7 +60,7 @@ public class Lagerbestand {
      *
      * @return die eindeutige Kennung des Artikels
      */
-    public String getArtikelNummer() {
+    public Material getArtikelNummer() {
         return artikel_nr;
     }
 
@@ -69,7 +69,7 @@ public class Lagerbestand {
      *
      * @return die eindeutige Kennung des Lagers
      */
-    public String getLagerNummer() {
+    public Lager getLagerNummer() {
         return lager_nr;
     }
 
@@ -88,7 +88,7 @@ public class Lagerbestand {
      *
      * @param artikel_nr die eindeutige Kennung für den Artikel
      */
-    public void setArtikelNummer(String artikel_nr) {
+    public void setArtikelNummer(Material artikel_nr) {
         this.artikel_nr = artikel_nr;
     }
 
@@ -97,7 +97,7 @@ public class Lagerbestand {
      *
      * @param lager_nr die eindeutige Kennung für das Lager
      */
-    public void setLagerNummer(String lager_nr) {
+    public void setLagerNummer(Lager lager_nr) {
         this.lager_nr = lager_nr;
     }
 
