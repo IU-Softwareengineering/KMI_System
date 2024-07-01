@@ -4,6 +4,9 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Adresse;
+import com.iu.kmi.repositories.AdresseRepository;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,7 +21,6 @@ public class AdresseInterface extends javax.swing.JFrame {
     public AdresseInterface() {
         initComponents();
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -231,16 +233,52 @@ public class AdresseInterface extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe für Straßenname.", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // !!! Man müsste sich einigen, inwiefern man nun die Validation erfolgen lassen soll, da es mehrere Möglichkeiten gibt.
         // -> Direkter Eingriff und "ä,ö,ü, ß ändern" oder von FIlter aus Eingabe verhindern und User soll selbst nochmal machen
-        
         // TODO Weiterverarbeitung
-        
+
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    /**
+     * Diese Methode wird aufgerufen, wenn der Benutzer auf jButton1 klickt. Sie
+     * erstellt eine neue Adresse und fügt sie in das AdresseRepository ein.
+     *
+     * @param evt das Ereignis, das auftritt, wenn der Benutzer auf den Button
+     * klickt
+     * @author Othman
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // Erstellen einer Instanz von AdresseRepository durch RepositoryProxy
+            AdresseRepository adresseRepository = RepositoryProxy.newInstance(
+                    AdresseRepository.class
+            );
+
+            // Erstellen eines neuen Adresse-Objekts mit den Daten aus den Textfeldern und der ComboBox
+            Adresse adresse = new Adresse(
+                    (String) jTextField1.getText(), // Straße name
+                    //TODO Soll interface anpasssen
+                    (String) "Nummer", // Straße Nummer (konstante Zeichenkette)
+                    (String) jTextField4.getText(), // PLZ
+                    (String) jTextField2.getText(), // Stadt
+                    (String) jComboBox1.getSelectedItem() // Land (ausgewähltes Element aus der ComboBox)
+            );
+
+            // Einfügen der neuen Adresse in das Repository
+            adresseRepository.insert(adresse);
+
+            // Optional: Bestätigung der erfolgreichen Einfügung
+            JOptionPane.showMessageDialog(null, "Adresse erfolgreich eingefügt!");
+        } catch (Exception ex) {
+            // Fehlerbehandlung: Anzeige einer Fehlermeldung
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Fehler beim Einfügen der Adresse: " + ex.getMessage(),
+                    "Fehler",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -253,9 +291,46 @@ public class AdresseInterface extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Die Postleitzahl muss genau 5 Zeichen lang sein.");
         }
     }//GEN-LAST:event_jTextField4ActionPerformed
-
+    /**
+     * Diese Methode wird aufgerufen, wenn der Benutzer auf Aktualisieren
+     * klickt. Sie erstellt eine neue Adresse und aktualisiert sie im
+     * AdresseRepository.
+     *
+     * @param evt das Ereignis, das auftritt, wenn der Benutzer auf den Button
+     * klickt
+     * @author Othman
+     *
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // Erstellen einer Instanz von AdresseRepository durch RepositoryProxy
+            AdresseRepository adresseRepository = RepositoryProxy.newInstance(
+                    AdresseRepository.class
+            );
+
+            // Erstellen eines neuen Adresse-Objekts mit den Daten aus den Textfeldern und der ComboBox
+            Adresse adresse = new Adresse(
+                    (String) jTextField1.getText(), // Straße name
+                    (String) "Nummer", // Straße Nummer (konstante Zeichenkette)
+                    (String) jTextField4.getText(), // PLZ
+                    (String) jTextField2.getText(), // Stadt
+                    (String) jComboBox1.getSelectedItem() // Land (ausgewähltes Element aus der ComboBox)
+            );
+
+            // Aktualisieren der Adresse im Repository
+            adresseRepository.update(adresse);
+
+            // Optional: Bestätigung der erfolgreichen Aktualisierung
+            JOptionPane.showMessageDialog(null, "Adresse erfolgreich aktualisiert!");
+        } catch (Exception e) {
+            // Fehlerbehandlung: Anzeige einer Fehlermeldung
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Fehler beim Aktualisieren der Adresse: " + e.getMessage(),
+                    "Fehler",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
