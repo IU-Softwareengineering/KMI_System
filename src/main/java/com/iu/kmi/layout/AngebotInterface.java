@@ -6,12 +6,17 @@ package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.*;
+import com.iu.kmi.layout.models.AngebotKonditionModel;
+import com.iu.kmi.layout.models.AngebotStatusModel;
 import com.iu.kmi.layout.models.PositionTableModel;
 import com.iu.kmi.repositories.*;
 
-import javax.swing.JOptionPane;
+import javax.sound.midi.SysexMessage;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -61,9 +66,11 @@ public class AngebotInterface extends javax.swing.JFrame {
 
     private void fillKonditionenSelect() throws ReflectiveOperationException, SQLException {
         select_kondition.removeAllItems();
-        select_kondition.addItem("");
+        select_kondition.addItem(new AngebotKonditionModel(null, true));
         List<Kondition> konditionen = konditionRepository.findAll().execute();
-        konditionen.forEach(kondition -> select_kondition.addItem(kondition.getName()));
+        konditionen.forEach(kondition -> {
+            select_kondition.addItem(new AngebotKonditionModel(kondition, false));
+        });
     }
 
     private void loadAngebotsPositionen(){
@@ -144,7 +151,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         textbox_angebotsid = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        select_status = new javax.swing.JComboBox<>();
+        select_status = new javax.swing.JComboBox<AngebotStatusModel>();
         select_kondition = new javax.swing.JComboBox<>();
         select_kunde = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
@@ -239,7 +246,14 @@ public class AngebotInterface extends javax.swing.JFrame {
 
         select_status.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         select_status.setForeground(new java.awt.Color(51, 51, 51));
-        select_status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Status 1", "Status 2", "Status 3", "Status 4" }));
+        AngebotStatusModel[] statusArray = new AngebotStatusModel[]{
+                new AngebotStatusModel("test", "test")
+        };
+
+        // Create a JComboBox and set its model
+        // JComboBox<AngebotStatusModel> selectStatus = new JComboBox<>();
+        select_status.setModel(new DefaultComboBoxModel<>(statusArray));
+
         select_status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         select_status.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -249,7 +263,6 @@ public class AngebotInterface extends javax.swing.JFrame {
 
         select_kondition.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         select_kondition.setForeground(new java.awt.Color(51, 51, 51));
-        select_kondition.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         select_kondition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 select_konditionActionPerformed(evt);
@@ -526,27 +539,63 @@ public class AngebotInterface extends javax.swing.JFrame {
         Angebot angebot = new Angebot();
 
         String angebotID = textbox_angebotsid.getText();
+        if (angebotID.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Angebots-ID' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         angebot.setAngebotNr(angebotID);
 
         if (this.kundenAnfrage == null) {
-            // TODO: handle missin
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Kunde' an", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
         angebot.setKundeNr(kundenAnfrage.getKunde());
 
-        LocalDate gueltigBis = LocalDate.parse(textbox_gueltig.getText());
-        angebot.setGueltigBis(gueltigBis);
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String gueltigBisText = textbox_gueltig.getText();
+        if (gueltigBisText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Gültig bis' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            LocalDate gueltigBis = LocalDate.parse(gueltigBisText, dtFormatter);
+            angebot.setGueltigBis(gueltigBis);
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "'Gültig bis' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        LocalDate angebotsDatum = LocalDate.parse(textbox_angebotsdatum.getText());
-        angebot.setAngebotsdatum(angebotsDatum);
+        String angebotsDatumText = textbox_angebotsdatum.getText();
+        if (angebotsDatumText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Angebotsdatum' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try {
+            LocalDate angebotsDatum = LocalDate.parse(angebotsDatumText, dtFormatter);
+            angebot.setAngebotsdatum(angebotsDatum);
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "'Angebotsdatum' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        // kondition -> TODO: Model hinterlegen
+        AngebotKonditionModel kondition = (AngebotKonditionModel) select_kondition.getSelectedItem();
+        if (kondition == null || kondition.isPlaceholder()) {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Kondition' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        angebot.setKonditionNr(kondition.value);
 
-        // status
+        AngebotStatusModel status = (AngebotStatusModel) select_status.getSelectedItem();
+        if (status == null) {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Status' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        angebot.setStatus(status.value);
+
+        System.out.println(angebot);
+        //this.angebotRepository.insert(angebot);
 
         // angebotspositionen fetchen, handlen & in db schreiben
-
-        // this.angebotRepository.insert(angebot);
 
     }//GEN-LAST:event_button_speichernActionPerformed
 
@@ -559,9 +608,12 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_select_statusActionPerformed
 
     private void select_konditionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_select_konditionActionPerformed
-        if (select_kondition.getSelectedItem() != "") {
-            
+        /*
+        AngebotKonditionModel selection = (AngebotKonditionModel) select_kondition.getSelectedItem();
+        if (selection != null && !selection.isPlaceholder()) {
+            System.out.println("kondition selected " + select_kondition.getSelectedItem().toString());
         }
+        */
     }//GEN-LAST:event_select_konditionActionPerformed
 
     private void textbox_anfrageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_anfrageActionPerformed
@@ -569,7 +621,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_textbox_anfrageActionPerformed
 
     private void button_abbrechenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_abbrechenActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_button_abbrechenActionPerformed
 
     private void select_kundeComponentShown(java.awt.event.ComponentEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_select_kundeComponentShown
@@ -653,9 +705,9 @@ public class AngebotInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> select_kondition;
+    private javax.swing.JComboBox<AngebotKonditionModel> select_kondition;
     private javax.swing.JComboBox<String> select_kunde;
-    private javax.swing.JComboBox<String> select_status;
+    private javax.swing.JComboBox<AngebotStatusModel> select_status;
     private javax.swing.JTable table_positionen;
     private javax.swing.JTextField textbox_anfrage;
     private javax.swing.JTextField textbox_angebotsdatum;

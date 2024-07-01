@@ -106,4 +106,17 @@ public class Angebot {
     public void setKonditionNr(Kondition konditionNr) {
         this.konditionNr = konditionNr;
     }
+
+    @Override
+    public String toString() {
+        return "Angebot{" +
+                "angebotNr='" + angebotNr + '\'' +
+                ", kundeNr=" + kundeNr +
+                ", angebotsdatum=" + angebotsdatum +
+                ", gueltigBis=" + gueltigBis +
+                ", waehrung='" + waehrung + '\'' +
+                ", status='" + status + '\'' +
+                ", konditionNr=" + konditionNr +
+                '}';
+    }
 }
