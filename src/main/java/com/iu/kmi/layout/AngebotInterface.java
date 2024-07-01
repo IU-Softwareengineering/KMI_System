@@ -16,9 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  *
@@ -46,7 +44,6 @@ public class AngebotInterface extends javax.swing.JFrame {
         this.fillKundenSelect();
         this.fillKonditionenSelect();
         this.fillDate();
-        this.fillAngebotspositionen();
     }
 
     private void initRepository() {
@@ -59,7 +56,7 @@ public class AngebotInterface extends javax.swing.JFrame {
 
     private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
         List<Kunde> kunden = kundeRepository.findAll().execute();
-        kunden.forEach(kunde -> select_kunde.addItem(kunde.getVorname() + " " + kunde.getname()));
+        kunden.forEach(kunde -> select_kunde.addItem(kunde.getVorname() + " " + kunde.getName()));
     }
 
     private void fillKonditionenSelect() throws ReflectiveOperationException, SQLException {
@@ -73,7 +70,30 @@ public class AngebotInterface extends javax.swing.JFrame {
         String sql = "SELECT ap.anfrageposition_nr,ap.artikel_nr,ap.kundenanfrage_nr FROM anfrageposition ap JOIN kundenanfrage ka ON ap.kundenanfrage_nr = ka.kundenanfrage_nr WHERE ka.kundenanfrage_nr = ?;";
         List<AnfragePosition> anfragePositions = anfragePositionRepository.executeCustomQueryList(sql, this.kundenAnfrage.getKundenanfrageNr());
 
+        Map<String, List<AnfragePosition>> grouped = groupAnfragePositionsByArtikelNr(anfragePositions);
+        this.positionTableData = new PositionTableModel[grouped.size()];
+        int i = 0;
+        for (Map.Entry<String, List<AnfragePosition>> entry : grouped.entrySet()) {
+            this.positionTableData[i] = PositionTableModel.convert(entry.getValue());
+            i++;
+        }
 
+
+
+    }
+
+    public static Map<String, List<AnfragePosition>> groupAnfragePositionsByArtikelNr(List<AnfragePosition> anfragePositions) {
+        Map<String, List<AnfragePosition>> groupedAnfragePositions = new HashMap<>();
+
+        for (AnfragePosition ap : anfragePositions) {
+            String artikelNr = ap.getArtikelNr().getArtikelNr();
+            if (!groupedAnfragePositions.containsKey(artikelNr)) {
+                groupedAnfragePositions.put(artikelNr, new ArrayList<>());
+            }
+            groupedAnfragePositions.get(artikelNr).add(ap);
+        }
+
+        return groupedAnfragePositions;
     }
 
     private void fillDate(){
@@ -81,16 +101,24 @@ public class AngebotInterface extends javax.swing.JFrame {
     }
     
     private void fillAngebotspositionen() {
-        table_positionen.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"1", "Name1", "Einzelpr", "Menge", "Gesamtpr"},
-                {"2", "Name2", "Einzelpr", "Menge", "Gesamtpr"},
-                {"3", "Name3", "Einzelpr", "Menge", "Gesamtpr"},
-            },
-            new String [] {
-                "Nummer", "Name", "Einzelpreis", "Menge", "Gesamtpreis"
-            }
-        ));
+        this.loadAngebotsPositionen();
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Nummer", "Name", "Einzelpreis", "Menge", "Gesamtpreis"}
+        );
+
+        table_positionen.setModel(model);
+
+        // Fülle das Modell mit den Daten aus positionTableData
+        for (PositionTableModel position : positionTableData) {
+            model.addRow(new Object[]{
+                    position.nummer,
+                    position.name,
+                    position.einzelpreis,
+                    position.menge,
+                    position.gesamtpreis
+            });
+        }
     }
 
 
@@ -459,10 +487,10 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         select_kunde.removeAllItems();
         Kunde anfrageKunde = kundenAnfrage.getKunde();
-        this.loadAngebotsPositionen();
+        this.fillAngebotspositionen();
 
 
-        select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getname());
+        select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getName());
 
     }
 
