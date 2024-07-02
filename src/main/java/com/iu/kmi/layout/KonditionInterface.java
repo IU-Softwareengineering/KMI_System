@@ -3,6 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.iu.kmi.layout;
+import java.math.BigDecimal;
+
+import javax.swing.plaf.basic.BasicIconFactory;
+
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.Kondition;
 import com.iu.kmi.repositories.KonditionRepository;
@@ -198,7 +202,7 @@ public class KonditionInterface extends javax.swing.JFrame {
 
     private void saveButton(java.awt.event.ActionEvent evt) {
         //abspeichern eines Konditions
-        Kondition kondition = new Kondition(jTextField2.getText(), jComboBox2.getSelectedItem().toString(), jComboBox3.getSelectedItem().toString(), Double.parseDouble(jTextField4.getText()));
+        Kondition kondition = new Kondition(jTextField2.getText(), jComboBox2.getSelectedItem().toString(), jComboBox3.getSelectedItem().toString(), new BigDecimal(jTextField4.getText()));
         KonditionRepository konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
         konditionRepository.insert(kondition);
 

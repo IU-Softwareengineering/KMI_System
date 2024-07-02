@@ -207,7 +207,7 @@ public class LagerbestandInterface extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws ReflectiveOperationException, SQLException {//GEN-FIRST:event_jButton1ActionPerformed
         MaterialRepository materialRepository = RepositoryProxy.newInstance(MaterialRepository.class);
-        Material material = materialRepository.findById(Integer.valueOf(jTextField1.getText())).findOne();
+        Material material = materialRepository.findById((jTextField1.getText())).findOne();
 
         LagerRepository lagerRepository = RepositoryProxy.newInstance(LagerRepository.class);
         Lager lager = lagerRepository.findById(jTextField2.getText()).findOne();
