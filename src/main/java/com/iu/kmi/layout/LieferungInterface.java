@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
@@ -43,7 +45,7 @@ public class LieferungInterface extends javax.swing.JFrame {
     private RechnungRepository              rechnungRepository;
     private LagerbestandRepository          lagerbestandRepository;
     private LieferungRepository             lieferungRepository;
-    private int[]                           rowNumber = {1};
+    private AtomicInteger                   rowNumber = new AtomicInteger(1);
     /**
      * Creates new form LieferungInterface2
      */
@@ -80,52 +82,37 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException {
-        System.out.println(auftragsNr);
-        DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
-        // Zurücksetzen der Zeilenummer der Tabelle
-        defaultTableModel.setRowCount(0);
-        rowNumber = new int[] {1};
         List<AuftragsPosition> auftragsPositions = fetchAllAuftragsposition(auftragsNr);
-
         List<Lagerbestand> lagerbestandList = this.lagerbestandRepository.findAll().execute();
-
-        // Lagerbestand für jeden gefragten Artikel
         Map<String, Integer> lagerbestandMap = lagerbestandList.stream()
                 .collect(Collectors.toMap(lb -> lb.getArtikelNummer().getArtikelNr(), Lagerbestand::getMenge));
 
-        // Map für Artieklnummer, Menge
-        Map<String, Integer> map = new HashMap<>();
+        DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
+        defaultTableModel.setRowCount(0);
 
-        // Durch die Liste iterieren und die Zählung aktualisieren
-        for (AuftragsPosition item : auftragsPositions) {
-            map.compute(item.getArtikelNr().getArtikelNr(), (k, v) -> (v == null) ? 1 : v + 1);
-        }
+        rowNumber = new AtomicInteger(1);
 
-        // Die Map ausgeben
-        // Initialize the row counter
-        map.forEach((k, v) -> {
-            final Material[] tempMaterial = {null};
-            auftragsPositions.forEach(auftragsPosition -> {
-                if (auftragsPosition.getArtikelNr().getArtikelNr().equals(k)) {
-                    tempMaterial[0] = auftragsPosition.getArtikelNr();
-                }
-            });
-            System.out.println(tempMaterial[0].toString() + ": " + v);
+        auftragsPositions.stream()
+                .collect(Collectors.groupingBy(
+                        item -> item.getArtikelNr().getArtikelNr(),
+                        Collectors.counting()
+                ))
+                .forEach((k, v) -> {
+                    Optional<Material> optionalMaterial = auftragsPositions.stream()
+                            .filter(auftragsPosition -> auftragsPosition.getArtikelNr().getArtikelNr().equals(k))
+                            .map(AuftragsPosition::getArtikelNr)
+                            .findFirst();
 
-            // Verfügbarkeit prüfen
-            int auftragsAnzahl = v;
-            int lagerbestand = lagerbestandMap.getOrDefault(tempMaterial[0].getArtikelNr(), 0);
-            String availability = getAvailability(auftragsAnzahl, lagerbestand);
+                    optionalMaterial.ifPresent(material -> {
+                        int auftragsAnzahl = v.intValue();
+                        int lagerbestand = lagerbestandMap.getOrDefault(material.getArtikelNr(), 0);
+                        String availability = getAvailability(auftragsAnzahl, lagerbestand);
 
-            Object[] newRow = { rowNumber[0], k,
-                    tempMaterial[0].getName(), auftragsAnzahl, availability };
-            defaultTableModel.addRow(newRow);
-            rowNumber[0]++; // Increment the row counter
-        });
-
-        lagerbestandMap.forEach((key, value) -> {
-            System.out.println(key + ": " + value);
-        });
+                        Object[] newRow = { rowNumber.getAndIncrement(), k,
+                                material.getName(), auftragsAnzahl, availability };
+                        defaultTableModel.addRow(newRow);
+                    });
+                });
     }
 
 
@@ -169,11 +156,20 @@ public class LieferungInterface extends javax.swing.JFrame {
             return fetchLieferung(lieferungNr) != null;
         }
         catch(ReflectiveOperationException e){
-            throw new RuntimeException(e);
+            handleException(e);
         }
         catch(SQLException e){
-            throw new RuntimeException(e);
+            handleException(e);
         }
+        return true;
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Fehler", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void handleException(Exception e) {
+        throw new RuntimeException(e);
     }
 
     /**
@@ -405,7 +401,7 @@ public class LieferungInterface extends javax.swing.JFrame {
 
         DefaultTableModel defaultTableModel = ((DefaultTableModel)tablePositionen.getModel());
 
-        Object[] newRow = { rowNumber[0]++, "",
+        Object[] newRow = { rowNumber.getAndIncrement(), "",
                 "", "", "" };
         defaultTableModel.addRow(newRow);
     }
@@ -422,22 +418,16 @@ public class LieferungInterface extends javax.swing.JFrame {
 
     private void textboxLieferdatumActionPerformed(java.awt.event.ActionEvent evt) {
         // Prozess - Datumsvalidierung
-
         String dateString = textboxLieferdatum.getText().trim();
-
-        // Überprüfen, ob die Eingabe dem erwarteten Datumsformat entspricht
-        if (!dateString.matches(DATE_PATTERN)) {
-            JOptionPane.showMessageDialog(this, "Das Datum entspricht nicht dem erwarteten Format.", "Fehler", JOptionPane.ERROR_MESSAGE);
-            return; // Beende die Methode, da das Datum ungültig ist
-        }
 
         // Versuchen, das Datum zu parsen
         try {
-            LocalDate.parse(dateString, DATE_FORMATTER);
+            LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
             // Wenn das Parsen erfolgreich ist, kannst du hier weiterverarbeiten
-        }
-        catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "Ungültiges Datum.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            // Zum Beispiel: Speichern des Datums oder Ausführen weiterer Operationen
+        } catch (DateTimeParseException e) {
+            // Fehler bei der Parsen des Datums
+            showErrorMessage("Ungültiges Datum. Das Datum entspricht nicht dem erwarteten Format.");
         }
     }
 
@@ -447,7 +437,6 @@ public class LieferungInterface extends javax.swing.JFrame {
 
     private void selectAuftragActionPerformed(java.awt.event.ActionEvent evt)
             throws ReflectiveOperationException, SQLException{
-        System.out.println("TEst");
         loadAllData(selectAuftrag.getSelectedItem().toString());
 
     }
@@ -461,76 +450,68 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void buttonSpeichernActionPerformed(java.awt.event.ActionEvent evt) {
-
-
         // Lieferung anlegen
         Lieferung lieferung = new Lieferung();
 
         // Lieferungsnummer auslesen & validieren
-        String lieferID = textboxLieferung.getText();
+        String lieferID = textboxLieferung.getText().trim();
         if (lieferID.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Lieferungs-ID' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Bitte geben Sie eine Lieferungs-ID an.");
             return;
-        }else if(existLieferung(lieferID)){
-            JOptionPane.showMessageDialog(this, "'Lieferungs-ID' existiert bereits, bitte wähelen Sie eine andere ID.", "Fehler", JOptionPane.ERROR_MESSAGE);
+        } else if (existLieferung(lieferID)) {
+            showErrorMessage("Die Lieferungs-ID existiert bereits. Bitte wählen Sie eine andere ID.");
             return;
         }
         lieferung.setLieferungNr(lieferID);
 
         // Auftragsnummer auslesen & validieren
-        Auftrag auftrag = null;
-        try{
-            auftrag = fetchAuftrag(selectAuftrag.getSelectedItem().toString());
-
+        Optional<Auftrag> optionalAuftrag = Optional.empty();
+        try {
+            optionalAuftrag = Optional.ofNullable(fetchAuftrag(selectAuftrag.getSelectedItem().toString()));
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
         }
-        catch(ReflectiveOperationException e){
-            throw new RuntimeException(e);
+        if (optionalAuftrag.isEmpty()) {
+            showErrorMessage("Auftrag nicht gefunden.");
+            return;
         }
-        catch(SQLException e){
-            throw new RuntimeException(e);
-        }
-
-        lieferung.setAuftrag(auftrag);
+        lieferung.setAuftrag(optionalAuftrag.get());
 
         // Rechnungsnummer auslesen & validieren
-        Rechnung rechnung = null;
-        try{
-            rechnung = fetchRechnung(selectRechnung.getSelectedItem().toString());
-
+        Optional<Rechnung> optionalRechnung = Optional.empty();
+        try {
+            optionalRechnung = Optional.ofNullable(fetchRechnung(selectRechnung.getSelectedItem().toString()));
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
         }
-        catch(ReflectiveOperationException e){
-            throw new RuntimeException(e);
+        if (optionalRechnung.isEmpty()) {
+            showErrorMessage("Rechnung nicht gefunden.");
+            return;
         }
-        catch(SQLException e){
-            throw new RuntimeException(e);
-        }
-
-        lieferung.setRechnung(rechnung);
+        lieferung.setRechnung(optionalRechnung.get());
 
         // Lieferdatum auslesen & validieren
-        // Lieferung hat kein Attribut Lieferdatum!
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        String lieferdatumText = textboxLieferdatum.getText();
+        String lieferdatumText = textboxLieferdatum.getText().trim();
         if (lieferdatumText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Lieferdatum' an", "Fehler", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Bitte geben Sie das Lieferdatum an.");
             return;
         }
         try {
-            LocalDate lieferdatm = LocalDate.parse(lieferdatumText, dtFormatter);
+            LocalDate lieferdatum = LocalDate.parse(lieferdatumText, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            // Setzen des Lieferdatums in der Lieferung fehlt in deinem Originalcode, hier müsste es ergänzt werden.
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "'Lieferdatum' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Das Lieferdatum ist fehlerhaft. Geben Sie das Datum im Format dd.MM.yyyy an.");
             return;
         }
 
-        // Lieferpostitionen auslesen & valiedieren & abspeichern
+        // Lieferpositionen auslesen & validieren & abspeichern
 
         lieferungRepository.insert(lieferung);
-        JOptionPane.showMessageDialog(this, "Die Lieferung wurder erfolgreich gespiechert.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Die Lieferung wurde erfolgreich gespeichert.", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 
         // Maske zurücksetzen
 
-
-
+        // Methoden und Hilfsfunktionen
 
     }
 
