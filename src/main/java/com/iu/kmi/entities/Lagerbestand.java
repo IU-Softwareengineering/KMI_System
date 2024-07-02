@@ -4,6 +4,7 @@ import com.iu.kmi.database.annotations.Column;
 import com.iu.kmi.database.annotations.CompositeKey;
 import com.iu.kmi.database.annotations.Entity;
 import com.iu.kmi.database.annotations.Id;
+import com.iu.kmi.database.annotations.JoinColumn;
 
 /**
  * Repräsentiert eine Lagerbestand-Entität.
@@ -18,12 +19,14 @@ public class Lagerbestand {
      * Die eindeutige Kennung für den Artikel.
      */
     @Id(name = "artikel_nr")
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikel_nr;
 
     /**
      * Die eindeutige Kennung für das Lager.
      */
     @Id(name = "lager_nr")
+    @JoinColumn(name = "lager_nr", referencedColumnName = "lager_nr")
     private Lager lager_nr;
 
     /**
