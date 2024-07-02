@@ -23,3 +23,8 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+            name: build-artifacts
+            path: target/*.jar
