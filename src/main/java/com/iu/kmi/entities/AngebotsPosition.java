@@ -15,6 +15,9 @@ public class AngebotsPosition {
     @Column(name = "einzelpreis")
     private double einzelpreis;
 
+    @Column(name = "menge")
+    private int menge;
+
     public AngebotsPosition() {
     }
 
@@ -50,4 +53,11 @@ public class AngebotsPosition {
         this.einzelpreis = einzelpreis;
     }
 
+    public int getMenge() {
+        return menge;
+    }
+
+    public void setMenge(int menge) {
+        this.menge = menge;
+    }
 }
