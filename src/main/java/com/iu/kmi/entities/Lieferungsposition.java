@@ -8,7 +8,7 @@ import com.iu.kmi.database.annotations.JoinColumn;
 /**
  * Repräsentiert eine Position innerhalb einer Lieferung, die ein bestimmtes Material und die Menge dieses Materials in der Lieferung umfasst.
  */
-@Entity(tableName = "lieferungsmaterial")
+@Entity(tableName = "lieferungsposition")
 public class Lieferungsposition{
 
     // Attribute

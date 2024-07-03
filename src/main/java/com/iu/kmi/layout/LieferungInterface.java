@@ -32,6 +32,7 @@ import com.iu.kmi.repositories.AuftragRespository;
 import com.iu.kmi.repositories.AuftragspositionRepository;
 import com.iu.kmi.repositories.LagerbestandRepository;
 import com.iu.kmi.repositories.LieferungRepository;
+import com.iu.kmi.repositories.LieferungspositionRepository;
 import com.iu.kmi.repositories.MaterialRepository;
 import com.iu.kmi.repositories.RechnungRepository;
 
@@ -50,6 +51,7 @@ public class LieferungInterface extends javax.swing.JFrame {
     private LagerbestandRepository          lagerbestandRepository;
     private LieferungRepository             lieferungRepository;
     private MaterialRepository              materialRepository;
+    private LieferungspositionRepository    lieferungspositionRepository;
     private AtomicInteger                   rowNumber = new AtomicInteger(1);
 
     /**
@@ -72,6 +74,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         this.lagerbestandRepository = RepositoryProxy.newInstance(LagerbestandRepository.class);
         this.lieferungRepository = RepositoryProxy.newInstance(LieferungRepository.class);
         this.materialRepository = RepositoryProxy.newInstance(MaterialRepository.class);
+        this.lieferungspositionRepository = RepositoryProxy.newInstance(LieferungspositionRepository.class);
     }
 
     public void fillAuftragsSelect() throws ReflectiveOperationException, SQLException{
@@ -524,9 +527,56 @@ public class LieferungInterface extends javax.swing.JFrame {
             throw new RuntimeException(e);
         }
 
-        lieferungRepository.insert(lieferung);
 
+        lieferungRepository.insert(lieferung);
         // TODO: Lieferpositionen auslesen & validieren & abspeichern
+
+        DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
+        for(int row = 0;  row < defaultTableModel.getRowCount(); row++ ){
+            Lieferungsposition lieferungsposition = new Lieferungsposition();
+            Material material = null;
+            try{
+                material = fetchMaterial((String) defaultTableModel.getValueAt(row,1));
+            }
+            catch(ReflectiveOperationException e){
+                throw new RuntimeException(e);
+            }
+            catch(SQLException e){
+                throw new RuntimeException(e);
+            }
+            lieferungsposition.setArtikel_nr(material);
+            int menge = (int) defaultTableModel.getValueAt(row, 3);
+            lieferungsposition.setMenge(menge);
+            lieferungsposition.setLieferung_nr(lieferung);
+
+            String lieferungspositionNr = "";
+            Lieferungsposition lastLieferungposition = null;
+            List<Lieferungsposition> lieferungspositionen = null;
+            try{
+                lieferungspositionen = lieferungspositionRepository.findAll().execute();
+            }
+            catch(SQLException e){
+                throw new RuntimeException(e);
+            }
+            catch(ReflectiveOperationException e){
+                throw new RuntimeException(e);
+            }
+            if (!lieferungspositionen.isEmpty()) {
+                lastLieferungposition = lieferungspositionen.get(lieferungspositionen.size() - 1);
+            }
+            if (lastLieferungposition != null) {
+                // Hier kannst du die weiteren Operationen ausführen
+                lieferungspositionNr = Integer.toString(Integer.parseInt(lastLieferungposition.getLieferungsposition_nr()) + 1);
+            } else {
+                // Behandlung, wenn keine Daten vorhanden sind
+                lieferungspositionNr = "1"; // Zum Beispiel eine Standardnummer setzen
+            }
+
+            lieferungsposition.setLieferungsposition_nr(lieferungspositionNr);
+
+            lieferungspositionRepository.insert(lieferungsposition);
+
+        }
 
 
 
