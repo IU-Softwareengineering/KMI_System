@@ -53,11 +53,35 @@ public class RepositoryProxy<T> implements InvocationHandler {
             if(methodName.startsWith("findBy")){
                 String fieldName = methodName.substring(6);
                 fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+                if(fieldName.contains("_")){
+                    if (method.getReturnType().equals(List.class)) {
+                        return orm.findByJoinField(fieldName, args[0]).execute();
+                    } else {
+                        return orm.findByJoinField(fieldName, args[0]).findOne();
+                    }
+                }
                 if (method.getReturnType().equals(List.class)) {
                     return orm.findByField(fieldName, args[0]).execute();
                 } else {
                     return orm.findByField(fieldName, args[0]).findOne();
                 }
+            } else if (methodName.startsWith("executeCustomQueryList")){
+                String sql = (String) args[0];
+                Object[] params = (Object[]) args[1];
+                Class<?> returnType = method.getReturnType();
+                if(returnType.equals(Integer.class) || returnType.equals(int.class) || returnType.equals(void.class)) {
+                    return orm.executeCustomUpdateQuery(returnType, sql, params);
+                }
+                return orm.executeCustomSelectQueryList(returnType, sql, params);
+
+            } else if (methodName.startsWith("executeCustomQuery")) {
+                String sql = (String) args[0];
+                Object[] params = (Object[]) args[1];
+                Class<?> returnType = method.getReturnType();
+                if(returnType.equals(Integer.class) || returnType.equals(int.class) || returnType.equals(void.class)) {
+                    return orm.executeCustomUpdateQuery(returnType, sql, params);
+                }
+                return orm.executeCustomSelectQuery(returnType, sql, params);
             }
 
             throw new UnsupportedOperationException("Method not implemented: " + methodName);
