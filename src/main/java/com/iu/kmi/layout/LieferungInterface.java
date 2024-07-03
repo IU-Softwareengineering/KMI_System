@@ -207,6 +207,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePositionen = new javax.swing.JTable();
         selectRechnung = new javax.swing.JComboBox<>();
+        buttonLieferschein = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -305,6 +306,16 @@ public class LieferungInterface extends javax.swing.JFrame {
             }
         });
 
+        buttonLieferschein.setBackground(new java.awt.Color(255, 255, 255));
+        buttonLieferschein.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        buttonLieferschein.setForeground(new java.awt.Color(0, 0, 0));
+        buttonLieferschein.setText("Lieferschein");
+        buttonLieferschein.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonLieferscheinActionPerformed(evt);
+            }
+        });
+
         tablePositionen.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                 },
@@ -365,7 +376,9 @@ public class LieferungInterface extends javax.swing.JFrame {
                                                 .addGap(338, 338, 338)
                                                 .addComponent(jLabel1))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(318, 318, 318)
+                                                .addGap(240, 240, 240)
+                                                .addComponent(buttonLieferschein, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(100, 100, 100)
                                                 .addComponent(buttonSpeichern, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(37, 37, 37)
                                                 .addComponent(buttonAbbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -401,6 +414,7 @@ public class LieferungInterface extends javax.swing.JFrame {
                                                 .addGap(53, 53, 53)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                         .addComponent(buttonSpeichern, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(buttonLieferschein, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(buttonAbbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addContainerGap(77, Short.MAX_VALUE))))
         );
@@ -458,6 +472,10 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void buttonAbbrechenActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void buttonLieferscheinActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -597,6 +615,7 @@ public class LieferungInterface extends javax.swing.JFrame {
     private javax.swing.JButton buttonLieferpositionErstellen;
     private javax.swing.JButton buttonLieferpositionLöschen;
     private javax.swing.JButton buttonSpeichern;
+    private javax.swing.JButton buttonLieferschein;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelAuftrag;
