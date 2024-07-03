@@ -6,6 +6,7 @@ package com.iu.kmi.layout;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -24,17 +25,20 @@ import com.iu.kmi.entities.Auftrag;
 import com.iu.kmi.entities.AuftragsPosition;
 import com.iu.kmi.entities.Lagerbestand;
 import com.iu.kmi.entities.Lieferung;
+import com.iu.kmi.entities.Lieferungsposition;
 import com.iu.kmi.entities.Material;
 import com.iu.kmi.entities.Rechnung;
 import com.iu.kmi.repositories.AuftragRespository;
 import com.iu.kmi.repositories.AuftragspositionRepository;
 import com.iu.kmi.repositories.LagerbestandRepository;
 import com.iu.kmi.repositories.LieferungRepository;
+import com.iu.kmi.repositories.MaterialRepository;
 import com.iu.kmi.repositories.RechnungRepository;
 
 /**
  *
- * @author treichej
+ * @author Julian Treichel
+ * @since 02.07.2024
  */
 public class LieferungInterface extends javax.swing.JFrame {
 
@@ -45,7 +49,9 @@ public class LieferungInterface extends javax.swing.JFrame {
     private RechnungRepository              rechnungRepository;
     private LagerbestandRepository          lagerbestandRepository;
     private LieferungRepository             lieferungRepository;
+    private MaterialRepository              materialRepository;
     private AtomicInteger                   rowNumber = new AtomicInteger(1);
+
     /**
      * Creates new form LieferungInterface2
      */
@@ -65,6 +71,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         this.rechnungRepository = RepositoryProxy.newInstance(RechnungRepository.class);
         this.lagerbestandRepository = RepositoryProxy.newInstance(LagerbestandRepository.class);
         this.lieferungRepository = RepositoryProxy.newInstance(LieferungRepository.class);
+        this.materialRepository = RepositoryProxy.newInstance(MaterialRepository.class);
     }
 
     public void fillAuftragsSelect() throws ReflectiveOperationException, SQLException{
@@ -77,8 +84,9 @@ public class LieferungInterface extends javax.swing.JFrame {
         rechnungList.forEach(rechnung -> selectRechnung.addItem(rechnung.getRechnungNr()));
     }
 
-    private void fillDate(){
-        textboxLieferdatum.setText(LocalDate.now().format(DATE_FORMATTER));
+    private void fillDate() throws ReflectiveOperationException, SQLException{
+
+        textboxLieferdatum.setText(fetchAuftrag(selectAuftrag.getSelectedItem().toString()).getLieferdatum().format(DATE_FORMATTER));
     }
 
     private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException {
@@ -132,22 +140,25 @@ public class LieferungInterface extends javax.swing.JFrame {
                 .filter(a -> Objects.equals(a.getAuftragsNr().getAuftragNr(), auftragsNr))
                 .collect(Collectors.toList());
     }
+
     private Auftrag fetchAuftrag(String auftragNr) throws ReflectiveOperationException, SQLException{
         Auftrag auftrag = this.auftragRespository.findById(auftragNr).findOne();
-
         return auftrag;
     }
 
     private Rechnung fetchRechnung(String rechnungNr) throws ReflectiveOperationException, SQLException{
         Rechnung rechnung = this.rechnungRepository.findById(rechnungNr).findOne();
-
         return rechnung;
     }
 
     private Lieferung fetchLieferung(String lieferungNr) throws ReflectiveOperationException, SQLException{
         Lieferung lieferung = this.lieferungRepository.findById(lieferungNr).findOne();
-
         return lieferung;
+    }
+
+    private Material fetchMaterial(String materialNr) throws ReflectiveOperationException, SQLException{
+        Material material = this.materialRepository.findById(materialNr).findOne();
+        return material;
     }
 
     private boolean existLieferung(String lieferungNr){
@@ -438,6 +449,7 @@ public class LieferungInterface extends javax.swing.JFrame {
     private void selectAuftragActionPerformed(java.awt.event.ActionEvent evt)
             throws ReflectiveOperationException, SQLException{
         loadAllData(selectAuftrag.getSelectedItem().toString());
+        fillDate();
 
     }
 
@@ -498,21 +510,35 @@ public class LieferungInterface extends javax.swing.JFrame {
         }
         try {
             LocalDate lieferdatum = LocalDate.parse(lieferdatumText, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            // Setzen des Lieferdatums in der Lieferung fehlt in deinem Originalcode, hier müsste es ergänzt werden.
+            Auftrag auftrag = fetchAuftrag(selectAuftrag.getSelectedItem().toString());
+            auftrag.setLieferdatum(lieferdatum.atStartOfDay());
+            auftragRespository.update(auftrag);
         } catch (DateTimeParseException e) {
             showErrorMessage("Das Lieferdatum ist fehlerhaft. Geben Sie das Datum im Format dd.MM.yyyy an.");
             return;
         }
-
-        // Lieferpositionen auslesen & validieren & abspeichern
+        catch(ReflectiveOperationException e){
+            throw new RuntimeException(e);
+        }
+        catch(SQLException e){
+            throw new RuntimeException(e);
+        }
 
         lieferungRepository.insert(lieferung);
+
+        // TODO: Lieferpositionen auslesen & validieren & abspeichern
+
+
+
+
         JOptionPane.showMessageDialog(this, "Die Lieferung wurde erfolgreich gespeichert.", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 
         // Maske zurücksetzen
 
         // Methoden und Hilfsfunktionen
+        // TODO: existierenden Lieferung anpassen -> Bearbeitungsmodus
 
+        // TODO: Lieferschein erzeugen
     }
 
     private void selectRechnungComponentShown(java.awt.event.ComponentEvent evt) {
