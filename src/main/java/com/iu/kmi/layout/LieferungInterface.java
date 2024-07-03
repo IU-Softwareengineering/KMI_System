@@ -4,6 +4,7 @@
  */
 package com.iu.kmi.layout;
 
+import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -479,7 +480,50 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void buttonLieferscheinActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        String[][] data = {
+                {"1", "1001", "2001", "2024-07-03", "1", "A001", "Artikel 1", "10", "Verfügbar"},
+                {"2", "1002", "2002", "2024-07-03", "2", "A002", "Artikel 2", "20", "Nicht verfügbar"}
+        };
+
+        // Popup-Fenster anzeigen
+        showLieferscheinPopup(data);
+    }
+
+    private void showLieferscheinPopup(String[][] data) {
+        // Popup-Fenster erstellen
+        JDialog dialog = new JDialog(this, "Lieferschein", true);
+        dialog.setSize(600, 400);
+        dialog.setLayout(new BorderLayout());
+
+        // Textbereich erstellen
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        textArea.setEditable(false);
+
+        // Daten in Textbereich einfügen
+        StringBuilder sb = new StringBuilder();
+        sb.append("Lieferung Details\n\n");
+        String[] headers = {"Lieferung ID", "Rechnungs ID", "Auftrags ID", "Lieferungsdatum", "Lieferposition", "Artikelnummer", "Artikelname", "Menge", "Verfügbarkeit"};
+        for (String header : headers) {
+            sb.append(header).append("\t");
+        }
+        sb.append("\n");
+
+        for (String[] row : data) {
+            for (String cell : row) {
+                sb.append(cell).append("\t");
+            }
+            sb.append("\n");
+        }
+
+        textArea.setText(sb.toString());
+
+        // Textbereich in ScrollPane einfügen und zum Dialog hinzufügen
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        // Dialog sichtbar machen
+        dialog.setVisible(true);
     }
 
     private void buttonSpeichernActionPerformed(java.awt.event.ActionEvent evt) {
