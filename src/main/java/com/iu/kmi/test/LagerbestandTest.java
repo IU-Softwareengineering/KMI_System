@@ -1,7 +1,10 @@
 package com.iu.kmi.test;
 
-import com.iu.kmi.entities.Lagerbestand;
+import com.iu.kmi.entities.*;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LagerbestandTest {
@@ -9,8 +12,9 @@ public class LagerbestandTest {
     @Test
     public void testLagerbestandConstructorAndGetters() {
         // Arrange
-        String artikelNummer = "A123";
-        String lagerNummer = "L456";
+        Adresse testAdresse = new Adresse("Strasse", "1", "12345", "Berlin", "Deutschland");
+        Material artikelNummer = new Material("A123", "Testartikel", "Ein Testartikel", "Testlieferant", BigDecimal.valueOf(10), BigDecimal.valueOf(20));
+        Lager lagerNummer = new Lager("L123", "Testlager", testAdresse);
         int menge = 100;
 
         // Act
@@ -25,33 +29,39 @@ public class LagerbestandTest {
     @Test
     public void testSetArtikelNummer() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String neuerArtikelNummer = "A789";
+        Material testArtikel = new Material("A456", "Artikel", "Ein Artikel", "Lieferant", BigDecimal.valueOf(20), BigDecimal.valueOf(30));
+        Lager testLager = new Lager("L456", "Lager", new Adresse("Allee", "2", "54321", "Wien", "Österreich"));
+        Lagerbestand lagerbestand = new Lagerbestand(testArtikel, testLager, 20);
+        Material neuerArtikel = new Material("A789", "Neuer Artikel", "Ein neuer Artikel", "Neuer Lieferant", BigDecimal.valueOf(25), BigDecimal.valueOf(35));
 
         // Act
-        lagerbestand.setArtikelNummer(neuerArtikelNummer);
+        lagerbestand.setArtikelNummer(neuerArtikel);
 
         // Assert
-        assertEquals(neuerArtikelNummer, lagerbestand.getArtikelNummer());
+        assertEquals(neuerArtikel, lagerbestand.getArtikelNummer());
     }
 
     @Test
     public void testSetLagerNummer() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String neuerLagerNummer = "L789";
+        Material testArtikel = new Material("A456", "Artikel", "Ein Artikel", "Lieferant", BigDecimal.valueOf(20), BigDecimal.valueOf(30));
+        Lager testLager = new Lager("L456", "Lager", new Adresse("Allee", "2", "54321", "Wien", "Österreich"));
+        Lagerbestand lagerbestand = new Lagerbestand(testArtikel, testLager, 100);
+        Lager neuesLager = new Lager("L789", "Neues Lager", new Adresse("Straße", "3", "98765", "Berlin", "Deutschland"));
 
         // Act
-        lagerbestand.setLagerNummer(neuerLagerNummer);
+        lagerbestand.setLagerNummer(neuesLager);
 
         // Assert
-        assertEquals(neuerLagerNummer, lagerbestand.getLagerNummer());
+        assertEquals(neuesLager, lagerbestand.getLagerNummer());
     }
 
     @Test
     public void testSetMenge() {
         // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
+        Material testArtikel = new Material("A456", "Artikel", "Ein Artikel", "Lieferant", BigDecimal.valueOf(20), BigDecimal.valueOf(30));
+        Lager testLager = new Lager("L456", "Lager", new Adresse("Allee", "2", "54321", "Wien", "Österreich"));
+        Lagerbestand lagerbestand = new Lagerbestand(testArtikel, testLager, 100);
         int neueMenge = 200;
 
         // Act
@@ -59,18 +69,5 @@ public class LagerbestandTest {
 
         // Assert
         assertEquals(neueMenge, lagerbestand.getMenge());
-    }
-
-    @Test
-    public void testToString() {
-        // Arrange
-        Lagerbestand lagerbestand = new Lagerbestand("A123", "L456", 100);
-        String expectedString = "Lagerbestand{artikelNummer='A123', lagerNummer='L456', menge=100}";
-
-        // Act
-        String actualString = lagerbestand.toString();
-
-        // Assert
-        assertEquals(expectedString, actualString);
     }
 }

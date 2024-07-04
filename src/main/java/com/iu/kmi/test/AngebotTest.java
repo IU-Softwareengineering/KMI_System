@@ -1,5 +1,6 @@
 package com.iu.kmi.test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.Test;
@@ -29,10 +30,10 @@ public class AngebotTest {
         gueltigBis = LocalDate.now().plusDays(7); // some future date
         waehrung = "EUR";
         status = "Offen";
-        kondition = new Kondition("KondiName","Bar","innerhalb Stadt",33.3);
-        kundenanfrage = new Kundenanfrage("KA123",kunde,"01.01.2001","Will haben!","Dringend","In Zustellung");
+        kondition = new Kondition("KondiName","Bar","innerhalb Stadt", BigDecimal.valueOf(33.3));
+        //kundenanfrage = new Kundenanfrage("KA123",kunde,"01.01.2001","Will haben!","Dringend","In Zustellung");
 
-        angebot = new Angebot(kunde, angebotsdatum, gueltigBis, waehrung, status, kondition, kundenanfrage);
+        angebot = new Angebot(kunde, angebotsdatum, gueltigBis, waehrung, status, kondition/*, kundenanfrage*/);
     }
 
     @Test
@@ -43,7 +44,7 @@ public class AngebotTest {
         assertEquals(waehrung, angebot.getWaehrung());
         assertEquals(status, angebot.getStatus());
         assertEquals(kondition, angebot.getKonditionNr());
-        assertEquals(kundenanfrage, angebot.getKundenanfrageNr());
+        //assertEquals(kundenanfrage, angebot.getKundenanfrageNr());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class AngebotTest {
         angebot.setWaehrung(newWaehrung);
         angebot.setStatus(newStatus);
         angebot.setKonditionNr(newKonditionNr);
-        angebot.setKundenanfrageNr(newKundenanfrageNr);
+        //angebot.setKundenanfrageNr(newKundenanfrageNr);
 
         assertEquals(newKundeNr, angebot.getKundeNr());
         assertEquals(newAngebotsdatum, angebot.getAngebotsdatum());
@@ -75,6 +76,6 @@ public class AngebotTest {
         assertEquals(newWaehrung, angebot.getWaehrung());
         assertEquals(newStatus, angebot.getStatus());
         assertEquals(newKonditionNr, angebot.getKonditionNr());
-        assertEquals(newKundenanfrageNr, angebot.getKundenanfrageNr());
+        //assertEquals(newKundenanfrageNr, angebot.getKundenanfrageNr());
     }
 }

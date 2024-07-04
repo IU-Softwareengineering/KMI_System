@@ -1,6 +1,7 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class Kundenanfrage {
     private Kunde kunde;
 
     @Column(name = "anfragedatum")
-    private LocalDateTime anfrageDatum;
+    private LocalDate anfrageDatum;
 
     @Column(name = "anfragebeschreibung")
     private String anfrageBeschreibung;
@@ -28,7 +29,7 @@ public class Kundenanfrage {
     }
 
     // Konstruktor
-    public Kundenanfrage(String kundenanfrageNr, Kunde kunde, LocalDateTime anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
+    public Kundenanfrage(String kundenanfrageNr, Kunde kunde, LocalDate anfrageDatum, String anfrageBeschreibung, String prioritaet, String status) {
         this.kundenanfrageNr = kundenanfrageNr;
         this.kunde = kunde;
         this.anfrageDatum = anfrageDatum;
@@ -54,8 +55,9 @@ public class Kundenanfrage {
         this.kunde = kunde;
     }
 
+    public LocalDate getAnfrageDatum() { return anfrageDatum; }
 
-
+    public void setAnfrageDatum(LocalDate anfrageDatum) { this.anfrageDatum = anfrageDatum; }
 
     public String getAnfrageBeschreibung() {
         return anfrageBeschreibung;

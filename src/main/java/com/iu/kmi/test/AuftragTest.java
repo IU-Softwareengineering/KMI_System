@@ -1,10 +1,13 @@
 package com.iu.kmi.test;
 
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import java.util.Date;
 
-import com.iu.kmi.entities.Auftrag;
+import com.iu.kmi.entities.*;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class AuftragTest {
 
@@ -15,10 +18,12 @@ public class AuftragTest {
 
 
         String auftragNr = "A-12345";
-        String kundeNr = "K-34567";
-        Date auftragsdatum = new Date();
-        Date lieferdatum = new Date();
-        String angebotNr = "AN98765";
+        Adresse adresse = new Adresse("Strasse", "1", "123456", "Berlin", "Deutschland");
+        Kunde kundeNr = new Kunde("K123", "Mustermann", "Max", "max@gmail.com", "0123456789", adresse);
+        LocalDate auftragsdatum = LocalDate.now();
+        LocalDate lieferdatum = LocalDate.now().plusDays(7);
+        Kondition kondition = new Kondition("KondiName", "Bar", "innerhalb Stadt", BigDecimal.valueOf(0));
+        Angebot angebotNr = new Angebot(kundeNr, LocalDate.now(), LocalDate.now().plusDays(7), "EUR", "Offen", kondition);
         String status = "In Bearbeitung";
 
 

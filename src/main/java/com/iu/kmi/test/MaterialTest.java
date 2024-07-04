@@ -4,6 +4,8 @@ import com.iu.kmi.entities.Material;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MaterialTest {
@@ -12,13 +14,13 @@ public class MaterialTest {
 
     @BeforeEach
     public void setUp() {
-        material = new Material(123, "Testartikel", "Ein Testartikel", "Testlieferant", 10.0f, 20.0f);
+        material = new Material("M123", "Testartikel", "Ein Testartikel", "Testlieferant", BigDecimal.valueOf(10), BigDecimal.valueOf(20));
     }
 
     @Test
     public void testMaterialCreation() {
         assertNotNull(material);
-        assertEquals(123, material.getArtikelNummer());
+        assertEquals("123", material.getArtikelNr());
         assertEquals("Testartikel", material.getName());
         assertEquals("Ein Testartikel", material.getBeschreibung());
         assertEquals("Testlieferant", material.getLieferant());
@@ -28,19 +30,19 @@ public class MaterialTest {
 
     @Test
     public void testSetters() {
-        material.setArtikelNummer(456);
+        material.setArtikelNr("456");
         material.setName("Neuer Artikel");
         material.setBeschreibung("Eine neue Beschreibung");
         material.setLieferant("Neuer Lieferant");
-        material.setEinkaufsPreis(15.0f);
-        material.setVerkaufsPreis(25.0f);
+        material.setEinkaufsPreis(BigDecimal.valueOf(15));
+        material.setVerkaufsPreis(BigDecimal.valueOf(25));
 
-        assertEquals(456, material.getArtikelNummer());
+        assertEquals("456", material.getArtikelNr());
         assertEquals("Neuer Artikel", material.getName());
         assertEquals("Eine neue Beschreibung", material.getBeschreibung());
         assertEquals("Neuer Lieferant", material.getLieferant());
-        assertEquals(15.0f, material.getEinkaufsPreis());
-        assertEquals(25.0f, material.getVerkaufsPreis());
+        assertEquals(BigDecimal.valueOf(15), material.getEinkaufsPreis());
+        assertEquals(BigDecimal.valueOf(25), material.getVerkaufsPreis());
     }
 
     @Test

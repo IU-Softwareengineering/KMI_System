@@ -30,6 +30,15 @@ public class Auftrag {
 
     public Auftrag() {}
 
+    public Auftrag(String auftragNr, Kunde kundeNr, LocalDate auftragsdatum, LocalDate lieferdatum, Angebot angebotNr, String status) {
+        this.auftragNr = auftragNr;
+        this.kundeNr = kundeNr;
+        this.auftragsdatum = auftragsdatum;
+        this.lieferdatum = lieferdatum;
+        this.angebotNr = angebotNr;
+        this.status = status;
+    }
+
     // Getter und Setter
     public String getAuftragNr() {
         return auftragNr;
