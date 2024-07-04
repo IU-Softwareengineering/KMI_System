@@ -4,9 +4,9 @@
  */
 package com.iu.kmi.layout;
 
+import com.iu.kmi.database.orm.query.FindAllQuery;
 import com.iu.kmi.database.orm.query.FindByIdQuery;
 import com.iu.kmi.database.repository.RepositoryProxy;
-import com.iu.kmi.entities.Adresse;
 
 import com.iu.kmi.entities.Angebot;
 import com.iu.kmi.repositories.AngebotRepository;
@@ -15,9 +15,7 @@ import com.iu.kmi.entities.Kunde;
 import com.iu.kmi.repositories.KundeRepository;
 
 import com.iu.kmi.entities.Kundenauftrag;
-import com.iu.kmi.repositories.AdresseRepository;
 import com.iu.kmi.repositories.KundenauftragRepository;
-import java.time.LocalDate;
 
 import java.time.LocalDateTime;
 
@@ -198,12 +196,14 @@ public class TerminAuftragInterface extends javax.swing.JFrame {
         try{
         auftragsdatum = LocalDateTime.parse(auftragsDatumTextField.getText());
         }catch (Exception e){
-        auftragsdatum = LocalDateTime.now();
+            System.out.println(e);
+            auftragsdatum = LocalDateTime.now();
         }
         LocalDateTime lieferdatum;
         try{
             lieferdatum = LocalDateTime.parse(lieferDatumTextField.getText());
         }catch(Exception e){
+            System.out.println(e);
             lieferdatum = LocalDateTime.now();
         }
         Kunde kunde;
@@ -213,6 +213,7 @@ public class TerminAuftragInterface extends javax.swing.JFrame {
             findKunde = kundeRepo.findById(kundenNummerTextField.getText());
             kunde = findKunde.findOne();
         }catch(Exception e){
+            System.out.println(e);
             kunde = null;
         }
         kundeRepo.insert(kunde);
@@ -224,6 +225,7 @@ public class TerminAuftragInterface extends javax.swing.JFrame {
             findAngebot = angebotRepo.findById(angebotsNummerTextField.getText());
             angebot = findAngebot.findOne();
         }catch(Exception e){
+            System.out.println(e);
             angebot = null;
         }
         angebotRepo.insert(angebot);
@@ -238,7 +240,13 @@ public class TerminAuftragInterface extends javax.swing.JFrame {
                 statusTextField.getText()
         );
         KundenauftragRepository kundenRepo = RepositoryProxy.newInstance(KundenauftragRepository.class);
-        kundenRepo.insert(auftrag);
+        try{
+            kundenRepo.insert(auftrag);
+        }catch(Exception e){
+            System.out.println(e.toString());
+            emptyAllJTextFields();
+            return;
+        }
         emptyAllJTextFields();
     }//GEN-LAST:event_speichernButtonActionPerformed
 
