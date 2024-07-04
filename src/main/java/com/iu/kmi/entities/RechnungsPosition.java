@@ -1,27 +1,23 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+
 @Entity(tableName = "rechnungsposition")
 public class RechnungsPosition {
 
     @Id(name = "rechnungsposition_nr")
     private String rechnungspositionNr;
 
-    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
-    private Artikel artikel;
-
     @JoinColumn(name = "rechnung_nr", referencedColumnName = "rechnung_nr")
-    private Rechnung rechnung;
+    private Rechnung rechnungNr;
 
-    public RechnungsPosition() {
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
 
-    }
-
-    public RechnungsPosition(String rechnungspositionNr, Artikel artikel, Rechnung rechnung) {
-        this.rechnungspositionNr = rechnungspositionNr;
-        this.rechnung = rechnung;
-        this.artikel = artikel;
-    }
+    @Column(name = "menge")
+    private int menge;
+    
+    public RechnungsPosition() {}
 
     // Getter und Setter
     public String getRechnungspositionNr() {
@@ -32,19 +28,29 @@ public class RechnungsPosition {
         this.rechnungspositionNr = rechnungspositionNr;
     }
 
-    public Rechnung getRechnung() {
-        return rechnung;
+    public Rechnung getRechnungNr() {
+        return rechnungNr;
     }
 
-    public void setRechnung(Rechnung rechnung) {
-        this.rechnung = rechnung;
+    public void setRechnungNr(Rechnung rechnungNr) {
+        this.rechnungNr = rechnungNr;
     }
 
-    public Artikel getArtikel() {
-        return artikel;
+    public Material getArtikelNr() {
+        return artikelNr;
     }
 
-    public void setArtikel(Artikel artikel) {
-        this.artikel = artikel;
+    public void setArtikelNr(Material artikelNr) {
+        this.artikelNr = artikelNr;
     }
+    
+    
+    public int getMenge() {
+        return menge;
+    }
+
+    public void setMenge(int menge) {
+        this.menge = menge;
+    }
+
 }

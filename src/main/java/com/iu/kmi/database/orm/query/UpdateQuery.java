@@ -51,7 +51,9 @@ public class UpdateQuery<T> extends BaseQuery<T> {
                             if (relatedEntity != null) {
                                 UpdateQuery<?> updateQuery = new UpdateQuery<>(field.getType(), relatedEntity);
                                 updateQuery.save();
-                                Object joinValue = field.getType().getMethod("get" + capitalize(joinColumn.referencedColumnName())).invoke(relatedEntity);
+                                Field idField = getIdField(relatedEntity.getClass());
+                                idField.setAccessible(true);
+                                Object joinValue = idField.get(relatedEntity);
 
                                 setClause.append(joinColumn.name()).append(" = ?,");
                             }
@@ -61,25 +63,30 @@ public class UpdateQuery<T> extends BaseQuery<T> {
                     e.printStackTrace();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
                 }
 
         }
 
-        setClause.setLength(setClause.length() - 1); // Entfernt das letzte Komma
+        setClause.setLength(setClause.length() - 1);
         if (compositeId != null) {
             for (Map.Entry<String, Object> entry : compositeId.entrySet()) {
                 whereClause.append(entry.getKey()).append(" = ? AND ");
             }
-            whereClause.setLength(whereClause.length() - 5); // Entfernt das letzte " AND "
+            whereClause.setLength(whereClause.length() - 5);
         } else {
-            whereClause.setLength(whereClause.length() - 5); // Entfernt das letzte " AND "
+            whereClause.setLength(whereClause.length() - 5);
         }
 
         return "UPDATE " + tableName + " SET " + setClause.toString() + whereClause.toString();
+    }
+
+    private Field getIdField(Class<?> relatedClass) {
+        for (Field field : relatedClass.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class)) {
+                return field;
+            }
+        }
+        throw new RuntimeException("No ID field found in related class: " + relatedClass.getName());
     }
 
     @Override
@@ -98,11 +105,13 @@ public class UpdateQuery<T> extends BaseQuery<T> {
                             pstmt.setObject(index++, field.get(entity));
                         } else if (field.isAnnotationPresent(JoinColumn.class)) {
                             JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
-                            Object joinValue = field.get(entity).getClass().getMethod("get" + capitalize(joinColumn.referencedColumnName())).invoke(field.get(entity));
+                            Field relatedIdField = getIdField(field.get(entity).getClass());
+                            relatedIdField.setAccessible(true);
+                            Object joinValue = relatedIdField.get(field.get(entity));
                             pstmt.setObject(index++, joinValue);
                         }
                     }
-                } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }

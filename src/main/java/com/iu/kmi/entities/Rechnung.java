@@ -1,6 +1,6 @@
 package com.iu.kmi.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.iu.kmi.database.annotations.Column;
@@ -23,10 +23,10 @@ public class Rechnung {
     private Debitor debitor;
 
     @Column(name = "rechnungstag")
-    private LocalDate rechnungstag;
+    private LocalDateTime rechnungstag;
 
     @Column(name = "faelligkeitsdatum")
-    private LocalDate faelligkeitsdatum;
+    private LocalDateTime faelligkeitsdatum;
 
     @Column(name = "status")
     private String status;
@@ -46,7 +46,7 @@ public class Rechnung {
      * @param faelligkeitsdatum das Fälligkeitsdatum der Rechnung
      * @param status der Status der Rechnung
      */
-    public Rechnung(String rechnungNr, Debitor debitor, LocalDate rechnungstag, LocalDate faelligkeitsdatum, String status) {
+    public Rechnung(String rechnungNr, Debitor debitor, LocalDateTime rechnungstag, LocalDateTime faelligkeitsdatum, String status) {
         this.rechnungNr = rechnungNr;
         this.debitor = debitor;
         this.rechnungstag = rechnungstag;
@@ -95,7 +95,7 @@ public class Rechnung {
      *
      * @return das Datum der Rechnung
      */
-    public LocalDate getRechnungstag() {
+    public LocalDateTime getRechnungstag() {
         return rechnungstag;
     }
 
@@ -104,7 +104,7 @@ public class Rechnung {
      *
      * @param rechnungstag das neue Datum der Rechnung
      */
-    public void setRechnungstag(LocalDate rechnungstag) {
+    public void setRechnungstag(LocalDateTime rechnungstag) {
         this.rechnungstag = rechnungstag;
     }
 
@@ -113,7 +113,7 @@ public class Rechnung {
      *
      * @return das Fälligkeitsdatum der Rechnung
      */
-    public LocalDate getFaelligkeitsdatum() {
+    public LocalDateTime getFaelligkeitsdatum() {
         return faelligkeitsdatum;
     }
 
@@ -122,7 +122,7 @@ public class Rechnung {
      *
      * @param faelligkeitsdatum das neue Fälligkeitsdatum der Rechnung
      */
-    public void setFaelligkeitsdatum(LocalDate faelligkeitsdatum) {
+    public void setFaelligkeitsdatum(LocalDateTime faelligkeitsdatum) {
         this.faelligkeitsdatum = faelligkeitsdatum;
     }
 
