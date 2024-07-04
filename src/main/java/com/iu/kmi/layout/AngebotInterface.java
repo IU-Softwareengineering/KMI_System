@@ -10,11 +10,17 @@ import com.iu.kmi.layout.models.*;
 import com.iu.kmi.repositories.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -150,6 +156,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     }
 
     private void loadAngebot(Angebot angebot) throws ReflectiveOperationException, SQLException {
+        this.kundenAnfrage = null;
         textbox_angebotsid.setText(angebot.getAngebotNr());
         textbox_angebotsdatum.setText(angebot.getAngebotsdatum().format(DATE_FORMATTER));
         textbox_gueltig.setText(angebot.getGueltigBis().format(DATE_FORMATTER));
@@ -689,11 +696,15 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setAngebotNr(angebotID);
 
-        if (this.kundenAnfrage == null) {
+        if (this.kundenAnfrage == null || ((AngebotKundenModel) select_kunde.getSelectedItem()).value == null) {
             JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Kunde' an", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        angebot.setKundeNr(kundenAnfrage.getKunde());
+        if(this.kundenAnfrage != null){
+            angebot.setKundeNr(this.kundenAnfrage.getKunde());
+        } else {
+            angebot.setKundeNr(((AngebotKundenModel) select_kunde.getSelectedItem()).value);
+        }
 
         String gueltigBisText = textbox_gueltig.getText();
         LocalDateTime gueltigBisDateTime = null;
