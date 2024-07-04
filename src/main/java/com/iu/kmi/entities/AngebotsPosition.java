@@ -12,20 +12,16 @@ public class AngebotsPosition {
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
 
-    @Column(name = "einzelpreis")
-    private double einzelpreis;
-
     @Column(name = "menge")
     private int menge;
 
     public AngebotsPosition() {
     }
 
-    public AngebotsPosition(String angebotspositionNr, Angebot angebotNr, Material artikelNr, double einzelpreis, int menge) {
+    public AngebotsPosition(String angebotspositionNr, Angebot angebotNr, Material artikelNr, int menge) {
         this.angebotspositionNr = angebotspositionNr;
         this.angebotNr = angebotNr;
         this.artikelNr = artikelNr;
-        this.einzelpreis = einzelpreis;
         this.menge = menge;
     }
     public String getAngebotspositionNr() {
@@ -52,14 +48,6 @@ public class AngebotsPosition {
         this.artikelNr = artikelNr;
     }
 
-    public double getEinzelpreis() {
-        return einzelpreis;
-    }
-
-    public void setEinzelpreis(double einzelpreis) {
-        this.einzelpreis = einzelpreis;
-    }
-
     public int getMenge() {
         return menge;
     }
@@ -74,7 +62,6 @@ public class AngebotsPosition {
                 "angebotspositionNr='" + angebotspositionNr + '\'' +
                 ", angebotNr=" + angebotNr +
                 ", artikelNr=" + artikelNr +
-                ", einzelpreis=" + einzelpreis +
                 ", menge=" + menge +
                 '}';
     }

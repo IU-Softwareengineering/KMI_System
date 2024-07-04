@@ -1,9 +1,11 @@
 package com.iu.kmi.layout.models;
 
 import com.iu.kmi.entities.*;
+import com.iu.kmi.repositories.MaterialRepository;
 
 import javax.swing.table.AbstractTableModel;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +15,11 @@ public class AngebotPositionTableModel extends AbstractTableModel {
     // initial positions
     private List<PositionTableRow> positions;
 
-    public AngebotPositionTableModel() {
+    private MaterialRepository materialRepository;
+
+    public AngebotPositionTableModel(MaterialRepository materialRepository) {
         this.positions = new ArrayList<>();
+        this.materialRepository = materialRepository;
     }
 
     @Override
@@ -54,28 +59,27 @@ public class AngebotPositionTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         PositionTableRow row = positions.get(rowIndex);
         AngebotsPosition position = row.getPosition();
-        Material material = new Material(); // TODO: load this from MaterialRepository
         if (columnIndex == 3 || columnIndex == 5) {
             return;
         }
+
         switch (columnIndex) {
             case 0:
-                //person.setId((Integer) aValue);
                 position.setAngebotspositionNr((String) aValue);
                 break;
             case 1:
-                // artikel nr
-//                Material material = new Material(); // TODO: load this from MaterialRepository
-//                position.setArtikelNr(material);
-//                position.setEinzelpreis(material.getVerkaufsPreis().doubleValue());
-                break;
-            case 2:
-//                Material material = new Material(); // TODO: load this from MaterialRepository
-//                position.getArtikelNr().setName((String) aValue);
+                try {
+                    fillColumnWithMaterial(rowIndex, (String) aValue);
+                    this.fireTableDataChanged();
+                } catch (ReflectiveOperationException | SQLException e) {
+
+                    throw new RuntimeException(e);
+                }
                 break;
             case 4:
                 position.setMenge(Integer.parseInt((String) aValue));
                 // update gesamtpreis column
+                setValueAt(0, rowIndex, 5);
         }
 
         ModelState state = row.getState();
@@ -83,14 +87,13 @@ public class AngebotPositionTableModel extends AbstractTableModel {
             row.setState(ModelState.Modified);
         }
 
-
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return switch(columnIndex) {
-            case 3, 5 -> false;
+            case 2, 3, 5 -> false;
             default -> true;
         };
     }
@@ -106,6 +109,12 @@ public class AngebotPositionTableModel extends AbstractTableModel {
             fireTableRowsDeleted(rowIndex, rowIndex);
         }
     }
+
+    public void addPosition(AngebotsPosition position) {
+        this.positions.add(new PositionTableRow(position, ModelState.Unchanged));
+        fireTableRowsInserted(positions.size() - 1, positions.size() - 1);
+    }
+
     public void addPosition() {
         AngebotsPosition newPosition = new AngebotsPosition();
         this.positions.add(new PositionTableRow(newPosition, ModelState.Created));
@@ -119,22 +128,24 @@ public class AngebotPositionTableModel extends AbstractTableModel {
     public void addFromAnfragePosition(AnfragePosition anfragePosition) {
         AngebotsPosition position = new AngebotsPosition();
         position.setArtikelNr(anfragePosition.getArtikelNr());
-        position.setEinzelpreis(anfragePosition.getArtikelNr().getVerkaufsPreis().doubleValue());
         position.setMenge(anfragePosition.getMenge());
 
         this.positions.add(new PositionTableRow(position, ModelState.Created));
         fireTableRowsInserted(positions.size() - 1, positions.size() - 1);
     }
 
+    public void fillColumnWithMaterial(Integer row, String artikelNr) throws ReflectiveOperationException, SQLException {
+       Material material = this.materialRepository.findById(artikelNr).findOne();
+       if (material != null) {
+           this.positions.get(row).getPosition().setArtikelNr(material);
+
+           // display row anpassen
+           setValueAt(material.getName(), row, 2);
+           setValueAt(material.getVerkaufsPreis(), row, 3);
+       }
+    }
+
     public List<PositionTableRow> getPositions() {
         return this.positions;
     }
-
-    /*
-    public static AngebotPositionTableModel fromAnfragePositionen(List<AnfragePosition> anfragePositions) {
-        AngebotPositionTableModel model = new AngebotPositionTableModel();
-        anfragePositions.forEach(model::addFromAnfragePosition);
-        return model;
-    }
-     */
 }

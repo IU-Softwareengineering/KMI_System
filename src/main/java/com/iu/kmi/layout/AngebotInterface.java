@@ -10,17 +10,11 @@ import com.iu.kmi.layout.models.*;
 import com.iu.kmi.repositories.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +34,6 @@ public class AngebotInterface extends javax.swing.JFrame {
     private KundeRepository kundeRepository;
     private KundenanfrageRepository kundenanfrageRepository;
     private KonditionRepository konditionRepository;
-    private PositionTableRowModel[] positionTableData;
     private List<AngebotsPosition> positions;
     private Kundenanfrage kundenAnfrage;
     private AngebotsPositionRepository angebotsPositionRepository;
@@ -74,6 +67,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
         this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
         this.anfragePositionRepository = RepositoryProxy.newInstance(AnfragePositionRepository.class);
+        this.angebotsPositionRepository = RepositoryProxy.newInstance(AngebotsPositionRepository.class);
     }
 
     private void loadDataAsync() throws ExecutionException, InterruptedException, ReflectiveOperationException, SQLException {
@@ -149,7 +143,13 @@ public class AngebotInterface extends javax.swing.JFrame {
         anfragePositions.forEach(model::addFromAnfragePosition);
     }
 
-    private void loadAngebot(Angebot angebot){
+    private void loadAngebotsPositionenByAngebot(String angebotNr) throws ReflectiveOperationException, SQLException {
+        List<AngebotsPosition> positions = angebotsPositionRepository.findAll().where("angebotNr", angebotNr).execute();
+        AngebotPositionTableModel model = (AngebotPositionTableModel) table_positionen.getModel();
+        positions.forEach(model::addPosition);
+    }
+
+    private void loadAngebot(Angebot angebot) throws ReflectiveOperationException, SQLException {
         textbox_angebotsid.setText(angebot.getAngebotNr());
         textbox_angebotsdatum.setText(angebot.getAngebotsdatum().format(DATE_FORMATTER));
         textbox_gueltig.setText(angebot.getGueltigBis().format(DATE_FORMATTER));
@@ -179,13 +179,17 @@ public class AngebotInterface extends javax.swing.JFrame {
             }
         }
 
+        AngebotPositionTableModel tableModel = (AngebotPositionTableModel) table_positionen.getModel();
+        tableModel.clearPositions();
+        this.loadAngebotsPositionenByAngebot(angebot.getAngebotNr());
     }
 
     private void handlePositionsSave(Angebot angebot) {
         AngebotPositionTableModel model = ((AngebotPositionTableModel)table_positionen.getModel());
         List<PositionTableRow> rows = model.getPositions();
 
-        rows.forEach(row -> {
+        Integer rowIndex = 0;
+        for (PositionTableRow row : rows) {
             AngebotsPosition position = row.getPosition();
 
             switch (row.getState()) {
@@ -205,12 +209,6 @@ public class AngebotInterface extends javax.swing.JFrame {
                         System.out.println("material is null");
                     }
 
-                    // Todo: 0 could be valid, use -1?
-                    if (position.getEinzelpreis() == 0) {
-                        System.out.println("einzelpreis not supplied or is 0");
-                        return;
-                    }
-
                     if (position.getMenge() == 0)  {
                         System.out.println("menge is 0");
                         return;
@@ -220,17 +218,21 @@ public class AngebotInterface extends javax.swing.JFrame {
                     // inserting position
                     //angebotsPositionRepository.insert(position);
                 }
-                case Modified -> System.out.println("Modified not implemented yet");
+                case Modified -> {
+                    System.out.println("handling modified");
+                    angebotsPositionRepository.update(position);
+
+                }
                 case Deleted -> angebotsPositionRepository.delete(position.getAngebotspositionNr());
 
 
             }
-
-        });
+            rowIndex++;
+        };
     }
 
     private void initTable() {
-        AngebotPositionTableModel angebotPositionTableModel = new AngebotPositionTableModel();
+        AngebotPositionTableModel angebotPositionTableModel = new AngebotPositionTableModel(this.materialRepository);
         table_positionen.setModel(angebotPositionTableModel);
     }
 
@@ -826,7 +828,11 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
 
         Angebot angebot = selectedAngebot.value;
-        this.loadAngebot(angebot);
+        try {
+            this.loadAngebot(angebot);
+        } catch (ReflectiveOperationException | SQLException e) {
+            throw new RuntimeException(e);
+        }
     }//GEN-LAST:event_button_angebotladenActionPerformed
 
     /**
