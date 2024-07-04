@@ -696,7 +696,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setAngebotNr(angebotID);
 
-        if (this.kundenAnfrage == null || ((AngebotKundenModel) select_kunde.getSelectedItem()).value == null) {
+        if (this.kundenAnfrage == null && ((AngebotKundenModel) select_kunde.getSelectedItem()).value == null) {
             JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Kunde' an", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
