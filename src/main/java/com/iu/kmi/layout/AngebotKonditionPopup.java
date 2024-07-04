@@ -9,6 +9,9 @@ import com.iu.kmi.entities.Kondition;
 import com.iu.kmi.layout.models.AngebotKonditionModel;
 import com.iu.kmi.repositories.KonditionRepository;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,19 +21,31 @@ import java.util.List;
  */
 public class AngebotKonditionPopup extends javax.swing.JFrame {
 
+    private AngebotInterface parent;
     private KonditionRepository konditionRepository;
+    private List<Kondition> konditionList;
+    private List<Kondition> createdKonditionList;
+    private List<Kondition> updatedKonditionList;
 
     /**
      * Creates new form AngebotKonditionPopup
      */
-    public AngebotKonditionPopup() throws ReflectiveOperationException, SQLException {
+    public AngebotKonditionPopup(AngebotInterface parent) throws ReflectiveOperationException, SQLException {
         initComponents();
+        this.parent = parent;
         this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
         this.load();
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                parent.onKonditionPopupClosed();
+            }
+        });
     }
 
     private void load() throws ReflectiveOperationException, SQLException {
-        List<Kondition> konditionList = this.konditionRepository.findAll().execute();
+        this.konditionList = this.konditionRepository.findAll().execute();
         jComboBox1.removeAllItems();
         jComboBox1.addItem(new AngebotKonditionModel(null, true));
         konditionList.forEach(kondition -> jComboBox1.addItem(new AngebotKonditionModel(kondition, false)));
@@ -58,6 +73,7 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
         text_rabatt = new javax.swing.JTextField();
         button_new = new javax.swing.JButton();
         button_speichern = new javax.swing.JButton();
+        button_cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +111,18 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
         });
 
         button_speichern.setText("Speichern");
+        button_speichern.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_speichernActionPerformed(evt);
+            }
+        });
+
+        button_cancel.setText("Abbrechen");
+        button_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_cancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -125,7 +153,9 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
                         .addComponent(button_new))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(39, 39, 39)
-                        .addComponent(button_speichern)))
+                        .addComponent(button_speichern)
+                        .addGap(26, 26, 26)
+                        .addComponent(button_cancel)))
                 .addContainerGap(140, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -155,7 +185,9 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(text_rabatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(button_speichern)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(button_speichern)
+                    .addComponent(button_cancel))
                 .addGap(22, 22, 22))
         );
 
@@ -163,10 +195,30 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button_newActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_newActionPerformed
-        // TODO add your handling code here:
+        if(jComboBox1.getSelectedIndex() != 0) {
+            return;
+        }
+        Kondition kondition = new Kondition();
+        kondition.setKonditionNr("K" + (konditionList.size() + 1));
+        kondition.setName(text_name.getText());
+        kondition.setZahlungsbedingungen(text_zahlung.getText());
+        kondition.setLieferbedingungen(text_liefer.getText());
+        kondition.setRabatt(BigDecimal.valueOf(Double.parseDouble(text_rabatt.getText())));
+
+        konditionRepository.insert(kondition);
+        try {
+            this.load();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }//GEN-LAST:event_button_newActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        if(jComboBox1.getSelectedItem() == null) {
+            return;
+        }
         Kondition selectedModel = ((AngebotKonditionModel) jComboBox1.getSelectedItem()).value;
 
         if (selectedModel == null) {
@@ -182,48 +234,39 @@ public class AngebotKonditionPopup extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void button_speichernActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_speichernActionPerformed
+        Kondition selectedModel = ((AngebotKonditionModel) jComboBox1.getSelectedItem()).value;
+
+        if (selectedModel == null) {
+            return;
+        }
+
+        selectedModel.setName(text_name.getText());
+        selectedModel.setZahlungsbedingungen(text_zahlung.getText());
+        selectedModel.setLieferbedingungen(text_liefer.getText());
+        selectedModel.setRabatt(BigDecimal.valueOf(Double.parseDouble(text_rabatt.getText())));
+
+        konditionRepository.update(selectedModel);
+        try {
+            this.load();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }//GEN-LAST:event_button_speichernActionPerformed
+
+    private void button_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_cancelActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_button_cancelActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AngebotKonditionPopup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AngebotKonditionPopup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AngebotKonditionPopup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AngebotKonditionPopup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new AngebotKonditionPopup().setVisible(true);
-                } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton button_cancel;
     private javax.swing.JButton button_new;
     private javax.swing.JButton button_speichern;
     private javax.swing.JComboBox<AngebotKonditionModel> jComboBox1;

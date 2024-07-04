@@ -859,8 +859,18 @@ public class AngebotInterface extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_button_kondActionPerformed
 
+    public void onKonditionPopupClosed() {
+        try {
+            this.fillKonditionenSelect();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void displayKonditionPopup() throws ReflectiveOperationException, SQLException {
-        AngebotKonditionPopup angebotKonditionPopup = new AngebotKonditionPopup();
+        AngebotKonditionPopup angebotKonditionPopup = new AngebotKonditionPopup(this);
         angebotKonditionPopup.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         angebotKonditionPopup.pack();
         angebotKonditionPopup.setVisible(true);
