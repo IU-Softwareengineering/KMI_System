@@ -529,23 +529,34 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void buttonAbbrechenActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        dispose();
     }
 
     private void buttonLieferscheinActionPerformed(java.awt.event.ActionEvent evt) {
-        String[][] data = {
-                {"1", "1001", "2001", "2024-07-03", "1", "A001", "Artikel 1", "10", "Verfügbar"},
-                {"2", "1002", "2002", "2024-07-03", "2", "A002", "Artikel 2", "20", "Nicht verfügbar"}
-        };
+        // Daten aus den JFrame-Elementen auslesen
+        String LieferungsId = textfieldLieferungNr.getText();
+        String Lieferdatum = textboxLieferdatum.getText();
+        String AuftragsId = (String) selectAuftrag.getSelectedItem();
+        String RechnungsId = (String) selectRechnung.getSelectedItem();
 
-        // Popup-Fenster anzeigen
-        showLieferscheinPopup(data);
+        // Tabellendaten auslesen
+        int rowCount = tablePositionen.getRowCount();
+        int colCount = tablePositionen.getColumnCount();
+        String[][] tableData = new String[rowCount][colCount];
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                tableData[i][j] = tablePositionen.getValueAt(i, j).toString();
+            }
+        }
+
+        // Daten an Popup-Fenster übergeben
+        showLieferscheinPopup(LieferungsId, Lieferdatum, AuftragsId, RechnungsId, tableData);
     }
 
-    private void showLieferscheinPopup(String[][] data) {
+    private void showLieferscheinPopup(String text1, String text2, String dropdownValue1, String dropdownValue2, String[][] tableData) {
         // Popup-Fenster erstellen
         JDialog dialog = new JDialog(this, "Lieferschein", true);
-        dialog.setSize(600, 400);
+        dialog.setSize(800, 600);
         dialog.setLayout(new BorderLayout());
 
         // Textbereich erstellen
@@ -556,15 +567,22 @@ public class LieferungInterface extends javax.swing.JFrame {
         // Daten in Textbereich einfügen
         StringBuilder sb = new StringBuilder();
         sb.append("Lieferung Details\n\n");
-        String[] headers = {"Lieferung ID", "Rechnungs ID", "Auftrags ID", "Lieferungsdatum", "Lieferposition", "Artikelnummer", "Artikelname", "Menge", "Verfügbarkeit"};
+        sb.append("Lieferungs-ID: ").append(text1).append("\n");
+        sb.append("Lieferdatum: ").append(text2).append("\n");
+        sb.append("Auftrags-ID: ").append(dropdownValue1).append("\n");
+        sb.append("Rechnungs-ID: ").append(dropdownValue2).append("\n");
+        sb.append("\nLieferpositionen:\n");
+
+        String[] headers = { "Lieferungspositionsnummer", "Artikelnummer", "Artikelname", "Menge","Verfügbarkeit"};
+        int[] columnWidths = { 25, 15, 5, 5, 5 };
         for (String header : headers) {
             sb.append(header).append("\t");
         }
         sb.append("\n");
 
-        for (String[] row : data) {
-            for (String cell : row) {
-                sb.append(cell).append("\t");
+        for (String[] row : tableData) {
+            for (int i = 0; i < row.length; i++) {
+                sb.append(String.format("%-" + columnWidths[i] + "s", row[i])).append("\t");
             }
             sb.append("\n");
         }
