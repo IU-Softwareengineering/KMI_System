@@ -81,7 +81,7 @@ public class Kundenauftrag {
         this.kundenauftragNummer = kundenauftragNummer;
     }
 
-    public void setKundenNummer(String kundenNummer) {
+    public void setKundenNummer(Kunde kundenNummer) {
         this.kundenNummer = kundenNummer;
     }
 
@@ -93,7 +93,7 @@ public class Kundenauftrag {
         this.lieferdatum = lieferdatum;
     }
 
-    public void setAngebot_nr(String angebot_nr) {
+    public void setAngebot_nr(Angebot angebot_nr) {
         this.angebot_nr = angebot_nr;
     }
 
@@ -105,7 +105,7 @@ public class Kundenauftrag {
         return kundenauftragNummer;
     }
 
-    public String getKundenNummer() {
+    public Kunde getKundenNummer() {
         return kundenNummer;
     }
 
@@ -117,7 +117,7 @@ public class Kundenauftrag {
         return lieferdatum;
     }
 
-    public String getAngebot_nr() {
+    public Angebot getAngebot_nr() {
         return angebot_nr;
     }
 
