@@ -7,18 +7,17 @@ package com.iu.kmi.layout;
 import java.awt.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
@@ -65,6 +64,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         fillAuftragsSelect();
         fillRechnungsSelect();
         fillDate();
+        setLieferungsID();
 
     }
 
@@ -89,46 +89,95 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void fillDate() throws ReflectiveOperationException, SQLException{
-
         textboxLieferdatum.setText(fetchAuftrag(selectAuftrag.getSelectedItem().toString()).getLieferdatum().format(DATE_FORMATTER));
+    }
+
+    private void setLieferungsID() {
+        // TODO: falsche Id ab Ende LIE-3 statt LIE-5
+        textfieldLieferungNr.setText("");
+        try{
+            textfieldLieferungNr.setText(generateLieferungNr());
+        }
+        catch(ReflectiveOperationException e){
+            throw new RuntimeException(e);
+        }
+        catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+    private String generateLieferungNr() throws ReflectiveOperationException, SQLException{
+        try {
+            List<Lieferung> lieferungList = lieferungRepository.findAll().execute();
+            if (!lieferungList.isEmpty()) {
+                Lieferung lastLieferung = lieferungList.get(lieferungList.size() - 1);
+                String lastLieferungNr = lastLieferung.getLieferungNr();
+                String prefix = lastLieferungNr.substring(0, 3); // "LIE-"
+                int number = Integer.parseInt(lastLieferungNr.substring(3));
+                return prefix + (number + 1);
+            }
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
+        }
+        return "LIE-1";
     }
 
     private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException {
         List<AuftragsPosition> auftragsPositions = fetchAllAuftragsposition(auftragsNr);
-        List<Lagerbestand> lagerbestandList = this.lagerbestandRepository.findAll().execute();
-        Map<String, Integer> lagerbestandMap = lagerbestandList.stream()
-                .collect(Collectors.toMap(lb -> lb.getArtikelNummer().getArtikelNr(), Lagerbestand::getMenge));
 
         DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
         defaultTableModel.setRowCount(0);
 
         rowNumber = new AtomicInteger(1);
 
-        auftragsPositions.stream()
-                .collect(Collectors.groupingBy(
-                        item -> item.getArtikelNr().getArtikelNr(),
-                        Collectors.counting()
-                ))
-                .forEach((k, v) -> {
-                    Optional<Material> optionalMaterial = auftragsPositions.stream()
-                            .filter(auftragsPosition -> auftragsPosition.getArtikelNr().getArtikelNr().equals(k))
-                            .map(AuftragsPosition::getArtikelNr)
-                            .findFirst();
+        auftragsPositions.forEach(auftragsPosition -> {
 
-                    optionalMaterial.ifPresent(material -> {
-                        int auftragsAnzahl = v.intValue();
-                        int lagerbestand = lagerbestandMap.getOrDefault(material.getArtikelNr(), 0);
-                        String availability = getAvailability(auftragsAnzahl, lagerbestand);
 
-                        Object[] newRow = { rowNumber.getAndIncrement(), k,
-                                material.getName(), auftragsAnzahl, availability };
+                        int auftragsAnzahl = auftragsPosition.getMenge();
+                        int lagerbestand = 0;
+                        try{
+                            lagerbestand = getLagetbestandForMaterial(auftragsPosition.getArtikelNr());
+                        }
+                        catch(ReflectiveOperationException e){
+                            throw new RuntimeException(e);
+                        }
+                        catch(SQLException e){
+                            throw new RuntimeException(e);
+                        }
+                        String availability = calculateAvailibility(auftragsAnzahl, lagerbestand);
+
+                        Object[] newRow = { rowNumber.getAndIncrement(), auftragsPosition.getArtikelNr().getArtikelNr(),
+                                auftragsPosition.getArtikelNr().getName(), auftragsAnzahl, availability };
                         defaultTableModel.addRow(newRow);
-                    });
+
                 });
+
+        defaultTableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(final TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 3) {
+                    int row = e.getFirstRow();
+                    System.out.println(defaultTableModel.getValueAt(row, 3).toString());
+                    int menge = (int) defaultTableModel.getValueAt(row, 3);
+                    try{
+                        Material material = fetchMaterial( (String) defaultTableModel.getValueAt(row, 1));
+                        int lagerbestand = getLagetbestandForMaterial(material);
+                        String availibilty = calculateAvailibility(menge, lagerbestand);
+                        defaultTableModel.setValueAt(availibilty, row, 4);
+                    }
+                    catch(ReflectiveOperationException ex){
+                        throw new RuntimeException(ex);
+                    }
+                    catch(SQLException ex){
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+        });
     }
 
 
-    private String getAvailability(int angefordert, int lagerbestand) {
+    private String calculateAvailibility(int angefordert, int lagerbestand) {
         if (angefordert <= lagerbestand) {
             return "verfügbar";
         } else if (lagerbestand == 0) {
@@ -136,6 +185,15 @@ public class LieferungInterface extends javax.swing.JFrame {
         } else {
             return lagerbestand + " von " + angefordert + " verfügbar";
         }
+    }
+
+    private int getLagetbestandForMaterial(Material material) throws ReflectiveOperationException, SQLException{
+        List<Lagerbestand> lagerbestandList = this.lagerbestandRepository.findAll().execute();
+        Map<String, Integer> lagerbestandMap = lagerbestandList.stream()
+                .collect(Collectors.toMap(lb -> lb.getArtikelNummer().getArtikelNr(), Lagerbestand::getMenge));
+        int lagerbestand = lagerbestandMap.getOrDefault(material.getArtikelNr(), 0);
+
+        return lagerbestand;
     }
 
     private List<AuftragsPosition> fetchAllAuftragsposition(String auftragsNr) throws ReflectiveOperationException, SQLException {
@@ -146,23 +204,19 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private Auftrag fetchAuftrag(String auftragNr) throws ReflectiveOperationException, SQLException{
-        Auftrag auftrag = this.auftragRespository.findById(auftragNr).findOne();
-        return auftrag;
+        return this.auftragRespository.findById(auftragNr).findOne();
     }
 
     private Rechnung fetchRechnung(String rechnungNr) throws ReflectiveOperationException, SQLException{
-        Rechnung rechnung = this.rechnungRepository.findById(rechnungNr).findOne();
-        return rechnung;
+        return this.rechnungRepository.findById(rechnungNr).findOne();
     }
 
     private Lieferung fetchLieferung(String lieferungNr) throws ReflectiveOperationException, SQLException{
-        Lieferung lieferung = this.lieferungRepository.findById(lieferungNr).findOne();
-        return lieferung;
+        return this.lieferungRepository.findById(lieferungNr).findOne();
     }
 
     private Material fetchMaterial(String materialNr) throws ReflectiveOperationException, SQLException{
-        Material material = this.materialRepository.findById(materialNr).findOne();
-        return material;
+        return this.materialRepository.findById(materialNr).findOne();
     }
 
     private boolean existLieferung(String lieferungNr){
@@ -205,7 +259,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         labelLieferung = new javax.swing.JLabel();
         labelAuftrag = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        textboxLieferung = new javax.swing.JTextField();
+        textfieldLieferungNr = new javax.swing.JTextField();
         buttonAbbrechen = new javax.swing.JButton();
         buttonSpeichern = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -279,15 +333,13 @@ public class LieferungInterface extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Lieferung");
 
-        textboxLieferung.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
-        textboxLieferung.setForeground(new java.awt.Color(51, 51, 51));
-        textboxLieferung.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textboxLieferung.setAutoscrolls(false);
-        textboxLieferung.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textboxLieferungActionPerformed(evt);
-            }
-        });
+        textfieldLieferungNr.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        textfieldLieferungNr.setForeground(new java.awt.Color(51, 51, 51));
+        textfieldLieferungNr.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textfieldLieferungNr.setAutoscrolls(false);
+        textfieldLieferungNr.setText("Test");
+        textfieldLieferungNr.setEnabled(false);
+
 
         buttonAbbrechen.setBackground(new java.awt.Color(244, 67, 54));
         buttonAbbrechen.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
@@ -362,7 +414,7 @@ public class LieferungInterface extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addComponent(textboxLieferung, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(textfieldLieferungNr, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(26, 26, 26)
                                                 .addComponent(labelRechnung, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -396,7 +448,7 @@ public class LieferungInterface extends javax.swing.JFrame {
                                 .addGap(57, 57, 57)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(labelLieferung, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textboxLieferung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(textfieldLieferungNr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(labelRechnung, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(selectRechnung, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -527,121 +579,25 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void buttonSpeichernActionPerformed(java.awt.event.ActionEvent evt) {
-        // Lieferung anlegen
         Lieferung lieferung = new Lieferung();
 
-        // Lieferungsnummer auslesen & validieren
-        String lieferID = textboxLieferung.getText().trim();
-        if (lieferID.isEmpty()) {
-            showErrorMessage("Bitte geben Sie eine Lieferungs-ID an.");
-            return;
-        } else if (existLieferung(lieferID)) {
-            showErrorMessage("Die Lieferungs-ID existiert bereits. Bitte wählen Sie eine andere ID.");
-            return;
-        }
+        String lieferID = getValidatedLieferID();
+        if (lieferID == null) return;
         lieferung.setLieferungNr(lieferID);
 
-        // Auftragsnummer auslesen & validieren
-        Optional<Auftrag> optionalAuftrag = Optional.empty();
-        try {
-            optionalAuftrag = Optional.ofNullable(fetchAuftrag(selectAuftrag.getSelectedItem().toString()));
-        } catch (ReflectiveOperationException | SQLException e) {
-            handleException(e);
-        }
-        if (optionalAuftrag.isEmpty()) {
-            showErrorMessage("Auftrag nicht gefunden.");
-            return;
-        }
-        lieferung.setAuftrag(optionalAuftrag.get());
+        Auftrag auftrag = getValidatedAuftrag();
+        if (auftrag == null) return;
+        lieferung.setAuftrag(auftrag);
 
-        // Rechnungsnummer auslesen & validieren
-        Optional<Rechnung> optionalRechnung = Optional.empty();
-        try {
-            optionalRechnung = Optional.ofNullable(fetchRechnung(selectRechnung.getSelectedItem().toString()));
-        } catch (ReflectiveOperationException | SQLException e) {
-            handleException(e);
-        }
-        if (optionalRechnung.isEmpty()) {
-            showErrorMessage("Rechnung nicht gefunden.");
-            return;
-        }
-        lieferung.setRechnung(optionalRechnung.get());
+        Rechnung rechnung = getValidatedRechnung();
+        if (rechnung == null) return;
+        lieferung.setRechnung(rechnung);
 
-        // Lieferdatum auslesen & validieren
-        String lieferdatumText = textboxLieferdatum.getText().trim();
-        if (lieferdatumText.isEmpty()) {
-            showErrorMessage("Bitte geben Sie das Lieferdatum an.");
-            return;
-        }
-        try {
-            LocalDate lieferdatum = LocalDate.parse(lieferdatumText, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            Auftrag auftrag = fetchAuftrag(selectAuftrag.getSelectedItem().toString());
-            auftrag.setLieferdatum(lieferdatum.atStartOfDay());
-            auftragRespository.update(auftrag);
-        } catch (DateTimeParseException e) {
-            showErrorMessage("Das Lieferdatum ist fehlerhaft. Geben Sie das Datum im Format dd.MM.yyyy an.");
-            return;
-        }
-        catch(ReflectiveOperationException e){
-            throw new RuntimeException(e);
-        }
-        catch(SQLException e){
-            throw new RuntimeException(e);
-        }
-
+        if (!setAndValidateLieferdatum(auftrag)) return;
 
         lieferungRepository.insert(lieferung);
-        // TODO: Lieferpositionen auslesen & validieren & abspeichern
 
-        DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
-        for(int row = 0;  row < defaultTableModel.getRowCount(); row++ ){
-            Lieferungsposition lieferungsposition = new Lieferungsposition();
-            Material material = null;
-            try{
-                material = fetchMaterial((String) defaultTableModel.getValueAt(row,1));
-            }
-            catch(ReflectiveOperationException e){
-                throw new RuntimeException(e);
-            }
-            catch(SQLException e){
-                throw new RuntimeException(e);
-            }
-            lieferungsposition.setArtikel_nr(material);
-            int menge = (int) defaultTableModel.getValueAt(row, 3);
-            lieferungsposition.setMenge(menge);
-            lieferungsposition.setLieferung_nr(lieferung);
-
-            String lieferungspositionNr = "";
-            Lieferungsposition lastLieferungposition = null;
-            List<Lieferungsposition> lieferungspositionen = null;
-            try{
-                lieferungspositionen = lieferungspositionRepository.findAll().execute();
-            }
-            catch(SQLException e){
-                throw new RuntimeException(e);
-            }
-            catch(ReflectiveOperationException e){
-                throw new RuntimeException(e);
-            }
-            if (!lieferungspositionen.isEmpty()) {
-                lastLieferungposition = lieferungspositionen.get(lieferungspositionen.size() - 1);
-            }
-            if (lastLieferungposition != null) {
-                // Hier kannst du die weiteren Operationen ausführen
-                lieferungspositionNr = Integer.toString(Integer.parseInt(lastLieferungposition.getLieferungsposition_nr()) + 1);
-            } else {
-                // Behandlung, wenn keine Daten vorhanden sind
-                lieferungspositionNr = "1"; // Zum Beispiel eine Standardnummer setzen
-            }
-
-            lieferungsposition.setLieferungsposition_nr(lieferungspositionNr);
-
-            lieferungspositionRepository.insert(lieferungsposition);
-
-        }
-
-
-
+        if (!validateAndInsertLieferpositionen(lieferung)) return;
 
         JOptionPane.showMessageDialog(this, "Die Lieferung wurde erfolgreich gespeichert.", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 
@@ -652,6 +608,103 @@ public class LieferungInterface extends javax.swing.JFrame {
 
         // TODO: Lieferschein erzeugen
     }
+    private String getValidatedLieferID() {
+        String lieferID = textfieldLieferungNr.getText().trim();
+        if (lieferID.isEmpty()) {
+            showErrorMessage("Bitte geben Sie eine Lieferungs-ID an.");
+            return null;
+        }
+        if (existLieferung(lieferID)) {
+            showErrorMessage("Die Lieferungs-ID existiert bereits. Bitte wählen Sie eine andere ID.");
+            return null;
+        }
+        return lieferID;
+    }
+
+    private Auftrag getValidatedAuftrag() {
+        try {
+            Auftrag auftrag = fetchAuftrag(selectAuftrag.getSelectedItem().toString());
+            if (auftrag == null) {
+                showErrorMessage("Auftrag nicht gefunden.");
+            }
+            return auftrag;
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
+            return null;
+        }
+    }
+
+    private Rechnung getValidatedRechnung() {
+        try {
+            Rechnung rechnung = fetchRechnung(selectRechnung.getSelectedItem().toString());
+            if (rechnung == null) {
+                showErrorMessage("Rechnung nicht gefunden.");
+            }
+            return rechnung;
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
+            return null;
+        }
+    }
+
+    private boolean setAndValidateLieferdatum(Auftrag auftrag) {
+        String lieferdatumText = textboxLieferdatum.getText().trim();
+        if (lieferdatumText.isEmpty()) {
+            showErrorMessage("Bitte geben Sie das Lieferdatum an.");
+            return false;
+        }
+        try {
+            LocalDate lieferdatum = LocalDate.parse(lieferdatumText, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            auftrag.setLieferdatum(lieferdatum.atStartOfDay());
+            auftragRespository.update(auftrag);
+            return true;
+        } catch (DateTimeParseException e) {
+            showErrorMessage("Das Lieferdatum ist fehlerhaft. Geben Sie das Datum im Format dd.MM.yyyy an.");
+            return false;
+        }
+    }
+
+    private boolean validateAndInsertLieferpositionen(Lieferung lieferung) {
+        DefaultTableModel defaultTableModel = (DefaultTableModel) tablePositionen.getModel();
+        for (int row = 0; row < defaultTableModel.getRowCount(); row++) {
+            Lieferungsposition lieferungsposition = new Lieferungsposition();
+            try {
+                Material material = fetchMaterial((String) defaultTableModel.getValueAt(row, 1));
+                lieferungsposition.setArtikel_nr(material);
+            } catch (ReflectiveOperationException | SQLException e) {
+                handleException(e);
+                return false;
+            }
+
+            int menge = (int) defaultTableModel.getValueAt(row, 3);
+            lieferungsposition.setMenge(menge);
+            lieferungsposition.setLieferung_nr(lieferung);
+
+            String lieferungspositionNr = generateLieferungspositionNr();
+            lieferungsposition.setLieferungsposition_nr(lieferungspositionNr);
+
+            lieferungspositionRepository.insert(lieferungsposition);
+        }
+        return true;
+    }
+
+    private String generateLieferungspositionNr() {
+        try {
+            List<Lieferungsposition> lieferungspositionen = lieferungspositionRepository.findAll().execute();
+            if (!lieferungspositionen.isEmpty()) {
+                Lieferungsposition lastLieferungposition = lieferungspositionen.get(lieferungspositionen.size() - 1);
+                String lastLieferungspositionNr = lastLieferungposition.getLieferungsposition_nr();
+                String prefix = lastLieferungspositionNr.substring(0, 3); // "LP-"
+                int number = Integer.parseInt(lastLieferungspositionNr.substring(3));
+                return prefix + (number + 1);
+            }
+        } catch (ReflectiveOperationException | SQLException e) {
+            handleException(e);
+        }
+        return "LP-1";
+    }
+
+
 
     private void selectRechnungComponentShown(java.awt.event.ComponentEvent evt) {
         // TODO add your handling code here:
@@ -720,6 +773,6 @@ public class LieferungInterface extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> selectRechnung;
     private javax.swing.JTable tablePositionen;
     private javax.swing.JTextField textboxLieferdatum;
-    private javax.swing.JTextField textboxLieferung;
+    private javax.swing.JTextField     textfieldLieferungNr;
     // End of variables declaration
 }
