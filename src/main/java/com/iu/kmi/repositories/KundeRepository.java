@@ -9,4 +9,5 @@ import com.iu.kmi.database.repository.Repository;
  * @author Othman
  */
 public interface KundeRepository extends Repository<Kunde, String> {
+    Kunde findByName(String name);
 }

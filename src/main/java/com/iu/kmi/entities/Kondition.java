@@ -144,7 +144,7 @@ public class Kondition {
         return "Kondition{" +
                 "konditionenNr=" + konditionNr +
                 ", name='" + name + '\'' +
-                ", zahlungsmethode='" + zahlungsbedingungen + '\'' +
+                ", zahlungsbedingungen='" + zahlungsbedingungen + '\'' +
                 ", lieferbedingungen='" + lieferbedingungen + '\'' +
                 ", rabatt=" + rabatt +
                 '}';
