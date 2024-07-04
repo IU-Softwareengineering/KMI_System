@@ -51,9 +51,9 @@ public class AngebotPositionTableModel extends AbstractTableModel {
         AngebotsPosition position = row.getPosition();
         Material material = position.getArtikelNr();
 
-//        if (row.getState() == ModelState.Deleted) {
-//            return null;
-//        }
+        if (row.getState() == ModelState.Deleted) {
+            return "<D>";
+        }
 
         return switch (columnIndex) {
             case 0 -> position.getAngebotspositionNr();
@@ -91,6 +91,7 @@ public class AngebotPositionTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         PositionTableRow row = positions.get(rowIndex);
         AngebotsPosition position = row.getPosition();
+
         if (columnIndex == 3 || columnIndex == 5) {
             return;
         }
@@ -125,9 +126,13 @@ public class AngebotPositionTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
+        ModelState state = positions.get(rowIndex).getState();
+        if (state == ModelState.Deleted) {
+            return false;
+        }
         return switch(columnIndex) {
             case 0 -> {
-                yield positions.get(rowIndex).getState() == ModelState.Created;
+                yield state == ModelState.Created;
             }
             case 2, 3, 5, 6, 7 -> false;
             default -> true;
