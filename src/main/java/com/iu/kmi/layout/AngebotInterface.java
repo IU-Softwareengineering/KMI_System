@@ -109,7 +109,6 @@ public class AngebotInterface extends javax.swing.JFrame {
                 fillKonditionenFuture
         );
 
-        // Warten, bis alle Aufgaben abgeschlossen sind
         allTasks.get();
     }
 
@@ -259,6 +258,8 @@ public class AngebotInterface extends javax.swing.JFrame {
         select_kondition.setSelectedItem(select_kondition.getItemAt(0));
         select_status.setSelectedItem(select_status.getItemAt(0));
         Kunde anfrageKunde = kundenAnfrage.getKunde();
+        AngebotPositionTableModel tableModel = (AngebotPositionTableModel) table_positionen.getModel();
+        tableModel.clearPositions();
         this.fillAngebotspositionen();
 
         for (int i = 0; i < select_kunde.getItemCount(); i++) {

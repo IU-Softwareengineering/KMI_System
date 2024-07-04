@@ -112,6 +112,10 @@ public class AngebotPositionTableModel extends AbstractTableModel {
         fireTableRowsInserted(positions.size() - 1, positions.size() - 1);
     }
 
+    public void clearPositions() {
+       this.positions.clear();
+    }
+
     public void addFromAnfragePosition(AnfragePosition anfragePosition) {
         AngebotsPosition position = new AngebotsPosition();
         position.setArtikelNr(anfragePosition.getArtikelNr());
