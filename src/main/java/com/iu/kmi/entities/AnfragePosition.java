@@ -10,11 +10,14 @@ public class AnfragePosition {
     @Column(name = "kundenanfrage_nr")
     private String anfrageNr;
 
-    @Column(name = "artikel_nr")
-    private String artikelNr;
+    @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
+    private Material artikelNr;
 
     @Column(name = "einzelpreis")
     private double einzelpreis;
+
+    @Column(name = "menge")
+    private int menge;
 
     // Getter und Setter
     public String getAnfragepositionNr() {
@@ -33,11 +36,11 @@ public class AnfragePosition {
         this.anfrageNr = anfrageNr;
     }
 
-    public String getArtikelNr() {
+    public Material getArtikelNr() {
         return artikelNr;
     }
 
-    public void setArtikelNr(String artikelNr) {
+    public void setArtikelNr(Material artikelNr) {
         this.artikelNr = artikelNr;
     }
 
