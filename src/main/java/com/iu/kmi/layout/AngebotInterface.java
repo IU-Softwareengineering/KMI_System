@@ -323,6 +323,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         button_angebotladen = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(11, 0), new java.awt.Dimension(11, 0), new java.awt.Dimension(11, 32767));
+        button_kond = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -503,6 +504,13 @@ public class AngebotInterface extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(51, 51, 51));
         jLabel10.setText("Angebot");
 
+        button_kond.setText("Konditionen");
+        button_kond.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_kondActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -572,7 +580,9 @@ public class AngebotInterface extends javax.swing.JFrame {
                                 .addComponent(button_abbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jScrollPane1))))
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_kond)
+                .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,7 +617,8 @@ public class AngebotInterface extends javax.swing.JFrame {
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textbox_angebotsdatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(select_kondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(select_kondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button_kond))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -852,6 +863,38 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_button_angebotladenActionPerformed
 
+    private void button_kondActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_kondActionPerformed
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    displayKonditionPopup();
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }//GEN-LAST:event_button_kondActionPerformed
+
+    public void onKonditionPopupClosed() {
+        try {
+            this.fillKonditionenSelect();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void displayKonditionPopup() throws ReflectiveOperationException, SQLException {
+        AngebotKonditionPopup angebotKonditionPopup = new AngebotKonditionPopup(this);
+        angebotKonditionPopup.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        angebotKonditionPopup.pack();
+        angebotKonditionPopup.setVisible(true);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -898,6 +941,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private javax.swing.JButton angebotsposition_loeschen_button;
     private javax.swing.JButton button_abbrechen;
     private javax.swing.JButton button_angebotladen;
+    private javax.swing.JButton button_kond;
     private javax.swing.JButton button_kundesuchen;
     private javax.swing.JButton button_speichern;
     private javax.swing.Box.Filler filler1;
