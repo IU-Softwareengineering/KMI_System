@@ -110,8 +110,8 @@ public class LieferungInterface extends javax.swing.JFrame {
             List<Lieferung> lieferungList = lieferungRepository.findAll().execute();
             if (!lieferungList.isEmpty()) {
                 lieferungList.sort((l1, l2) -> {
-                    int num1 = Integer.parseInt(l1.getLieferungNr().substring(3));
-                    int num2 = Integer.parseInt(l2.getLieferungNr().substring(3));
+                    int num1 = Integer.parseInt(l1.getLieferungNr().substring(4));
+                    int num2 = Integer.parseInt(l2.getLieferungNr().substring(4));
                     return Integer.compare(num1, num2);
                 });
                 Lieferung lastLieferung = lieferungList.getLast();
