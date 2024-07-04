@@ -135,21 +135,30 @@ public class DataORM<T> {
                 pstmt.setObject(i + 1, params[i]);
             }
             ResultSet rs = pstmt.executeQuery();
+            ResultSetMetaData rsMetaData = rs.getMetaData();
+            int columnCount = rsMetaData.getColumnCount();
+            List<String> columnNames = new ArrayList<>();
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(rsMetaData.getColumnName(i));
+            }
 
             while (rs.next()) {
                 T obj = type.getDeclaredConstructor().newInstance();
                 Field[] fields = type.getDeclaredFields();
                 for (Field field : fields) {
                     field.setAccessible(true);
-                    if (field.isAnnotationPresent(JoinColumn.class)) {
-                        JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
-                        Object joinValue = rs.getObject(joinColumn.name());
-                        if (joinValue != null) {
-                            Object relatedEntity = loadRelatedEntity(field.getType(), joinColumn, joinValue);
-                            field.set(obj, relatedEntity);
+                    String columnName = getColumnName(field);
+                    if (columnNames.contains(columnName)) {
+                        if (field.isAnnotationPresent(JoinColumn.class)) {
+                            JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
+                            Object joinValue = rs.getObject(joinColumn.name());
+                            if (joinValue != null) {
+                                Object relatedEntity = loadRelatedEntity(field.getType(), joinColumn, joinValue);
+                                field.set(obj, relatedEntity);
+                            }
+                        } else {
+                            field.set(obj, rs.getObject(columnName));
                         }
-                    } else {
-                        field.set(obj, rs.getObject(getColumnName(field)));
                     }
                 }
                 list.add(obj);
