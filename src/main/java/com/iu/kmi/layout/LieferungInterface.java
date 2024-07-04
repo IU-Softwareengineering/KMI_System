@@ -110,16 +110,17 @@ public class LieferungInterface extends javax.swing.JFrame {
         try {
             List<Lieferung> lieferungList = lieferungRepository.findAll().execute();
             if (!lieferungList.isEmpty()) {
-                Lieferung lastLieferung = lieferungList.get(lieferungList.size() - 1);
+                lieferungList.forEach(lieferung -> System.out.println(lieferung.getLieferungNr()));
+                Lieferung lastLieferung = lieferungList.getLast();
                 String lastLieferungNr = lastLieferung.getLieferungNr();
-                String prefix = lastLieferungNr.substring(0, 3); // "LIE-"
-                int number = Integer.parseInt(lastLieferungNr.substring(3));
+                String prefix = lastLieferungNr.substring(0, 4); // "LIE-"
+                int number = Integer.parseInt(lastLieferungNr.substring(4));
                 return prefix + (number + 1);
             }
         } catch (ReflectiveOperationException | SQLException e) {
             handleException(e);
         }
-        return "LIE-1";
+        return "LIE-0";
     }
 
     private void loadAllData(final String auftragsNr) throws ReflectiveOperationException, SQLException {
@@ -701,7 +702,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | SQLException e) {
             handleException(e);
         }
-        return "LP-1";
+        return "LP-0";
     }
 
 
