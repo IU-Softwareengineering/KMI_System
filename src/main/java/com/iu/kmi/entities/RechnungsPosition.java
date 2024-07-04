@@ -14,6 +14,9 @@ public class RechnungsPosition {
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
 
+    @Column(name = "menge")
+    private int menge;
+    
     public RechnungsPosition() {}
 
     // Getter und Setter
@@ -39,6 +42,15 @@ public class RechnungsPosition {
 
     public void setArtikelNr(Material artikelNr) {
         this.artikelNr = artikelNr;
+    }
+    
+    
+    public int getMenge() {
+        return menge;
+    }
+
+    public void setMenge(int menge) {
+        this.menge = menge;
     }
 
 }

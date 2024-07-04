@@ -12,6 +12,7 @@ import com.iu.kmi.entities.RechnungsPosition;
 import com.iu.kmi.repositories.RechnungRepository;
 import com.iu.kmi.repositories.RechnungsPositionRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
 
@@ -149,7 +150,7 @@ public class RechnungInterface extends javax.swing.JFrame {
 
         jComboBox2.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         jComboBox2.setForeground(new java.awt.Color(51, 51, 51));
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Status 1", "Status 2", "Status 3", "Status 4" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Offen", "Status 2", "Status 3", "Status 4" }));
         jComboBox2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -298,17 +299,24 @@ public class RechnungInterface extends javax.swing.JFrame {
         Rechnung rechnung = new Rechnung();
 
         if (rechnungsNr.isEmpty() || debitorNr.isEmpty() || rechnungstag.isEmpty() || faelligkeitsdatum.isEmpty() || status.isEmpty()) {
+
             JOptionPane.showMessageDialog(null, "Bitte füllen Sie alle Felder aus.", "Fehler", JOptionPane.ERROR_MESSAGE);
+
         } else {
+
             rechnung.setRechnungNr(rechnungsNr);
+            
+            rechnung.setStatus(status);
 
             Debitor debitor = new Debitor();
+
             debitor.setDebitorNr(debitorNr);
+
             rechnung.setDebitor(debitor);
 
             try {
-                LocalDate rechnungstagDate = LocalDate.parse(rechnungstag);
-                LocalDate faelligkeitsdatumDate = LocalDate.parse(faelligkeitsdatum);
+                LocalDateTime rechnungstagDate = LocalDate.parse(rechnungstag).atStartOfDay();
+                LocalDateTime faelligkeitsdatumDate = LocalDate.parse(faelligkeitsdatum).atStartOfDay();
 
                 rechnung.setRechnungstag(rechnungstagDate);
                 rechnung.setFaelligkeitsdatum(faelligkeitsdatumDate);
@@ -320,10 +328,9 @@ public class RechnungInterface extends javax.swing.JFrame {
 
             try {
                 rechnungRepository.insert(rechnung);
-
-                // Rechnungspositionen speichern
                 
                 String[] lines = jTextArea1.getText().split("\\n");
+                
                 RechnungsPositionRepository positionRepository = RepositoryProxy.newInstance(RechnungsPositionRepository.class);
 
                 int positionNr = 1;  
@@ -336,24 +343,26 @@ public class RechnungInterface extends javax.swing.JFrame {
                         
                         String artikelnr = parts[0].trim();
                         
-                        int stueckzahl = Integer.parseInt(parts[1].trim());
+                        int menge = Integer.parseInt(parts[1].trim());
 
-                        for (int i = 0; i < stueckzahl; i++) {
-                            
-                            RechnungsPosition position = new RechnungsPosition();
-                            position.setRechnungNr(rechnung);
-                            position.setRechnungspositionNr(rechnungsNr + "-" + positionNr);
-
-                            Material artikel = new Material();
-                            artikel.setArtikelNr(artikelnr);
-                            position.setArtikelNr(artikel);
-
-                            positionRepository.insert(position);
-
-                            positionNr++; 
-                            
-                        }
+                        RechnungsPosition position = new RechnungsPosition();
                         
+                        position.setRechnungNr(rechnung);
+                        
+                        position.setMenge(menge);
+                        
+                        position.setRechnungspositionNr(rechnungsNr + "-" + positionNr);
+
+                        Material artikel = new Material();
+                        
+                        artikel.setArtikelNr(artikelnr);
+                        
+                        position.setArtikelNr(artikel);
+
+                        positionRepository.insert(position);
+
+                        positionNr++; 
+
                     }
                     
                 }
@@ -364,8 +373,8 @@ public class RechnungInterface extends javax.swing.JFrame {
                 jTextField6.setText("");
                 jTextField2.setText("");
                 jTextField4.setText("");
-                
                 jTextArea1.setText("");
+                
             } catch (Exception e) {
                 
                 JOptionPane.showMessageDialog(null, "Fehler beim Anlegen der Rechnung: " + e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);

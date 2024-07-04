@@ -310,7 +310,7 @@
         </Property>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
-            <StringItem index="0" value="Status 1"/>
+            <StringItem index="0" value="Offen"/>
             <StringItem index="1" value="Status 2"/>
             <StringItem index="2" value="Status 3"/>
             <StringItem index="3" value="Status 4"/>
