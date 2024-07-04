@@ -15,8 +15,11 @@ import javax.swing.table.TableModel;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +65,7 @@ public class AngebotInterface extends javax.swing.JFrame {
 
     private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
         List<Kunde> kunden = kundeRepository.findAll().execute();
-        kunden.forEach(kunde -> select_kunde.addItem(kunde.getVorname() + " " + kunde.getName()));
+        kunden.forEach(kunde -> select_kunde.addItem(new AngebotKundenModel(kunde.getVorname() + " " + kunde.getName(), kunde)));
     }
 
     private void fillKonditionenSelect() throws ReflectiveOperationException, SQLException {
@@ -141,6 +144,29 @@ public class AngebotInterface extends javax.swing.JFrame {
     
     private void fillAngebotspositionen() {
         this.loadAngebotsPositionen();
+    }
+
+    public void kundenAnfrageSuchen(String name){
+        if(name.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie einen Namen ein oder wählen sie einen Kunden aus.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        this.kundenAnfrage = kundenanfrageRepository.findByKunde_name(name);
+        if (kundenAnfrage == null) {
+            JOptionPane.showMessageDialog(this, "Für diesen Kunden existiert keine Kundenanfrage.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        select_kunde.removeAllItems();
+        Kunde anfrageKunde = kundenAnfrage.getKunde();
+        this.fillAngebotspositionen();
+
+        for (int i = 0; i < select_kunde.getItemCount(); i++) {
+            AngebotKundenModel item = select_kunde.getItemAt(i);
+            if (item.value.equals(anfrageKunde)) {
+                select_kunde.setSelectedItem(item);
+                break;
+            }
+        }
     }
 
 
@@ -262,7 +288,9 @@ public class AngebotInterface extends javax.swing.JFrame {
         select_status.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         select_status.setForeground(new java.awt.Color(51, 51, 51));
         AngebotStatusModel[] statusArray = new AngebotStatusModel[]{
-                new AngebotStatusModel("test", "test")
+                new AngebotStatusModel("test", "Offen"),
+                new AngebotStatusModel("test", "Akzeptiert"),
+                new AngebotStatusModel("test", "Abgelehnt")
         };
 
         // Create a JComboBox and set its model
@@ -497,30 +525,19 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textbox_angebotsdatumActionPerformed
 
-    private void button_kundesuchenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_kundesuchenActionPerformed
-       this.kundenSuchen(textbox_anfrage.getText());
+    private void button_kundesuchenActionPerformed(java.awt.event.ActionEvent evt) {
+        String searchName = null;
+        if (textbox_anfrage.getText() != null && !textbox_anfrage.getText().isEmpty()) {
+            searchName = textbox_anfrage.getText();
+        } else if (select_kunde.getSelectedItem() != null) {
+            searchName = ((AngebotKundenModel) select_kunde.getSelectedItem()).value.getName();
+        } else {
+            JOptionPane.showMessageDialog(this, "Bitte geben Sie einen Namen ein oder wählen Sie einen Kunden aus.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+       this.kundenAnfrageSuchen(searchName);
 
     }//GEN-LAST:event_button_kundesuchenActionPerformed
-
-    public void kundenSuchen(String name){
-        try {
-            this.kundenAnfrage = kundenanfrageRepository.findByKunde_name(name);
-
-        } catch (Exception e) {
-            return;
-        }
-        if (kundenAnfrage == null) {
-            JOptionPane.showMessageDialog(this, "Kunde nicht gefunden.", "Fehler", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        select_kunde.removeAllItems();
-        Kunde anfrageKunde = kundenAnfrage.getKunde();
-        this.fillAngebotspositionen();
-
-
-        select_kunde.addItem(anfrageKunde.getVorname() + " " + anfrageKunde.getName());
-
-    }
 
     private void textbox_gueltigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_gueltigActionPerformed
         // Prozess - Datumsvalidierung mit aktueller Zeit
@@ -566,31 +583,55 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setKundeNr(kundenAnfrage.getKunde());
 
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         String gueltigBisText = textbox_gueltig.getText();
-        if (gueltigBisText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Gültig bis' an", "Fehler", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        LocalDateTime gueltigBisDateTime = null;
+
         try {
-            LocalDate gueltigBis = LocalDate.parse(gueltigBisText, dtFormatter);
-            angebot.setGueltigBis(gueltigBis);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            gueltigBisDateTime = LocalDateTime.parse(gueltigBisText, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "'Gültig bis' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
-            return;
+            try {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                LocalDate gueltigBisDate = LocalDate.parse(gueltigBisText, dateFormatter);
+                gueltigBisDateTime = gueltigBisDate.atStartOfDay();
+            } catch (DateTimeParseException e2) {
+                // If both parsing attempts fail, show an error message
+                e2.printStackTrace();
+                JOptionPane.showMessageDialog(this, "'Gültig bis' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
+
+        if (gueltigBisDateTime != null) {
+            angebot.setGueltigBis(gueltigBisDateTime);
+        }
+
 
         String angebotsDatumText = textbox_angebotsdatum.getText();
         if (angebotsDatumText.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Bitte geben Sie 'Angebotsdatum' an", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        LocalDateTime angebotsDatum = null;
+
         try {
-            LocalDate angebotsDatum = LocalDate.parse(angebotsDatumText, dtFormatter);
-            angebot.setAngebotsdatum(angebotsDatum);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            angebotsDatum = LocalDateTime.parse(angebotsDatumText, dateTimeFormatter);
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "'Angebotsdatum' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
-            return;
+            try {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                LocalDate angebotsDatumDate = LocalDate.parse(angebotsDatumText, dateFormatter);
+                angebotsDatum = angebotsDatumDate.atStartOfDay();
+            } catch (DateTimeParseException e2) {
+                e2.printStackTrace();
+                JOptionPane.showMessageDialog(this, "'Angebotsdatum' ist fehlerhaft", "Fehler", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        if (angebotsDatum != null) {
+            angebot.setAngebotsdatum(angebotsDatum);
         }
 
         AngebotKonditionModel kondition = (AngebotKonditionModel) select_kondition.getSelectedItem();
@@ -607,6 +648,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setStatus(status.value);
 
+        System.out.println(angebot);
         //this.angebotRepository.insert(angebot);
 
         System.out.println(angebot);
@@ -723,7 +765,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<AngebotKonditionModel> select_kondition;
-    private javax.swing.JComboBox<String> select_kunde;
+    private javax.swing.JComboBox<AngebotKundenModel> select_kunde;
     private javax.swing.JComboBox<AngebotStatusModel> select_status;
     private javax.swing.JTable table_positionen;
     private javax.swing.JTextField textbox_anfrage;

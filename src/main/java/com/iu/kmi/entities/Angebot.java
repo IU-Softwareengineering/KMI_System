@@ -1,6 +1,7 @@
 package com.iu.kmi.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -22,10 +23,10 @@ public class Angebot {
     private Kunde kundeNr;
 
     @Column(name = "angebotsdatum")
-    private LocalDate angebotsdatum;
+    private LocalDateTime angebotsdatum;
 
     @Column(name = "gueltig_bis")
-    private LocalDate gueltigBis;
+    private LocalDateTime gueltigBis;
 
     @Column(name = "waehrung")
     private String waehrung;
@@ -37,7 +38,7 @@ public class Angebot {
     private Kondition konditionNr;
 
     // Constructor
-    public Angebot(Kunde kundeNr, LocalDate angebotsdatum, LocalDate gueltigBis, String waehrung, String status, Kondition konditionNr) {
+    public Angebot(Kunde kundeNr, LocalDateTime angebotsdatum, LocalDateTime gueltigBis, String waehrung, String status, Kondition konditionNr) {
         this.kundeNr = kundeNr;
         this.angebotsdatum = angebotsdatum;
         this.gueltigBis = gueltigBis;
@@ -67,19 +68,19 @@ public class Angebot {
         this.kundeNr = kundeNr;
     }
 
-    public LocalDate getAngebotsdatum() {
+    public LocalDateTime getAngebotsdatum() {
         return angebotsdatum;
     }
 
-    public void setAngebotsdatum(LocalDate angebotsdatum) {
+    public void setAngebotsdatum(LocalDateTime angebotsdatum) {
         this.angebotsdatum = angebotsdatum;
     }
 
-    public LocalDate getGueltigBis() {
+    public LocalDateTime getGueltigBis() {
         return gueltigBis;
     }
 
-    public void setGueltigBis(LocalDate gueltigBis) {
+    public void setGueltigBis(LocalDateTime gueltigBis) {
         this.gueltigBis = gueltigBis;
     }
 
