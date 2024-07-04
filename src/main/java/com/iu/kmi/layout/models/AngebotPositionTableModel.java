@@ -1,6 +1,7 @@
 package com.iu.kmi.layout.models;
 
 import com.iu.kmi.entities.*;
+import com.iu.kmi.repositories.KonditionRepository;
 import com.iu.kmi.repositories.MaterialRepository;
 
 import javax.swing.table.AbstractTableModel;
@@ -11,15 +12,27 @@ import java.util.List;
 
 
 public class AngebotPositionTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"Nummer", "ArtikelNr", "Name", "Einzelpreis", "Menge", "Gesamtpreis"};
-    // initial positions
+//    private final String[] columnNames = {"Nummer", "ArtikelNr", "Name", "Einzelpreis", "Menge", "Gesamtpreis"};
+    private final String[] columnNames = {"Nummer", "ArtikelNr", "Name", "Einzelpreis", "Menge", "Gesamtpreis", "Rabatt %", "Rabatt"};
     private List<PositionTableRow> positions;
 
     private MaterialRepository materialRepository;
+    private Kondition kondition;
+
+    private BigDecimal konditionRabatt;
 
     public AngebotPositionTableModel(MaterialRepository materialRepository) {
         this.positions = new ArrayList<>();
         this.materialRepository = materialRepository;
+        this.konditionRabatt = new BigDecimal(0);
+    }
+
+    public void setKondition(Kondition kondition) {
+        if (kondition == null) {
+            return;
+        }
+        this.kondition = kondition;
+        this.konditionRabatt = kondition.getRabatt();
     }
 
     @Override
@@ -38,18 +51,37 @@ public class AngebotPositionTableModel extends AbstractTableModel {
         AngebotsPosition position = row.getPosition();
         Material material = position.getArtikelNr();
 
+//        if (row.getState() == ModelState.Deleted) {
+//            return null;
+//        }
+
         return switch (columnIndex) {
             case 0 -> position.getAngebotspositionNr();
             case 1 -> (material == null) ? "" : material.getArtikelNr();
             case 2 -> (material == null) ? "" :  material.getName();
             case 3 -> (material == null || material.getArtikelNr() == null) ? "" : material.getVerkaufsPreis();
-            case 4 -> position.getMenge();
-            case 5 ->{
+            case 4 -> {
+                if (kondition != null && position.getArtikelNr() != null) {
+                    BigDecimal rabattValue = calculateRabatt(position);
+                    setValueAt(rabattValue.toString(), rowIndex, 7);
+                    setValueAt(konditionRabatt.toString(), rowIndex, 6);
+                }
+
+                yield position.getMenge();
+            }
+            case 5 -> {
                 if (position.getArtikelNr() == null) {
                     yield "";
                 }
                 yield (new BigDecimal(position.getMenge()).multiply(position.getArtikelNr().getVerkaufsPreis())).toString();
 
+            }
+            case 6 -> konditionRabatt.toString() + "%";
+            case 7 ->  {
+                if (position.getArtikelNr() == null || kondition == null) {
+                    yield "";
+                }
+                yield calculateRabatt(position);
             }
             default -> null;
         };
@@ -83,17 +115,21 @@ public class AngebotPositionTableModel extends AbstractTableModel {
         }
 
         ModelState state = row.getState();
-        if (state != ModelState.Created || state != ModelState.Modified) {
+        if (state != ModelState.Created) {
             row.setState(ModelState.Modified);
         }
 
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
+
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return switch(columnIndex) {
-            case 2, 3, 5 -> false;
+            case 0 -> {
+                yield positions.get(rowIndex).getState() == ModelState.Created;
+            }
+            case 2, 3, 5, 6, 7 -> false;
             default -> true;
         };
     }
@@ -104,11 +140,14 @@ public class AngebotPositionTableModel extends AbstractTableModel {
     }
 
     public void deletePositionByRow(int rowIndex) {
+        System.out.println("deleting row at " + rowIndex);
         if (rowIndex >= 0 && rowIndex < positions.size()) {
             this.positions.get(rowIndex).setState(ModelState.Deleted);
             fireTableRowsDeleted(rowIndex, rowIndex);
         }
     }
+
+
 
     public void addPosition(AngebotsPosition position) {
         this.positions.add(new PositionTableRow(position, ModelState.Unchanged));
@@ -143,6 +182,12 @@ public class AngebotPositionTableModel extends AbstractTableModel {
            setValueAt(material.getName(), row, 2);
            setValueAt(material.getVerkaufsPreis(), row, 3);
        }
+    }
+
+    public BigDecimal calculateRabatt(AngebotsPosition position) {
+        BigDecimal rabatt = kondition.getRabatt().divide(new BigDecimal(100));
+        BigDecimal gesamtPreis = new BigDecimal(position.getMenge()).multiply(position.getArtikelNr().getVerkaufsPreis());
+        return rabatt.multiply(gesamtPreis);
     }
 
     public List<PositionTableRow> getPositions() {

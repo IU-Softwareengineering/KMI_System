@@ -152,6 +152,11 @@ public class AngebotInterface extends javax.swing.JFrame {
     private void loadAngebotsPositionenByAngebot(String angebotNr) throws ReflectiveOperationException, SQLException {
         List<AngebotsPosition> positions = angebotsPositionRepository.findAll().where("angebotNr", angebotNr).execute();
         AngebotPositionTableModel model = (AngebotPositionTableModel) table_positionen.getModel();
+        AngebotKonditionModel konditionModel = (AngebotKonditionModel) select_kondition.getModel().getSelectedItem();
+        if (konditionModel != null) {
+            model.setKondition(konditionModel.value);
+        }
+
         positions.forEach(model::addPosition);
     }
 
@@ -201,6 +206,7 @@ public class AngebotInterface extends javax.swing.JFrame {
 
             switch (row.getState()) {
                 case Created -> {
+                    System.out.println("handling created " + position.getAngebotspositionNr());
                     if (position.getAngebotspositionNr().isEmpty() || position.getAngebotspositionNr() == null){
                         System.out.println("no positions nr supplied");
                         return;
@@ -223,10 +229,10 @@ public class AngebotInterface extends javax.swing.JFrame {
 
                     System.out.println("INSERT: " + position);
                     // inserting position
-                    //angebotsPositionRepository.insert(position);
+                    angebotsPositionRepository.insert(position);
                 }
                 case Modified -> {
-                    System.out.println("handling modified");
+                    System.out.println("handling modified " + position.getAngebotspositionNr());
                     angebotsPositionRepository.update(position);
 
                 }
