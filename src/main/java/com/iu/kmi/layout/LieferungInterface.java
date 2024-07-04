@@ -93,7 +93,6 @@ public class LieferungInterface extends javax.swing.JFrame {
     }
 
     private void setLieferungsID() {
-        // TODO: falsche Id ab Ende LIE-3 statt LIE-5
         textfieldLieferungNr.setText("");
         try{
             textfieldLieferungNr.setText(generateLieferungNr());
@@ -110,7 +109,11 @@ public class LieferungInterface extends javax.swing.JFrame {
         try {
             List<Lieferung> lieferungList = lieferungRepository.findAll().execute();
             if (!lieferungList.isEmpty()) {
-                lieferungList.forEach(lieferung -> System.out.println(lieferung.getLieferungNr()));
+                lieferungList.sort((l1, l2) -> {
+                    int num1 = Integer.parseInt(l1.getLieferungNr().substring(3));
+                    int num2 = Integer.parseInt(l2.getLieferungNr().substring(3));
+                    return Integer.compare(num1, num2);
+                });
                 Lieferung lastLieferung = lieferungList.getLast();
                 String lastLieferungNr = lastLieferung.getLieferungNr();
                 String prefix = lastLieferungNr.substring(0, 4); // "LIE-"
@@ -158,8 +161,7 @@ public class LieferungInterface extends javax.swing.JFrame {
             public void tableChanged(final TableModelEvent e) {
                 if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 3) {
                     int row = e.getFirstRow();
-                    System.out.println(defaultTableModel.getValueAt(row, 3).toString());
-                    int menge = (int) defaultTableModel.getValueAt(row, 3);
+                    int menge = Integer.parseInt(defaultTableModel.getValueAt(row, 3).toString());
                     try{
                         Material material = fetchMaterial( (String) defaultTableModel.getValueAt(row, 1));
                         int lagerbestand = getLagetbestandForMaterial(material);
@@ -602,9 +604,6 @@ public class LieferungInterface extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, "Die Lieferung wurde erfolgreich gespeichert.", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 
-        // Maske zurücksetzen
-
-        // Methoden und Hilfsfunktionen
         // TODO: existierenden Lieferung anpassen -> Bearbeitungsmodus
 
         // TODO: Lieferschein erzeugen
@@ -657,7 +656,7 @@ public class LieferungInterface extends javax.swing.JFrame {
         try {
             LocalDate lieferdatum = LocalDate.parse(lieferdatumText, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
             auftrag.setLieferdatum(lieferdatum.atStartOfDay());
-            auftragRespository.update(auftrag);
+            //auftragRespository.update(auftrag);
             return true;
         } catch (DateTimeParseException e) {
             showErrorMessage("Das Lieferdatum ist fehlerhaft. Geben Sie das Datum im Format dd.MM.yyyy an.");
@@ -693,7 +692,12 @@ public class LieferungInterface extends javax.swing.JFrame {
         try {
             List<Lieferungsposition> lieferungspositionen = lieferungspositionRepository.findAll().execute();
             if (!lieferungspositionen.isEmpty()) {
-                Lieferungsposition lastLieferungposition = lieferungspositionen.get(lieferungspositionen.size() - 1);
+                lieferungspositionen.sort((lp1, lp2) -> {
+                    int num1 = Integer.parseInt(lp1.getLieferungsposition_nr().substring(3));
+                    int num2 = Integer.parseInt(lp2.getLieferungsposition_nr().substring(3));
+                    return Integer.compare(num1, num2);
+                });
+                Lieferungsposition lastLieferungposition = lieferungspositionen.getLast();
                 String lastLieferungspositionNr = lastLieferungposition.getLieferungsposition_nr();
                 String prefix = lastLieferungspositionNr.substring(0, 3); // "LP-"
                 int number = Integer.parseInt(lastLieferungspositionNr.substring(3));
