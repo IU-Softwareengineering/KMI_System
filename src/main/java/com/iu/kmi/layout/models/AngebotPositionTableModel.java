@@ -33,6 +33,7 @@ public class AngebotPositionTableModel extends AbstractTableModel {
         }
         this.kondition = kondition;
         this.konditionRabatt = kondition.getRabatt();
+        this.fireTableDataChanged();
     }
 
     @Override

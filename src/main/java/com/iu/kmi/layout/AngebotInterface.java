@@ -819,12 +819,11 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_select_statusActionPerformed
 
     private void select_konditionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_select_konditionActionPerformed
-        /*
         AngebotKonditionModel selection = (AngebotKonditionModel) select_kondition.getSelectedItem();
-        if (selection != null && !selection.isPlaceholder()) {
-            System.out.println("kondition selected " + select_kondition.getSelectedItem().toString());
+        AngebotPositionTableModel tableModel = (AngebotPositionTableModel) table_positionen.getModel();
+        if (selection != null) {
+            tableModel.setKondition(selection.value);
         }
-        */
     }//GEN-LAST:event_select_konditionActionPerformed
 
     private void textbox_anfrageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_anfrageActionPerformed
