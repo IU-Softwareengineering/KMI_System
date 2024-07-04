@@ -21,6 +21,13 @@ public class AngebotsPosition {
     public AngebotsPosition() {
     }
 
+    public AngebotsPosition(String angebotspositionNr, Angebot angebotNr, Material artikelNr, double einzelpreis, int menge) {
+        this.angebotspositionNr = angebotspositionNr;
+        this.angebotNr = angebotNr;
+        this.artikelNr = artikelNr;
+        this.einzelpreis = einzelpreis;
+        this.menge = menge;
+    }
     public String getAngebotspositionNr() {
         return angebotspositionNr;
     }
@@ -59,5 +66,16 @@ public class AngebotsPosition {
 
     public void setMenge(int menge) {
         this.menge = menge;
+    }
+
+    @Override
+    public String toString() {
+        return "AngebotsPosition{" +
+                "angebotspositionNr='" + angebotspositionNr + '\'' +
+                ", angebotNr=" + angebotNr +
+                ", artikelNr=" + artikelNr +
+                ", einzelpreis=" + einzelpreis +
+                ", menge=" + menge +
+                '}';
     }
 }

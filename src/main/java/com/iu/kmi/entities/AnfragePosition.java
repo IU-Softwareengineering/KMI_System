@@ -16,6 +16,9 @@ public class AnfragePosition {
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
 
+    @Column(name = "menge")
+    private int menge;
+
 
     public String getAnfragepositionNr() {
         return anfragepositionNr;
@@ -41,4 +44,11 @@ public class AnfragePosition {
         this.artikelNr = artikelNr;
     }
 
+    public int getMenge() {
+        return menge;
+    }
+
+    public void setMenge(int menge) {
+        this.menge = menge;
+    }
 }
