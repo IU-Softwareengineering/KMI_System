@@ -6,22 +6,19 @@ package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
 import com.iu.kmi.entities.*;
-import com.iu.kmi.layout.models.AngebotKonditionModel;
-import com.iu.kmi.layout.models.AngebotStatusModel;
-import com.iu.kmi.layout.models.PositionTableModel;
+import com.iu.kmi.layout.models.*;
 import com.iu.kmi.repositories.*;
 
-import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -32,10 +29,12 @@ public class AngebotInterface extends javax.swing.JFrame {
     private static final String DATE_PATTERN = "\\d{2}\\.\\d{2}\\.\\d{4}";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private AngebotRepository angebotRepository;
+    private MaterialRepository materialRepository;
     private KundeRepository kundeRepository;
     private KundenanfrageRepository kundenanfrageRepository;
     private KonditionRepository konditionRepository;
-    private PositionTableModel[] positionTableData;
+    private PositionTableRowModel[] positionTableData;
+    private List<AngebotsPosition> positions;
     private Kundenanfrage kundenAnfrage;
     private AngebotsPositionRepository angebotsPositionRepository;
     private AnfragePositionRepository anfragePositionRepository;
@@ -49,10 +48,12 @@ public class AngebotInterface extends javax.swing.JFrame {
         this.fillKundenSelect();
         this.fillKonditionenSelect();
         this.fillDate();
+        this.initTable();
     }
 
     private void initRepository() {
         this.angebotRepository = RepositoryProxy.newInstance(AngebotRepository.class);
+        this.materialRepository = RepositoryProxy.newInstance(MaterialRepository.class);
         this.kundeRepository = RepositoryProxy.newInstance(KundeRepository.class);
         this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
         this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
@@ -74,33 +75,64 @@ public class AngebotInterface extends javax.swing.JFrame {
     }
 
     private void loadAngebotsPositionen(){
-        String sql = "SELECT ap.anfrageposition_nr,ap.artikel_nr,ap.kundenanfrage_nr FROM anfrageposition ap JOIN kundenanfrage ka ON ap.kundenanfrage_nr = ka.kundenanfrage_nr WHERE ka.kundenanfrage_nr = ?;";
+        String sql = "SELECT ap.anfrageposition_nr,ap.artikel_nr,ap.kundenanfrage_nr,ap.menge FROM anfrageposition ap JOIN kundenanfrage ka ON ap.kundenanfrage_nr = ka.kundenanfrage_nr WHERE ka.kundenanfrage_nr = ?;";
         List<AnfragePosition> anfragePositions = anfragePositionRepository.executeCustomQueryList(sql, this.kundenAnfrage.getKundenanfrageNr());
 
-        Map<String, List<AnfragePosition>> grouped = groupAnfragePositionsByArtikelNr(anfragePositions);
-        this.positionTableData = new PositionTableModel[grouped.size()];
-        int i = 0;
-        for (Map.Entry<String, List<AnfragePosition>> entry : grouped.entrySet()) {
-            this.positionTableData[i] = PositionTableModel.convert(entry.getValue());
-            i++;
-        }
-
-
-
+        AngebotPositionTableModel model = (AngebotPositionTableModel) table_positionen.getModel();
+        anfragePositions.forEach(model::addFromAnfragePosition);
     }
 
-    public static Map<String, List<AnfragePosition>> groupAnfragePositionsByArtikelNr(List<AnfragePosition> anfragePositions) {
-        Map<String, List<AnfragePosition>> groupedAnfragePositions = new HashMap<>();
+    private void handlePositionsSave(Angebot angebot) {
+        AngebotPositionTableModel model = ((AngebotPositionTableModel)table_positionen.getModel());
+        List<PositionTableRow> rows = model.getPositions();
 
-        for (AnfragePosition ap : anfragePositions) {
-            String artikelNr = ap.getArtikelNr().getArtikelNr();
-            if (!groupedAnfragePositions.containsKey(artikelNr)) {
-                groupedAnfragePositions.put(artikelNr, new ArrayList<>());
+        rows.forEach(row -> {
+            AngebotsPosition position = row.getPosition();
+
+            switch (row.getState()) {
+                case Created -> {
+                    if (position.getAngebotspositionNr().isEmpty()) {
+                        System.out.println("no positions nr supplied");
+                        return;
+                    }
+
+                    Angebot positionAngebot = position.getAngebotNr();
+                    if (positionAngebot == null) {
+                        position.setAngebotNr(angebot);
+                    }
+
+                    Material material = position.getArtikelNr();
+                    if (material == null) {
+                        System.out.println("material is null");
+                    }
+
+                    // Todo: 0 could be valid, use -1?
+                    if (position.getEinzelpreis() == 0) {
+                        System.out.println("einzelpreis not supplied or is 0");
+                        return;
+                    }
+
+                    if (position.getMenge() == 0)  {
+                        System.out.println("menge is 0");
+                        return;
+                    }
+
+                    System.out.println("INSERT: " + position);
+                    // inserting position
+                    //angebotsPositionRepository.insert(position);
+                }
+                case Modified -> System.out.println("Modified not implemented yet");
+                case Deleted -> angebotsPositionRepository.delete(position.getAngebotspositionNr());
+
+
             }
-            groupedAnfragePositions.get(artikelNr).add(ap);
-        }
 
-        return groupedAnfragePositions;
+        });
+    }
+
+    private void initTable() {
+        AngebotPositionTableModel angebotPositionTableModel = new AngebotPositionTableModel();
+        table_positionen.setModel(angebotPositionTableModel);
     }
 
     private void fillDate(){
@@ -109,23 +141,6 @@ public class AngebotInterface extends javax.swing.JFrame {
     
     private void fillAngebotspositionen() {
         this.loadAngebotsPositionen();
-        DefaultTableModel model = new DefaultTableModel(
-                new Object[][]{},
-                new String[]{"Nummer", "Name", "Einzelpreis", "Menge", "Gesamtpreis"}
-        );
-
-        table_positionen.setModel(model);
-
-        // Fülle das Modell mit den Daten aus positionTableData
-        for (PositionTableModel position : positionTableData) {
-            model.addRow(new Object[]{
-                    position.nummer,
-                    position.name,
-                    position.einzelpreis,
-                    position.menge,
-                    position.gesamtpreis
-            });
-        }
     }
 
 
@@ -592,11 +607,15 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setStatus(status.value);
 
-        System.out.println(angebot);
         //this.angebotRepository.insert(angebot);
 
-        // angebotspositionen fetchen, handlen & in db schreiben
-
+        System.out.println(angebot);
+        try {
+            this.handlePositionsSave(angebot);
+        } catch (Exception e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Angebotspositionen", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_button_speichernActionPerformed
 
     private void textbox_angebotsidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_angebotsidActionPerformed
@@ -633,20 +652,18 @@ public class AngebotInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_select_kundeActionPerformed
 
     private void angebotsposition_erstellen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_angebotsposition_erstellen_buttonActionPerformed
-        DefaultTableModel model = ((DefaultTableModel)table_positionen.getModel());
-        PositionTableModel testModel = new PositionTableModel();
-        Object[] t = PositionTableModel.toArray(testModel);
-        model.addRow(t);
+        AngebotPositionTableModel tableModel = (AngebotPositionTableModel) table_positionen.getModel();
+        tableModel.addPosition();
+
     }//GEN-LAST:event_angebotsposition_erstellen_buttonActionPerformed
 
     private void angebotsposition_loeschen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_angebotsposition_loeschen_buttonActionPerformed
-        // TODO add your handling code here:
         int selectedPosition = this.table_positionen.getSelectedRow();
         if (selectedPosition == -1) {
             return;
         }
-        DefaultTableModel model = ((DefaultTableModel)table_positionen.getModel());
-        model.removeRow(selectedPosition);
+        AngebotPositionTableModel tableModel = (AngebotPositionTableModel) table_positionen.getModel();
+        tableModel.deletePositionByRow(selectedPosition);
     }//GEN-LAST:event_angebotsposition_loeschen_buttonActionPerformed
 
     /**
