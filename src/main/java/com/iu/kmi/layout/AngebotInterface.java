@@ -790,23 +790,22 @@ public class AngebotInterface extends javax.swing.JFrame {
         angebot.setStatus(status.value);
 
         angebot.setWaehrung("EUR");
-
-        System.out.println(angebot);
-        //this.angebotRepository.insert(angebot);
-
         System.out.println(angebot);
         Optional<Angebot> tempAngebot = this.angebote.stream().filter(a -> a.getAngebotNr().equals(angebot.getAngebotNr())).findFirst();
 
-        if(tempAngebot.isPresent()){
-            this.angebotRepository.update(angebot);
-        } else {
-            this.angebotRepository.insert(angebot);
-        }
         try {
             this.handlePositionsSave(angebot);
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Angebotspositionen", "Fehler", JOptionPane.ERROR_MESSAGE);
+        }
+
+        if(tempAngebot.isPresent()){
+            System.out.println("UPDATE");
+            this.angebotRepository.update(angebot);
+        } else {
+            System.out.println("INSERT");
+            this.angebotRepository.insert(angebot);
         }
     }//GEN-LAST:event_button_speichernActionPerformed
 
