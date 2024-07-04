@@ -14,7 +14,7 @@ import com.iu.kmi.database.annotations.JoinColumn;
  * @author Anthony
  */
 
-@Entity(tableName = "Angebot")
+@Entity(tableName = "angebot")
 public class Angebot {
     @Id(name = "angebot_nr")
     private String angebotNr;

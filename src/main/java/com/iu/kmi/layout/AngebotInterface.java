@@ -22,6 +22,10 @@ import java.util.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  *
@@ -41,6 +45,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private Kundenanfrage kundenAnfrage;
     private AngebotsPositionRepository angebotsPositionRepository;
     private AnfragePositionRepository anfragePositionRepository;
+    private ExecutorService executor;
 
     /**
      * Creates new form AngebotInterface
@@ -48,10 +53,18 @@ public class AngebotInterface extends javax.swing.JFrame {
     public AngebotInterface() throws ReflectiveOperationException, SQLException {
         initComponents();
         this.initRepository();
-        this.fillKundenSelect();
-        this.fillKonditionenSelect();
         this.fillDate();
         this.initTable();
+
+        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        try {
+            this.initRepository();
+            this.loadDataAsync();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdown();
+        }
     }
 
     private void initRepository() {
@@ -61,6 +74,58 @@ public class AngebotInterface extends javax.swing.JFrame {
         this.kundenanfrageRepository = RepositoryProxy.newInstance(KundenanfrageRepository.class);
         this.konditionRepository = RepositoryProxy.newInstance(KonditionRepository.class);
         this.anfragePositionRepository = RepositoryProxy.newInstance(AnfragePositionRepository.class);
+    }
+
+    private void loadDataAsync() throws ExecutionException, InterruptedException, ReflectiveOperationException, SQLException {
+        CompletableFuture<Void> fillKundenFuture = CompletableFuture.runAsync(() -> {
+            try {
+                fillKundenSelect();
+            } catch (ReflectiveOperationException | SQLException e) {
+                e.printStackTrace();
+            }
+        }, executor);
+
+        CompletableFuture<Void> fillStatusFuture = CompletableFuture.runAsync(this::fillStatusSelect, executor);
+
+        CompletableFuture<Void> fillAngebotFuture = CompletableFuture.runAsync(() -> {
+            try {
+                fillAngebotSelect();
+            } catch (ReflectiveOperationException | SQLException e) {
+                e.printStackTrace();
+            }
+        }, executor);
+
+        CompletableFuture<Void> fillKonditionenFuture = CompletableFuture.runAsync(() -> {
+            try {
+                fillKonditionenSelect();
+            } catch (ReflectiveOperationException | SQLException e) {
+                e.printStackTrace();
+            }
+        }, executor);
+
+
+        CompletableFuture<Void> allTasks = CompletableFuture.allOf(
+                fillKundenFuture, fillStatusFuture, fillAngebotFuture,
+                fillKonditionenFuture
+        );
+
+        // Warten, bis alle Aufgaben abgeschlossen sind
+        allTasks.get();
+    }
+
+    private void fillStatusSelect(){
+        select_status.removeAllItems();
+        select_status.addItem(new AngebotStatusModel("", ""));
+        select_status.addItem(new AngebotStatusModel("Offen", "Offen"));
+        select_status.addItem(new AngebotStatusModel("Akzeptiert", "Akzeptiert"));
+        select_status.addItem(new AngebotStatusModel("Abgelehnt", "Abgelehnt"));
+    }
+
+    private void fillAngebotSelect() throws ReflectiveOperationException, SQLException {
+        select_angebot.removeAllItems();
+        select_angebot.addItem(new AngebotModel("", ""));
+        List<Angebot> angebote = angebotRepository.findAll().execute();
+        angebote.forEach(angebot -> select_angebot.addItem(new AngebotModel(angebot.getAngebotNr(), angebot)));
     }
 
     private void fillKundenSelect() throws ReflectiveOperationException, SQLException {
@@ -85,6 +150,38 @@ public class AngebotInterface extends javax.swing.JFrame {
         anfragePositions.forEach(model::addFromAnfragePosition);
     }
 
+    private void loadAngebot(Angebot angebot){
+        textbox_angebotsid.setText(angebot.getAngebotNr());
+        textbox_angebotsdatum.setText(angebot.getAngebotsdatum().format(DATE_FORMATTER));
+        textbox_gueltig.setText(angebot.getGueltigBis().format(DATE_FORMATTER));
+        select_kondition.setSelectedItem(new AngebotKonditionModel(angebot.getKonditionNr(), false));
+
+        for (int i = 1; i < select_kondition.getItemCount(); i++) {
+            AngebotKonditionModel item = select_kondition.getItemAt(i);
+            if (item.value.getKonditionNr().equals(angebot.getKonditionNr().getKonditionNr())) {
+                select_kondition.setSelectedItem(item);
+                break;
+            }
+        }
+
+        for (int i = 1; i < select_status.getItemCount(); i++) {
+            AngebotStatusModel item = select_status.getItemAt(i);
+            if (item.value.equals(angebot.getStatus())) {
+                select_status.setSelectedItem(item);
+                break;
+            }
+        }
+
+        for (int i = 0; i < select_kunde.getItemCount(); i++) {
+            AngebotKundenModel item = select_kunde.getItemAt(i);
+            if (item.value.getName().equals(angebot.getKundeNr().getName())) {
+                select_kunde.setSelectedItem(item);
+                break;
+            }
+        }
+
+    }
+
     private void handlePositionsSave(Angebot angebot) {
         AngebotPositionTableModel model = ((AngebotPositionTableModel)table_positionen.getModel());
         List<PositionTableRow> rows = model.getPositions();
@@ -94,7 +191,7 @@ public class AngebotInterface extends javax.swing.JFrame {
 
             switch (row.getState()) {
                 case Created -> {
-                    if (position.getAngebotspositionNr().isEmpty()) {
+                    if (position.getAngebotspositionNr().isEmpty() || position.getAngebotspositionNr() == null){
                         System.out.println("no positions nr supplied");
                         return;
                     }
@@ -156,13 +253,17 @@ public class AngebotInterface extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Für diesen Kunden existiert keine Kundenanfrage.", "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        select_kunde.removeAllItems();
+        select_angebot.setSelectedItem(select_angebot.getItemAt(0));
+        textbox_angebotsid.setText("");
+        textbox_gueltig.setText("");
+        select_kondition.setSelectedItem(select_kondition.getItemAt(0));
+        select_status.setSelectedItem(select_status.getItemAt(0));
         Kunde anfrageKunde = kundenAnfrage.getKunde();
         this.fillAngebotspositionen();
 
         for (int i = 0; i < select_kunde.getItemCount(); i++) {
             AngebotKundenModel item = select_kunde.getItemAt(i);
-            if (item.value.equals(anfrageKunde)) {
+            if (item.value.getName().equals(anfrageKunde.getName())) {
                 select_kunde.setSelectedItem(item);
                 break;
             }
@@ -192,7 +293,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         textbox_angebotsid = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        select_status = new javax.swing.JComboBox<AngebotStatusModel>();
+        select_status = new javax.swing.JComboBox<>();
         select_kondition = new javax.swing.JComboBox<>();
         select_kunde = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
@@ -202,6 +303,10 @@ public class AngebotInterface extends javax.swing.JFrame {
         table_positionen = new javax.swing.JTable();
         angebotsposition_erstellen_button = new javax.swing.JButton();
         angebotsposition_loeschen_button = new javax.swing.JButton();
+        select_angebot = new javax.swing.JComboBox<>();
+        button_angebotladen = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(11, 0), new java.awt.Dimension(11, 0), new java.awt.Dimension(11, 32767));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -287,16 +392,6 @@ public class AngebotInterface extends javax.swing.JFrame {
 
         select_status.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
         select_status.setForeground(new java.awt.Color(51, 51, 51));
-        AngebotStatusModel[] statusArray = new AngebotStatusModel[]{
-                new AngebotStatusModel("test", "Offen"),
-                new AngebotStatusModel("test", "Akzeptiert"),
-                new AngebotStatusModel("test", "Abgelehnt")
-        };
-
-        // Create a JComboBox and set its model
-        // JComboBox<AngebotStatusModel> selectStatus = new JComboBox<>();
-        select_status.setModel(new DefaultComboBoxModel<>(statusArray));
-
         select_status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         select_status.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -381,125 +476,139 @@ public class AngebotInterface extends javax.swing.JFrame {
             }
         });
 
+        button_angebotladen.setText("Angebot laden");
+        button_angebotladen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_angebotladenActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Arial", 0, 16)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel10.setText("Angebot");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(textbox_gueltig, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(select_kondition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(select_status, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(textbox_angebotsdatum)
-                                    .addComponent(select_kunde, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(textbox_angebotsid, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(14, 14, 14))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(textbox_anfrage)
-                        .addGap(18, 18, 18)
-                        .addComponent(button_kundesuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(309, 309, 309))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(button_speichern, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(242, 242, 242)
-                .addComponent(button_abbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(400, 400, 400))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(427, 427, 427))
             .addGroup(layout.createSequentialGroup()
-                .addGap(134, 134, 134)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(angebotsposition_loeschen_button)
-                    .addComponent(angebotsposition_erstellen_button))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(338, 338, 338)
+                .addGap(383, 383, 383)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(angebotsposition_erstellen_button)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(angebotsposition_loeschen_button))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(127, 127, 127)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(textbox_anfrage, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(select_angebot, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(button_angebotladen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textbox_gueltig, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(206, 206, 206)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(textbox_angebotsdatum, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(select_kunde, javax.swing.GroupLayout.Alignment.LEADING, 0, 140, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(textbox_angebotsid, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(button_kundesuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(select_kondition, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(select_status, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(127, 127, 127)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(button_speichern, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(button_abbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1))))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(select_angebot, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button_angebotladen, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(button_kundesuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textbox_anfrage))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textbox_anfrage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(button_kundesuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(select_kunde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textbox_angebotsdatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textbox_gueltig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textbox_angebotsid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(select_kondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(select_status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(angebotsposition_erstellen_button)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(angebotsposition_loeschen_button)
-                        .addGap(92, 92, 92)))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(select_kunde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textbox_angebotsid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textbox_angebotsdatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(select_kondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textbox_gueltig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(select_status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(angebotsposition_loeschen_button)
+                    .addComponent(angebotsposition_erstellen_button))
+                .addGap(106, 106, 106)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(button_speichern, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_abbrechen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(61, 61, 61))
+                .addGap(12, 12, 12))
         );
 
         pack();
@@ -537,7 +646,7 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
        this.kundenAnfrageSuchen(searchName);
 
-    }//GEN-LAST:event_button_kundesuchenActionPerformed
+    }                                                  
 
     private void textbox_gueltigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textbox_gueltigActionPerformed
         // Prozess - Datumsvalidierung mit aktueller Zeit
@@ -708,6 +817,17 @@ public class AngebotInterface extends javax.swing.JFrame {
         tableModel.deletePositionByRow(selectedPosition);
     }//GEN-LAST:event_angebotsposition_loeschen_buttonActionPerformed
 
+    private void button_angebotladenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_angebotladenActionPerformed
+        AngebotModel selectedAngebot = (AngebotModel) select_angebot.getSelectedItem();
+        if (selectedAngebot == null) {
+            JOptionPane.showMessageDialog(this, "Bitte wählen Sie ein Angebot aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Angebot angebot = selectedAngebot.value;
+        this.loadAngebot(angebot);
+    }//GEN-LAST:event_button_angebotladenActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -753,9 +873,12 @@ public class AngebotInterface extends javax.swing.JFrame {
     private javax.swing.JButton angebotsposition_erstellen_button;
     private javax.swing.JButton angebotsposition_loeschen_button;
     private javax.swing.JButton button_abbrechen;
+    private javax.swing.JButton button_angebotladen;
     private javax.swing.JButton button_kundesuchen;
     private javax.swing.JButton button_speichern;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -764,6 +887,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<AngebotModel> select_angebot;
     private javax.swing.JComboBox<AngebotKonditionModel> select_kondition;
     private javax.swing.JComboBox<AngebotKundenModel> select_kunde;
     private javax.swing.JComboBox<AngebotStatusModel> select_status;
