@@ -208,8 +208,8 @@ public class AngebotInterface extends javax.swing.JFrame {
             switch (row.getState()) {
                 case Created -> {
                     System.out.println("handling created " + position.getAngebotspositionNr());
-                    if (position.getAngebotspositionNr().isEmpty() || position.getAngebotspositionNr() == null){
-                        System.out.println("no positions nr supplied");
+                    if (position.getAngebotspositionNr() == null || position.getAngebotspositionNr().isEmpty()){
+                        JOptionPane.showMessageDialog(this, "Angebotspositions-Nummer fehlt bei Position " + rowIndex, "Fehler", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
@@ -220,15 +220,15 @@ public class AngebotInterface extends javax.swing.JFrame {
 
                     Material material = position.getArtikelNr();
                     if (material == null) {
-                        System.out.println("material is null");
-                    }
-
-                    if (position.getMenge() == 0)  {
-                        System.out.println("menge is 0");
+                        JOptionPane.showMessageDialog(this, "Material fehlt bei Position " + rowIndex, "Fehler", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
-                    System.out.println("INSERT: " + position);
+                    if (position.getMenge() == 0)  {
+                        JOptionPane.showMessageDialog(this, "Die Menge des Materials ist 0 bei Position " + rowIndex, "Fehler", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
                     // inserting position
                     angebotsPositionRepository.insert(position);
                 }
@@ -238,8 +238,6 @@ public class AngebotInterface extends javax.swing.JFrame {
 
                 }
                 case Deleted -> angebotsPositionRepository.delete(position.getAngebotspositionNr());
-
-
             }
             rowIndex++;
         };
