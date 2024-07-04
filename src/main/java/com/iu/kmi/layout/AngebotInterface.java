@@ -45,6 +45,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private AngebotsPositionRepository angebotsPositionRepository;
     private AnfragePositionRepository anfragePositionRepository;
     private ExecutorService executor;
+    private List<Angebot> angebote;
 
     /**
      * Creates new form AngebotInterface
@@ -123,7 +124,7 @@ public class AngebotInterface extends javax.swing.JFrame {
     private void fillAngebotSelect() throws ReflectiveOperationException, SQLException {
         select_angebot.removeAllItems();
         select_angebot.addItem(new AngebotModel("", ""));
-        List<Angebot> angebote = angebotRepository.findAll().execute();
+        this.angebote = angebotRepository.findAll().execute();
         angebote.forEach(angebot -> select_angebot.addItem(new AngebotModel(angebot.getAngebotNr(), angebot)));
     }
 
@@ -788,10 +789,19 @@ public class AngebotInterface extends javax.swing.JFrame {
         }
         angebot.setStatus(status.value);
 
+        angebot.setWaehrung("EUR");
+
         System.out.println(angebot);
         //this.angebotRepository.insert(angebot);
 
         System.out.println(angebot);
+        Optional<Angebot> tempAngebot = this.angebote.stream().filter(a -> a.getAngebotNr().equals(angebot.getAngebotNr())).findFirst();
+
+        if(tempAngebot.isPresent()){
+            this.angebotRepository.update(angebot);
+        } else {
+            this.angebotRepository.insert(angebot);
+        }
         try {
             this.handlePositionsSave(angebot);
         } catch (Exception e) {
