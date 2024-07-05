@@ -5,12 +5,12 @@
 package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.RepositoryProxy;
-import com.iu.kmi.entities.Debitor;
-import com.iu.kmi.entities.Material;
-import com.iu.kmi.entities.Rechnung;
-import com.iu.kmi.entities.RechnungsPosition;
+import com.iu.kmi.entities.*;
+import com.iu.kmi.repositories.OffenerPostenRepository;
 import com.iu.kmi.repositories.RechnungRepository;
 import com.iu.kmi.repositories.RechnungsPositionRepository;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -325,6 +325,7 @@ public class RechnungInterface extends javax.swing.JFrame {
             }
 
             RechnungRepository rechnungRepository = RepositoryProxy.newInstance(RechnungRepository.class);
+            OffenerPostenRepository offenerPostenRepository = RepositoryProxy.newInstance(OffenerPostenRepository.class);
 
             try {
                 rechnungRepository.insert(rechnung);
@@ -333,7 +334,8 @@ public class RechnungInterface extends javax.swing.JFrame {
                 
                 RechnungsPositionRepository positionRepository = RepositoryProxy.newInstance(RechnungsPositionRepository.class);
 
-                int positionNr = 1;  
+                int positionNr = 1;
+                double gesamtbetrag = 0;
 
                 for (String line : lines) {
                     
@@ -361,11 +363,19 @@ public class RechnungInterface extends javax.swing.JFrame {
 
                         positionRepository.insert(position);
 
-                        positionNr++; 
+                        positionNr++;
+
+                        gesamtbetrag += artikel.getVerkaufsPreis().doubleValue() * menge;
 
                     }
                     
                 }
+
+                OffenerPosten offenerPosten = new OffenerPosten();
+                offenerPosten.setRechnungNr(rechnung);
+                offenerPosten.setDebitorNr(debitor);
+                offenerPosten.setBetrag(BigDecimal.valueOf(gesamtbetrag));
+                offenerPosten.setStatus("Offen");
 
                 JOptionPane.showMessageDialog(null, "Die Rechnung wurde erfolgreich angelegt", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
                 

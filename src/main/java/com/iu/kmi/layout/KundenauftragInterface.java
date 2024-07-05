@@ -6,8 +6,13 @@ package com.iu.kmi.layout;
 
 import com.iu.kmi.database.repository.Repository;
 import com.iu.kmi.database.repository.RepositoryProxy;
+import com.iu.kmi.entities.Angebot;
 import com.iu.kmi.entities.Kundenauftrag;
+import com.iu.kmi.repositories.KundeRepository;
 import com.iu.kmi.repositories.KundenauftragRepository;
+
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -282,8 +287,14 @@ public class KundenauftragInterface extends javax.swing.JFrame {
 
     private void jButtonSpeichernActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSpeichernActionPerformed
         // abspeichern eines Debitors
-        Kundenauftrag auftrag = new Kundenauftrag(kundenNummerTextField.getText(), kundenNummerTextField.getText(), lieferTerminTextField.getText(), lieferbedingungTextField.getText(), "", "");
         KundenauftragRepository kundenRepo = RepositoryProxy.newInstance(KundenauftragRepository.class);
+        KundeRepository kundeRepo = RepositoryProxy.newInstance(KundeRepository.class);
+        Kundenauftrag auftrag = null;
+        try {
+            auftrag = new Kundenauftrag(kundenNummerTextField.getText(), kundeRepo.findById(kundenNummerTextField.getText()).findOne(), LocalDateTime.parse(lieferTerminTextField.getText()), LocalDateTime.parse(lieferbedingungTextField.getText()), new Angebot(), "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         kundenRepo.insert(auftrag);
         emptyAllJTextFields();
     }//GEN-LAST:event_jButtonSpeichernActionPerformed

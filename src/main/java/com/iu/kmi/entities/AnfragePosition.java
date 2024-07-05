@@ -1,6 +1,8 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+import java.math.BigDecimal;
+
 @Entity(tableName = "anfrageposition")
 public class AnfragePosition {
 
@@ -8,13 +10,13 @@ public class AnfragePosition {
     private String anfragepositionNr;
 
     @Column(name = "kundenanfrage_nr")
-    private String anfrageNr;
+    private Kundenanfrage anfrageNr;
 
     @JoinColumn(name = "artikel_nr", referencedColumnName = "artikel_nr")
     private Material artikelNr;
 
     @Column(name = "einzelpreis")
-    private double einzelpreis;
+    private BigDecimal einzelpreis;
 
     @Column(name = "menge")
     private int menge;
@@ -28,11 +30,11 @@ public class AnfragePosition {
         this.anfragepositionNr = anfragepositionNr;
     }
 
-    public String getAnfrageNr() {
+    public Kundenanfrage getAnfrageNr() {
         return anfrageNr;
     }
 
-    public void setAnfrageNr(String anfrageNr) {
+    public void setAnfrageNr(Kundenanfrage anfrageNr) {
         this.anfrageNr = anfrageNr;
     }
 
@@ -44,11 +46,15 @@ public class AnfragePosition {
         this.artikelNr = artikelNr;
     }
 
-    public double getEinzelpreis() {
+    public BigDecimal getEinzelpreis() {
         return einzelpreis;
     }
 
-    public void setEinzelpreis(double einzelpreis) {
+    public void setEinzelpreis(BigDecimal einzelpreis) {
         this.einzelpreis = einzelpreis;
     }
+
+    public int getMenge() { return menge; }
+
+    public void setMenge(int menge) { this.menge = menge; }
 }

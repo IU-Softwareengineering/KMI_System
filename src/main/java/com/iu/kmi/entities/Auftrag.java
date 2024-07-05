@@ -2,6 +2,7 @@ package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -17,10 +18,10 @@ public class Auftrag {
     private Kunde kundeNr;
 
     @Column(name = "auftragsdatum")
-    private LocalDate auftragsdatum;
+    private LocalDateTime auftragsdatum;
 
     @Column(name = "lieferdatum")
-    private LocalDate lieferdatum;
+    private LocalDateTime lieferdatum;
 
     @JoinColumn(name = "angebot_nr", referencedColumnName = "angebot_nr")
     private Angebot angebotNr;
@@ -30,7 +31,7 @@ public class Auftrag {
 
     public Auftrag() {}
 
-    public Auftrag(String auftragNr, Kunde kundeNr, LocalDate auftragsdatum, LocalDate lieferdatum, Angebot angebotNr, String status) {
+    public Auftrag(String auftragNr, Kunde kundeNr, LocalDateTime auftragsdatum, LocalDateTime lieferdatum, Angebot angebotNr, String status) {
         this.auftragNr = auftragNr;
         this.kundeNr = kundeNr;
         this.auftragsdatum = auftragsdatum;
@@ -56,19 +57,19 @@ public class Auftrag {
         this.kundeNr = kundeNr;
     }
 
-    public LocalDate getAuftragsdatum() {
+    public LocalDateTime getAuftragsdatum() {
         return auftragsdatum;
     }
 
-    public void setAuftragsdatum(LocalDate auftragsdatum) {
+    public void setAuftragsdatum(LocalDateTime auftragsdatum) {
         this.auftragsdatum = auftragsdatum;
     }
 
-    public LocalDate getLieferdatum() {
+    public LocalDateTime getLieferdatum() {
         return lieferdatum;
     }
 
-    public void setLieferdatum(LocalDate lieferdatum) {
+    public void setLieferdatum(LocalDateTime lieferdatum) {
         this.lieferdatum = lieferdatum;
     }
 

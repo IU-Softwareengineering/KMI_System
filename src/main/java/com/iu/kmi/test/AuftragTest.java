@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class AuftragTest {
@@ -20,10 +21,10 @@ public class AuftragTest {
         String auftragNr = "A-12345";
         Adresse adresse = new Adresse("Strasse", "1", "123456", "Berlin", "Deutschland");
         Kunde kundeNr = new Kunde("K123", "Mustermann", "Max", "max@gmail.com", "0123456789", adresse);
-        LocalDate auftragsdatum = LocalDate.now();
-        LocalDate lieferdatum = LocalDate.now().plusDays(7);
+        LocalDateTime auftragsdatum = LocalDateTime.now();
+        LocalDateTime lieferdatum = LocalDateTime.now().plusDays(7);
         Kondition kondition = new Kondition("KondiName", "Bar", "innerhalb Stadt", BigDecimal.valueOf(0));
-        Angebot angebotNr = new Angebot(kundeNr, LocalDate.now(), LocalDate.now().plusDays(7), "EUR", "Offen", kondition);
+        Angebot angebotNr = new Angebot(kundeNr, LocalDateTime.now(), LocalDateTime.now().plusDays(7), "EUR", "Offen", kondition);
         String status = "In Bearbeitung";
 
 

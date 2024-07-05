@@ -2,6 +2,7 @@ package com.iu.kmi.test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
@@ -16,8 +17,8 @@ public class AngebotTest {
 
     private Angebot       angebot;
     private Kunde         kunde;
-    private LocalDate          angebotsdatum;
-    private LocalDate          gueltigBis;
+    private LocalDateTime          angebotsdatum;
+    private LocalDateTime          gueltigBis;
     private String        waehrung;
     private String        status;
     private Kondition     kondition;
@@ -26,8 +27,8 @@ public class AngebotTest {
 
     public void setUp() {
         kunde = new Kunde("K12345","Mustermann","Max","max@gmail.com","0123456789",new Adresse("Strasse","1","123456","Berlin","Deutschland"));
-        angebotsdatum = LocalDate.now();
-        gueltigBis = LocalDate.now().plusDays(7); // some future date
+        angebotsdatum = LocalDateTime.now();
+        gueltigBis = LocalDateTime.now().plusDays(7); // some future date
         waehrung = "EUR";
         status = "Offen";
         kondition = new Kondition("KondiName","Bar","innerhalb Stadt", BigDecimal.valueOf(33.3));
@@ -52,8 +53,8 @@ public class AngebotTest {
         Kunde newKundeNr= kunde;
         newKundeNr.setKundennummer("K54321");
 
-        LocalDate newAngebotsdatum = LocalDate.now().minusDays(1);
-        LocalDate newGueltigBis = LocalDate.now().plusDays(14); // some future date
+        LocalDateTime newAngebotsdatum = LocalDateTime.now().minusDays(1);
+        LocalDateTime newGueltigBis = LocalDateTime.now().plusDays(14); // some future date
         String newWaehrung = "USD";
         String newStatus = "Geschlossen";
         Kondition newKonditionNr = kondition;

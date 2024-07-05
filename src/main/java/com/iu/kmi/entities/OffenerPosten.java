@@ -1,6 +1,9 @@
 package com.iu.kmi.entities;
 import com.iu.kmi.database.annotations.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity(tableName = "offener_posten")
 public class OffenerPosten {
     @Id(name = "offener_posten_nr")
@@ -9,14 +12,14 @@ public class OffenerPosten {
     @JoinColumn(name = "rechnung_nr", referencedColumnName = "rechnung_nr")
     private Rechnung rechnungNr;
 
+    @JoinColumn(name = "debitor_nr", referencedColumnName = "debitor_nr")
+    private Debitor debitorNr;
+
     @Column(name = "betrag")
-    private double betrag;
+    private BigDecimal betrag;
 
-    @Column(name = "zahlungsziel")
-    private String zahlungsziel;
-
-    @Column(name = "zahlungsdatum")
-    private String zahlungsdatum;
+    @Column(name = "status")
+    private String status;
 
     public OffenerPosten() {
     }
@@ -37,27 +40,27 @@ public class OffenerPosten {
         this.rechnungNr = rechnungNr;
     }
 
-    public double getBetrag() {
+    public Debitor getDebitorNr() {
+        return debitorNr;
+    }
+
+    public void setDebitorNr(Debitor debitorNr) {
+        this.debitorNr = debitorNr;
+    }
+
+    public BigDecimal getBetrag() {
         return betrag;
     }
 
-    public void setBetrag(double betrag) {
+    public void setBetrag(BigDecimal betrag) {
         this.betrag = betrag;
     }
 
-    public String getZahlungsziel() {
-        return zahlungsziel;
+    public String getStatus() {
+        return status;
     }
 
-    public void setZahlungsziel(String zahlungsziel) {
-        this.zahlungsziel = zahlungsziel;
-    }
-
-    public String getZahlungsdatum() {
-        return zahlungsdatum;
-    }
-
-    public void setZahlungsdatum(String zahlungsdatum) {
-        this.zahlungsdatum = zahlungsdatum;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
